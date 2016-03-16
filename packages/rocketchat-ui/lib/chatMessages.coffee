@@ -43,10 +43,11 @@ class @ChatMessages
 		message = ChatMessage.findOne { _id: id }
 		hasPermission = RocketChat.authz.hasAtLeastOnePermission('edit-message', message.rid)
 		editAllowed = RocketChat.settings.get 'Message_AllowEditing'
-		editOwn = message?.u?._id is Meteor.userId() or (Meteor.userId() in (item._id for item in message?.mentions ? [])) #luwei TODO for mentiones editable
+		editOwn = message?.u?._id is Meteor.userId()
+		editMentioned = (Meteor.userId() in (item._id for item in message?.mentions ? [])) #luwei for mentions editable
 		#console.log (item._id for item in message?.mentions)
 
-		return unless hasPermission or (editAllowed and editOwn)
+		return unless hasPermission or (editAllowed and editOwn) or (editAllowed and editMentioned)
 		return if element.classList.contains("system")
 
 		blockEditInMinutes = RocketChat.settings.get 'Message_AllowEditing_BlockEditInMinutes'
@@ -58,6 +59,10 @@ class @ChatMessages
 
 		this.clearEditing()
 		this.input.value = message.msg
+		if editMentioned #luwei for mentions editable
+			this.input.original_value=message.msg
+			pattern = ///\{\{(.*)\}\}///m
+			this.input.value = this.input.value.match(pattern)[1]
 		this.editing.element = element
 		this.editing.index = index or this.getEditingIndex(element)
 		this.editing.id = id
@@ -129,6 +134,9 @@ class @ChatMessages
 	update: (id, rid, input) ->
 		if _.trim(input.value) isnt ''
 			msg = input.value
+			if input.original_value #luwei for mentions editable
+				msg = input.original_value.replace /\{\{(.*)\}\}/m, '{{'+input.value+'}}'
+				input.value = msg;
 			Meteor.call 'updateMessage', { _id: id, msg: msg, rid: rid }
 			this.clearEditing()
 			this.stopTyping(rid)

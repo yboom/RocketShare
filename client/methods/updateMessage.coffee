@@ -7,12 +7,13 @@ Meteor.methods
 
 		hasPermission = RocketChat.authz.hasAtLeastOnePermission('edit-message', message.rid)
 		editAllowed = RocketChat.settings.get 'Message_AllowEditing'
-		editOwn = originalMessage?.u?._id is Meteor.userId()  or (Meteor.userId() in (item._id for item in originalMessage?.mentions ? [])) #luwei TODO for mentiones editable
+		editOwn = originalMessage?.u?._id is Meteor.userId()
+		editMentioned  = (Meteor.userId() in (item._id for item in originalMessage?.mentions ? [])) #luwei for mentions editable
 		#console.log (item._id for item in originalMessage?.mentions)
 
 		me = Meteor.users.findOne Meteor.userId()
 
-		unless hasPermission or (editAllowed and editOwn)
+		unless hasPermission or (editAllowed and editOwn) or (editAllowed and editMentioned)
 			toastr.error t('Message_editing_not_allowed')
 			throw new Meteor.Error 'message-editing-not-allowed', t('Message_editing_not_allowed')
 

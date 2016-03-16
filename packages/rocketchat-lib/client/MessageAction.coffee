@@ -74,7 +74,7 @@ Meteor.startup ->
 			hasPermission = RocketChat.authz.hasAtLeastOnePermission('edit-message', message.rid)
 			isEditAllowed = RocketChat.settings.get 'Message_AllowEditing'
 			console.log message.mentions
-			editOwn = message.u?._id is Meteor.userId() or (Meteor.userId() in (item._id for item in message.mentions ? [])) #luwei TODO for mentiones editable
+			editOwn = message.u?._id is Meteor.userId() or (Meteor.userId() in (item._id for item in message.mentions ? [])) #luwei for mentiones editable
 
 			return unless hasPermission or (isEditAllowed and editOwn)
 
