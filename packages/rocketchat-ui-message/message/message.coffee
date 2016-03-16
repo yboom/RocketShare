@@ -113,6 +113,9 @@ Template.message.onCreated ->
 			#luwei TODO: for checkbox
 			msg.html = message.html.replace /\{\{(.*)\[\](.*)\}\}/gm, '$1<input type="checkbox"/>$2'
 			msg.html = message.html.replace /\{\{(.*)\[[xX]\](.*)\}\}/gm, '$1<input type="checkbox" checked="checked"/>$2'
+
+			#luwei for mentions editable
+			msg.html = message.html.replace /\{\{(.*)\}\}/m, '$1'
 			return msg.html
 
 Template.message.onViewRendered = (context) ->
