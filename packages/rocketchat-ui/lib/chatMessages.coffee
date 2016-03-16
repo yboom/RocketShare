@@ -43,7 +43,8 @@ class @ChatMessages
 		message = ChatMessage.findOne { _id: id }
 		hasPermission = RocketChat.authz.hasAtLeastOnePermission('edit-message', message.rid)
 		editAllowed = RocketChat.settings.get 'Message_AllowEditing'
-		editOwn = message?.u?._id is Meteor.userId()
+		editOwn = message?.u?._id is Meteor.userId() or (Meteor.userId() in (item._id for item in message?.mentions ? [])) #luwei TODO for mentiones editable
+		#console.log (item._id for item in message?.mentions)
 
 		return unless hasPermission or (editAllowed and editOwn)
 		return if element.classList.contains("system")

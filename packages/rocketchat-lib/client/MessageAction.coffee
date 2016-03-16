@@ -73,7 +73,8 @@ Meteor.startup ->
 		validation: (message) ->
 			hasPermission = RocketChat.authz.hasAtLeastOnePermission('edit-message', message.rid)
 			isEditAllowed = RocketChat.settings.get 'Message_AllowEditing'
-			editOwn = message.u?._id is Meteor.userId()
+			console.log message.mentions
+			editOwn = message.u?._id is Meteor.userId() or (Meteor.userId() in (item._id for item in message.mentions ? [])) #luwei TODO for mentiones editable
 
 			return unless hasPermission or (isEditAllowed and editOwn)
 
@@ -119,3 +120,5 @@ Meteor.startup ->
 		validation: (message) ->
 			return RocketChat.authz.hasAtLeastOnePermission('delete-message', message.rid ) or RocketChat.settings.get('Message_AllowDeleting') and message.u?._id is Meteor.userId()
 		order: 2
+
+  #luwei TODO: add message buttons

@@ -42,7 +42,8 @@ Template.message.helpers
 	canEdit: ->
 		hasPermission = RocketChat.authz.hasAtLeastOnePermission('edit-message', this.rid)
 		isEditAllowed = RocketChat.settings.get 'Message_AllowEditing'
-		editOwn = this.u?._id is Meteor.userId()
+		editOwn = this.u?._id is Meteor.userId() or (Meteor.userId() in (item._id for item in this.mentions ? [])) #luwei TODO for mentiones editable
+		#console.log (item._id for item in this.mentions)
 
 		return unless hasPermission or (isEditAllowed and editOwn)
 
@@ -109,6 +110,9 @@ Template.message.onCreated ->
 
 			# console.log JSON.stringify message
 			msg.html = message.html.replace /\n/gm, '<br/>'
+			#luwei TODO: for checkbox
+			msg.html = message.html.replace /\{\{(.*)\[\](.*)\}\}/gm, '$1<input type="checkbox"/>$2'
+			msg.html = message.html.replace /\{\{(.*)\[[xX]\](.*)\}\}/gm, '$1<input type="checkbox" checked="checked"/>$2'
 			return msg.html
 
 Template.message.onViewRendered = (context) ->

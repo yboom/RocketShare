@@ -10,7 +10,8 @@ Meteor.methods
 
 		hasPermission = RocketChat.authz.hasPermission(Meteor.userId(), 'edit-message', message.rid)
 		editAllowed = RocketChat.settings.get 'Message_AllowEditing'
-		editOwn = originalMessage?.u?._id is Meteor.userId()
+		editOwn = originalMessage?.u?._id is Meteor.userId() or (Meteor.userId() in (item._id for item in originalMessage?.mentions ? [])) #luwei TODO for mentiones editable
+		#console.log (item._id for item in originalMessage?.mentions)
 
 		me = RocketChat.models.Users.findOneById Meteor.userId()
 
@@ -45,7 +46,7 @@ Meteor.methods
 			_id: tempid
 		,
 			$set: message
-			
+
 		room = RocketChat.models.Rooms.findOneById message.rid
 
 		Meteor.defer ->
