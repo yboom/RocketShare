@@ -47,6 +47,23 @@ class MentionsClient
 							return match
 					return match.replace mention, "<a href=\"\" class=\"mention-link\" data-channel=\"#{channel}\">#{mention}</a>"
 
+			#luwei
+			groups = []
+			msgGroupRegex = new RegExp '(?:^|\\s|\\n)(?:!)(' + RocketChat.settings.get('UTF8_Names_Validation') + ')', 'g'
+			message.msg.replace msgGroupRegex, (match, mention) ->
+				groups.push mention
+
+			#console.log groups
+			#console.log message
+			if groups.length isnt 0
+				groups = _.unique groups
+				groups = groups.join('|')
+				msg = msg.replace new RegExp("(?:^|\\s|\\n)(!(#{groups}))[:.,\s]?", 'g'), (match, mention, group) ->
+					if not message.temp?
+						if not _.findWhere(message.groups, {name: group})?
+							return match
+					return match.replace mention, "<a href=\"\" class=\"mention-link\" data-group=\"#{group}\">#{mention}</a>"
+
 
 			message.html = msg
 		return message

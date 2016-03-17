@@ -347,6 +347,13 @@ Template.room.events
 			FlowRouter.go 'channel', {name: channel}
 			return
 
+		#luwei
+		group = $(e.currentTarget).data('group')
+		if group?
+			FlowRouter.go 'group', {name: group}
+			return
+
+
 		RocketChat.TabBar.setTemplate 'membersList'
 		Session.set('showUserInfo', $(e.currentTarget).data('username'))
 		RocketChat.TabBar.openFlex()

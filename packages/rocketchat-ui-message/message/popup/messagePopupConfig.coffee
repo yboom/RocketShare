@@ -70,6 +70,31 @@ Template.messagePopupConfig.helpers
 
 		return config
 
+	popupGroupConfig: ->
+		self = this
+		template = Template.instance()
+		config =
+			title: t('Private Groups')
+			collection: ChatSubscription
+			trigger: '!'
+			template: 'messagePopupGroup'
+			getInput: self.getInput
+			textFilterDelay: 200
+			getFilter: (collection, filter) ->
+				exp = new RegExp(filter, 'i')
+				#template.channelFilter.set filter
+				#col = collection.find( { name: exp }, { limit: 5 }).fetch()
+				#return col
+				col = collection.find( { name: exp, t: { $in: ['p']}, f: { $ne: true }, archived: { $ne: true } }, { sort: 't': 1, 'name': 1, limit: 5 }).fetch()
+				#console.log collection
+				#console.log col
+				return col
+
+			getValue: (_id, collection) ->
+				return collection.findOne(_id)?.name
+
+		return config
+
 	popupSlashCommandsConfig: ->
 		self = this
 		template = Template.instance()

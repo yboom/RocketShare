@@ -39,6 +39,23 @@ class MentionsServer
 
 			if verifiedChannels.length isnt 0
 				message.channels = verifiedChannels
+
+		#luwei
+		groups = []
+		msgGroupRegex = new RegExp '(?:^|\\s|\\n)(?:!)(' + RocketChat.settings.get('UTF8_Names_Validation') + ')', 'g'
+		message.msg.replace msgGroupRegex, (match, mention) ->
+			groups.push mention
+
+		if groups.length isnt 0
+			groups = _.unique groups
+			verifiedGroups = []
+			groups.forEach (mention) ->
+				verifiedGroup = RocketChat.models.Rooms.findOneByNameAndType(mention, 'p', { fields: {_id: 1, name: 1 } })
+				verifiedGroups.push verifiedGroup if verifiedGroup?
+
+			if verifiedGroups.length isnt 0
+				message.groups = verifiedGroups
+
 		return message
 
 RocketChat.callbacks.add 'beforeSaveMessage', MentionsServer, RocketChat.callbacks.priority.HIGH

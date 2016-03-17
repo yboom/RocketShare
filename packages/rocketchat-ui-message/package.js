@@ -27,6 +27,7 @@ Package.onUse(function(api) {
 	api.addFiles("message/messageDropdown.html", "client");
 	api.addFiles("message/popup/messagePopup.html", "client");
 	api.addFiles("message/popup/messagePopupChannel.html", "client");
+	api.addFiles("message/popup/messagePopupGroup.html", "client");
 	api.addFiles("message/popup/messagePopupConfig.html", "client");
 	api.addFiles("message/popup/messagePopupEmoji.html", "client");
 	api.addFiles("message/popup/messagePopupSlashCommand.html", "client");
