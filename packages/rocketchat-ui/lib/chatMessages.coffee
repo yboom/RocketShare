@@ -61,8 +61,11 @@ class @ChatMessages
 		this.input.value = message.msg
 		if editMentioned #luwei for mentions editable
 			this.input.original_value=message.msg
+			this.input.value=''
 			pattern = ///\{\{(.*)\}\}///m
-			this.input.value = this.input.value.match(pattern)[1]
+			match = this.input.value.match(pattern)
+			if (match?)
+				this.input.value = match[1]
 		this.editing.element = element
 		this.editing.index = index or this.getEditingIndex(element)
 		this.editing.id = id
