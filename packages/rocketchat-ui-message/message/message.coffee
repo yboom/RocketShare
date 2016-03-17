@@ -126,8 +126,8 @@ Template.message.onCreated ->
 			msg.html = msg.html.replace /\{\{(.*)\}\}/m, '$1'
 
 			#luwei for checkbox. TODO: click to edit
-			msg.html = msg.html.replace /\[\]/gm, '<input type="checkbox"/>'
-			msg.html = msg.html.replace /\[[xX]\]/gm, '<input type="checkbox" checked="checked"/>'
+			msg.html = msg.html.replace /\[\]/gm, '<input type="checkbox" disabled="disabled"/>'
+			msg.html = msg.html.replace /\[[xX]\]/gm, '<input type="checkbox" checked="checked" disabled="disabled"/>'
 
 			#luwei for progress background
 			msg.html = msg.html.replace /==(\d+)%/gm, '<div class="meter animate"><span style="width: $1%"><span></span></span></div>$1%'#'<progress value="$1%" max="200">$1%</progress>'
