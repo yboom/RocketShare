@@ -63,7 +63,8 @@ class @ChatMessages
 			this.input.original_value=message.msg
 			this.input.value=''
 			pattern = ///\{\{(.*)\}\}///m
-			match = this.input.value.match(pattern)
+			match = this.input.original_value.match(pattern)
+			console.log match
 			if (match?)
 				this.input.value = match[1]
 		this.editing.element = element
@@ -89,7 +90,7 @@ class @ChatMessages
 			this.editing.saved = this.input.value
 
 	send: (rid, input) ->
-		if _.trim(input.value) isnt ''
+		if _.trim(input.value) isnt '' or input.original_value? #luwei partly editing allows empty input
 			readMessage.enable()
 			readMessage.readNow()
 			$('.message.first-unread').removeClass('first-unread')
@@ -135,7 +136,7 @@ class @ChatMessages
 				return Errors.throw error.reason
 
 	update: (id, rid, input) ->
-		if _.trim(input.value) isnt ''
+		if _.trim(input.value) isnt '' or input.original_value? #luwei partly editing allows empty input
 			msg = input.value
 			if input.original_value #luwei for mentions editable
 				msg = input.original_value.replace /\{\{(.*)\}\}/m, '{{'+input.value+'}}'
