@@ -1,4 +1,15 @@
-Making it to better work with QQ/WeChat.
+#Making it to better work with QQ/WeChat.
+
+##New Features
+###Progress Bar
+![progress bar 1](readme_progress1.jpg)
+![progress bar 2](readme_progress2.jpg)
+###Checkbox
+![checkbox 1](readme_checkbox1.jpg)
+![checkbox 2](readme_checkbox2.jpg)
+###Highlights
+![highlight](readme_mark.jpg)
+
 ---
 
 ![Rocket.Chat logo](https://rocket.chat/images/logo/logo-dark.svg?v3)
