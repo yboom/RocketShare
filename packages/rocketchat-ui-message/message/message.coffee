@@ -121,15 +121,16 @@ Template.message.onCreated ->
 
 			# console.log JSON.stringify message
 			msg.html = message.html.replace /\n/gm, '<br/>'
-			#luwei TODO: for checkbox
-			#msg.html = message.html.replace /\{\{(.*)\[\](.*)\}\}/gm, '$1<input type="checkbox"/>$2'
-			#msg.html = message.html.replace /\{\{(.*)\[[xX]\](.*)\}\}/gm, '$1<input type="checkbox" checked="checked"/>$2'
 
 			#luwei for mentions editable
 			msg.html = msg.html.replace /\{\{(.*)\}\}/m, '$1'
 
-			msg.html = message.html.replace /\[\]/gm, '<input type="checkbox"/>'
-			msg.html = message.html.replace /\[[xX]\]/gm, '<input type="checkbox" checked="checked"/>'
+			#luwei for checkbox. TODO: click to edit
+			msg.html = msg.html.replace /\[\]/gm, '<input type="checkbox"/>'
+			msg.html = msg.html.replace /\[[xX]\]/gm, '<input type="checkbox" checked="checked"/>'
+
+			#luwei for progress background
+			msg.html = msg.html.replace /==(\d+)%/gm, '<div class="meter animate"><span style="width: $1%"><span></span></span></div>$1%'#'<progress value="$1%" max="200">$1%</progress>'
 
 			#luwei for marks
 			msg.html = msg.html.replace /^\.\d+\s*/m, ''
