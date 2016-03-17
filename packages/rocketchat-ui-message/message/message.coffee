@@ -27,6 +27,12 @@ Template.message.helpers
 		if RocketChat.MessageTypes.isSystemMessage(this)
 			return 'system'
 
+	#luwei for marks
+	marked: ->
+		#console.log Template.instance().markNum
+		if Template.instance().markNum?
+			return 'mark'+Template.instance().markNum
+
 	edited: ->
 		return Template.instance().wasEdited
 
@@ -80,6 +86,11 @@ Template.message.onCreated ->
 
 	@wasEdited = msg.editedAt? and not RocketChat.MessageTypes.isSystemMessage(msg)
 
+	#luwei for marks
+	pattern = ///^\.(\d+)///m
+	@markNum = msg.msg.match(pattern)?[1]
+	#console.log @markNum
+
 	@body = do ->
 		messageType = RocketChat.MessageTypes.getType(msg)
 		if messageType?.render?
@@ -115,7 +126,11 @@ Template.message.onCreated ->
 			msg.html = message.html.replace /\{\{(.*)\[[xX]\](.*)\}\}/gm, '$1<input type="checkbox" checked="checked"/>$2'
 
 			#luwei for mentions editable
-			msg.html = message.html.replace /\{\{(.*)\}\}/m, '$1'
+			msg.html = msg.html.replace /\{\{(.*)\}\}/m, '$1'
+
+			#luwei for marks
+			msg.html = msg.html.replace /^\.\d+\s*/m, ''
+
 			return msg.html
 
 Template.message.onViewRendered = (context) ->
