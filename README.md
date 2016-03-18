@@ -12,7 +12,7 @@
 
 ---
 
-![Rocket.Chat logo](https://rocket.chat/images/logo/logo-dark.svg?v3)
+![Rocket.Chat logo](public/images/logo/logo-dark.svg)
 
 The Ultimate Open Source WebChat Platform
 
