@@ -129,7 +129,7 @@ Template.message.onCreated ->
 			msg.html = msg.html.replace /\[\]/gm, '<input type="checkbox" disabled="disabled"/>'
 			msg.html = msg.html.replace /\[[xX]\]/gm, '<input type="checkbox" checked="checked" disabled="disabled"/>'
 
-			#luwei for progress background
+			#luwei for progress background TODO:when percentage >= 100 remove animate style
 			msg.html = msg.html.replace /==(\d+)%/gm, '<div class="meter animate"><span style="width: $1%"><span></span></span></div>$1%'#'<progress value="$1%" max="200">$1%</progress>'
 
 			#luwei for marks

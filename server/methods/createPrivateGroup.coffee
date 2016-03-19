@@ -34,7 +34,7 @@ Meteor.methods
 			ts: now
 
 		# set creator as group moderator.  permission limited to group by scoping to rid
-		RocketChat.authz.addUserRoles(Meteor.userId(), ['moderator','owner'], room._id)
+		#luwei moves this after creating subscription:RocketChat.authz.addUserRoles(Meteor.userId(), ['moderator','owner'], room._id)
 
 		for username in members
 			member = RocketChat.models.Users.findOneByUsername(username, { fields: { username: 1 }})
@@ -49,6 +49,9 @@ Meteor.methods
 				extra.alert = true
 
 			RocketChat.models.Subscriptions.createWithRoomAndUser room, member, extra
+
+		#luwei set creator as group moderator and owner.  permission limited to group by scoping to rid
+		RocketChat.authz.addUserRoles(Meteor.userId(), ['moderator','owner'], room._id)
 
 		return {
 			rid: room._id
