@@ -72,7 +72,7 @@ Template.messageBox.events
 
 		items = e.originalEvent.clipboardData.items
 		files = []
-		for item in items
+		for item in items?
 			if item.kind is 'file' and item.type.indexOf('image/') isnt -1
 				e.preventDefault()
 				files.push
