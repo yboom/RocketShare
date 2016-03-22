@@ -12,7 +12,7 @@
 						{{/if}}
 						<a title="{{escapedName}}" href="{{url}}" target="_blank" class="room-file-item {{customClassForFileType}}">
 							<i class="{{getFileIcon type}}"></i>
-							<p>{{name}}</p>
+							<p>{{name}}{{getMsgText _id}}</p>
 						</a>
 					</li>
 				{{/each}}

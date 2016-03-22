@@ -10,6 +10,13 @@ Template.uploadedFilesList.helpers
 	hasMore: ->
 		return Template.instance().hasMore.get()
 
+	getMsgText: (id) ->
+		msg = ChatMessage.findOne { file: { _id: id } }
+		if msg
+			return " - "+msg.msg
+		else
+			return " - No message found"
+
 	getFileIcon: (type) ->
 		if type.match(/^image\/.+$/)
 			return 'icon-picture'

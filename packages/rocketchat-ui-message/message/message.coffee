@@ -132,7 +132,6 @@ Template.message.onCreated ->
 			#luwei for progress bar
 			reg = /==(\d+)%/gm
 			while (result = reg.exec(msg.html))?
-				console.log result
 				if parseInt(result[1])>=100
 					msg.html = msg.html.replace '=='+result[1]+'%', '<div class="meter nostripes"><span style="width: '+result[1]+'%"><span></span></span></div>'+result[1]+'%'
 				else
