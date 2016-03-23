@@ -17,23 +17,30 @@ Package.onUse(function(api) {
 
 	api.addFiles([
 		'client/lib/MentionedMessage.coffee',
+		'client/lib/ChannelGroupMessage.coffee',
 		'client/views/stylesheets/mentionsFlexTab.less',
+		'client/views/stylesheets/channelsGroupsFlexTab.less',
 		'client/views/mentionsFlexTab.html',
 		'client/views/mentionsFlexTab.coffee',
+		'client/views/channelsGroupsFlexTab.html',
+		'client/views/channelsGroupsFlexTab.coffee',
 		'client/actionButton.coffee',
 		'client/tabBar.coffee'
 	], 'client');
 
 	api.addFiles([
-		'server/publications/mentionedMessages.coffee'
+		'server/publications/mentionedMessages.coffee',
+		'server/publications/channelGroupMessages.coffee'
 	], 'server');
 
 	// TAPi18n
 	api.use('templating', 'client');
 	var _ = Npm.require('underscore');
 	var fs = Npm.require('fs');
-	tapi18nFiles = _.compact(_.map(fs.readdirSync('packages/rocketchat-mentions-flextab/i18n'), function(filename) {
-		if (fs.statSync('packages/rocketchat-mentions-flextab/i18n/' + filename).size > 16) {
+	tapi18nFiles = _.compact(_.map(fs.readdirSync(
+		'packages/rocketchat-mentions-flextab/i18n'), function(filename) {
+		if (fs.statSync('packages/rocketchat-mentions-flextab/i18n/' + filename)
+			.size > 16) {
 			return 'i18n/' + filename;
 		}
 	}));

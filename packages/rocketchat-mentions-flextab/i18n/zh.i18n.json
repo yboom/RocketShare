@@ -1,1 +1,5 @@
-{ }
+{
+  "No_mentions_found": "未找到提及您的信息",
+  "No_channels_groups_found": "未找到其他频道或私有组的链接",
+  "Channels Groups": "到频道或私有组的链接"
+}

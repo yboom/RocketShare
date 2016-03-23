@@ -33,6 +33,15 @@ RocketChat.models.Messages = new class extends RocketChat.models._Base
 
 		return @find query, options
 
+	#luwei
+	findVisibleByMentionChannelGroupAndRoomId: (rid, options) ->
+		query =
+			_hidden: { $ne: true }
+			$or: [  {channels: { $exists: true, $ne: [] }} ,  {groups: { $exists: true, $ne: [] }} ]
+			"rid": rid
+
+		return @find query, options
+
 	findVisibleByRoomId: (roomId, options) ->
 		query =
 			_hidden:
