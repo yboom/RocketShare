@@ -75,6 +75,15 @@ FlowRouter.route '/history/private',
 		RocketChat.TabBar.showGroup 'private-history'
 		BlazeLayout.render 'main', {center: 'privateHistory'}
 
+FlowRouter.route '/mentioned-in',
+	name: 'mentionedInRooms'
+
+	subscriptions: (params, queryParams) ->
+		@register 'mentionedInRooms', Meteor.subscribe('mentionedInRooms')
+
+	action: ->
+		RocketChat.TabBar.showGroup 'mentioned-in'
+		BlazeLayout.render 'main', {center: 'mentionedInRooms'}
 
 FlowRouter.route '/terms-of-service',
 	name: 'terms-of-service'
