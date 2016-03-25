@@ -1,0 +1,33 @@
+<template name="filesInRooms">
+	<section class="page-container">
+		<header class="fixed-title">
+			{{> burger}}
+			<h2>
+				<span class="room-title">{{_ "Files"}}</span>
+			</h2>
+		</header>
+		<div class="content">
+			<div class="list-view files_in_rooms-files-list">
+				<ul class="files_in_rooms-files-list list clearfix">
+				{{#each files}}
+					{{#nrr nrrargs 'fileToRoom' .}}{{/nrr}}
+				{{/each}}
+				{{#if hasMore}}
+					<li class="load-more">
+						{{#if Template.subscriptionsReady}}
+							<a href="">{{_ "Has_more"}}...</a>
+						{{else}}
+							<div class="load-more-loading">{{_ "Loading..."}}</div>
+						{{/if}}
+					</li>
+				{{/if}}
+			</ul>
+			{{#if Template.subscriptionsReady}}
+				{{#unless hasFiles}}
+					<h2>{{_ "No_files_found"}}</h2>
+				{{/unless}}
+			{{/if}}
+		</div>
+		</div>
+	</section>
+</template>

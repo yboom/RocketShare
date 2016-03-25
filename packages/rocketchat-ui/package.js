@@ -90,7 +90,10 @@ Package.onUse(function(api) {
 	api.addFiles('views/app/privateHistory.html', 'client');
 	api.addFiles('views/app/mentionedInRooms.html', 'client');
 	api.addFiles('views/app/stylesheets/mentionedInRooms.less', 'client');
+	api.addFiles('views/app/stylesheets/filesInRooms.less', 'client');
 	api.addFiles('views/app/mentionToRoom.html', 'client');
+	api.addFiles('views/app/filesInRooms.html', 'client');
+	api.addFiles('views/app/fileToRoom.html', 'client');
 	api.addFiles('views/app/room.html', 'client');
 	api.addFiles('views/app/roomSearch.html', 'client');
 	api.addFiles('views/app/secretURL.html', 'client');
@@ -109,6 +112,8 @@ Package.onUse(function(api) {
 	api.addFiles('views/app/privateHistory.coffee', 'client');
 	api.addFiles('views/app/mentionedInRooms.coffee', 'client');
 	api.addFiles('views/app/mentionToRoom.coffee', 'client');
+	api.addFiles('views/app/filesInRooms.coffee', 'client');
+	api.addFiles('views/app/fileToRoom.coffee', 'client');
 	api.addFiles('views/app/room.coffee', 'client');
 	api.addFiles('views/app/roomSearch.coffee', 'client');
 	api.addFiles('views/app/secretURL.coffee', 'client');

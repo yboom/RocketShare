@@ -1,0 +1,11 @@
+<template name="fileToRoom">
+					<a class="room-info" href="{{path}}">
+						<div class="info">
+							<h3><i class="icon-forward"></i><span class="enter-room"><i class="{{roomType}}"></i>{{roomName}}</span><span class="time"><i class="icon-clock"></i>{{creation}}</span></h3>
+						</div>
+					</a>
+					<a title="{{escapedName}}" href="{{url}}" target="_blank" class="room-file-item {{customClassForFileType}}">
+						<i class="{{getFileIcon type}}"></i>
+						<p>{{name}}{{getMsgText _id}}</p>
+					</a>
+</template>

@@ -85,6 +85,16 @@ FlowRouter.route '/mentioned-in',
 		RocketChat.TabBar.showGroup 'mentioned-in'
 		BlazeLayout.render 'main', {center: 'mentionedInRooms'}
 
+FlowRouter.route '/files-in-rooms',
+	name: 'filesInRooms'
+
+	subscriptions: (params, queryParams) ->
+		@register 'filesInRooms', Meteor.subscribe('filesInRooms')
+
+	action: ->
+		RocketChat.TabBar.showGroup 'files-in-rooms'
+		BlazeLayout.render 'main', {center: 'filesInRooms'}
+
 FlowRouter.route '/terms-of-service',
 	name: 'terms-of-service'
 

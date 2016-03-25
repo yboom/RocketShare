@@ -15,7 +15,7 @@ Template.uploadedFilesList.helpers
 		if msg
 			return " - "+msg.msg
 		else
-			return " - No message found"
+			return "" #luwei TODO: when not cached in client
 
 	getFileIcon: (type) ->
 		if type.match(/^image\/.+$/)

@@ -29,7 +29,7 @@ RocketChat.TabBar.addButton({
 	groups: ['channel', 'privategroup', 'directmessage'],
 	id: 'uploaded-files-list',
 	i18nTitle: 'Room_uploaded_file_list',
-	icon: 'octicon octicon-file-symlink-directory',
+	icon: 'icon-docs', //luwei:'octicon octicon-file-symlink-directory',
 	template: 'uploadedFilesList',
 	order: 3
 });
