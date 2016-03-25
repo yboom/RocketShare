@@ -24,6 +24,7 @@ Package.onUse(function(api) {
 		'templating',
 		'coffeescript',
 		'underscore',
+		'less@2.5.0',
 		'rocketchat:lib',
 		'raix:push',
 		'raix:ui-dropped-event'
@@ -88,6 +89,7 @@ Package.onUse(function(api) {
 	api.addFiles('views/app/pageSettingsContainer.html', 'client');
 	api.addFiles('views/app/privateHistory.html', 'client');
 	api.addFiles('views/app/mentionedInRooms.html', 'client');
+	api.addFiles('views/app/stylesheets/mentionedInRooms.less', 'client');
 	api.addFiles('views/app/mentionToRoom.html', 'client');
 	api.addFiles('views/app/room.html', 'client');
 	api.addFiles('views/app/roomSearch.html', 'client');

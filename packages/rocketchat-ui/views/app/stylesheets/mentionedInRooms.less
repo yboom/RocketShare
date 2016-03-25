@@ -1,0 +1,101 @@
+.list-view.mentioned_in_rooms-messages-list{
+	padding:0px;
+}
+.mentioned_in_rooms-messages-list {
+	&.notready {
+		background-image: url(/images/logo/loading.gif);
+		background-repeat: no-repeat;
+		background-position: 50% 50%;
+		height: 100px;
+
+		.message {
+			display: none;
+		}
+	}
+
+	li.empty {
+		color: #7f7f7f;
+		text-align: center;
+		margin-top: 60px;
+	}
+
+	/*.mention-link.mention-link-me {
+		background-color: transparent;
+		color: inherit;
+		&:hover {
+			color: inherit;
+		}
+	}*/
+
+	.message-cog-container {
+		/*.message-action {
+			display: none !important;
+			&.jump-to-message {
+				display: block !important;
+			}
+		}*/
+		display: none !important;//TODO:go to message funtion
+	}
+
+	.load-more {
+		text-transform: lowercase;
+		text-align: center;
+		line-height: 40px;
+		font-style: italic;
+
+		.load-more-loading {
+			color: #aaa;
+		}
+	}
+
+	.list {
+		a.room-info {
+			color: #444;
+	    border-bottom-color: #f4f4f4;
+			display: block;
+			//padding: 3px;
+			margin-top: 5px;
+			margin-bottom: 5px;
+			.info {
+				h3 {
+					margin-bottom: 5px;
+					.enter-room{
+						background-color:rgba(128,128,128,0.5);
+						border-radius: 4px;
+						padding: 0 4px 2px 4px;
+					}
+					.time{
+						padding-left: 10px;
+						font-weight:normal;
+					}
+				}
+				ul {
+					margin-left: 3px;
+				}
+			}
+		}
+	}
+
+	.message {//to overwrite base.less
+		.thumb {
+			left: 40px;
+			display: block;
+			width: 20px;
+			height: 20px;
+		}
+		.thumb ~ .info > .edited{
+			background-color: white;
+		}
+		&.sequential {
+			.thumb:not(.thumb-small) {
+				display: block;
+			}
+			&:hover {
+				.thumb {
+					left: 20px;
+				}
+			}
+		}
+	}
+
+}

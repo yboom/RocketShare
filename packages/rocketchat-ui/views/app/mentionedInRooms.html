@@ -1,5 +1,5 @@
 <template name="mentionedInRooms">
-	<section class="page-container page-list">
+	<section class="page-container">
 		<header class="fixed-title">
 			{{> burger}}
 			<h2>
@@ -7,7 +7,8 @@
 			</h2>
 		</header>
 		<div class="content">
-			<div class="list">
+			<div class="list-view mentioned_in_rooms-messages-list">
+				<ul class="mentioned_in_rooms-messages-list list clearfix">
 				{{#each messages}}
 					{{#nrr nrrargs 'mentionToRoom' .}}{{/nrr}}
 				{{/each}}
@@ -20,12 +21,13 @@
 						{{/if}}
 					</li>
 				{{/if}}
-			</div>
+			</ul>
 			{{#if Template.subscriptionsReady}}
 				{{#unless hasMessages}}
 					<h2>{{_ "No_mentions_found"}}</h2>
 				{{/unless}}
 			{{/if}}
+		</div>
 		</div>
 	</section>
 </template>
