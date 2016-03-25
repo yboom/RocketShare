@@ -118,7 +118,7 @@ readAsArrayBuffer = (file, callback) ->
 							msg =
 								_id: Random.id()
 								rid: roomId
-								msg: ""
+								msg: file.name.substr(0, file.name.lastIndexOf('.')) || file.name#luwei:""
 								file:
 									_id: file._id
 								groupable: false
