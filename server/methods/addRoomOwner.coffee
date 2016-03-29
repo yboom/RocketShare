@@ -6,7 +6,7 @@ Meteor.methods
 		check rid, String
 		check userId, String
 
-		unless RocketChat.authz.hasPermission Meteor.userId(), 'set-owner', rid
+		unless RocketChat.authz.hasPermission(Meteor.userId(), 'set-owner', rid) or RocketChat.models.Rooms.findOneById(rid, { fields: { u: 1}})?.u?._id is Meteor.userId() #luwei to allow creator set owner
 			throw new Meteor.Error 403, 'Not allowed'
 
 		subscription = RocketChat.models.Subscriptions.findOneByRoomIdAndUserId rid, userId

@@ -52,6 +52,10 @@ Template.userInfo.helpers
 		return !!RoomModeratorsAndOwners.findOne({ rid: Session.get('openedRoom'), "u._id": @user?._id, roles: 'moderator' })
 
 	canSetOwner: ->
+		r = ChatRoom.findOne(Session.get('openedRoom'));
+		userId = Meteor.userId();
+		if userId? and r? and r.u? and r.u._id is userId #luwei to allow creator set owner
+			return true;
 		return RocketChat.authz.hasAllPermission('set-owner', Session.get('openedRoom'))
 
 	isOwner: ->
