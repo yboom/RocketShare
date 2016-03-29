@@ -219,6 +219,7 @@ class @ChatMessages
 				this.clearEditing()
 				return
 		else if k is 38 or k is 40 # Arrow Up or down
+			return true #luwei for normal typing experience 
 			return true if event.shiftKey
 
 			return true if $(input).val().length and !this.editing?.id
