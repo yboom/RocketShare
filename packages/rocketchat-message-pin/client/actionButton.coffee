@@ -16,6 +16,9 @@ Meteor.startup ->
 			if RocketChat.settings.get('Message_AllowPinningByAnyone') or RocketChat.authz.hasRole Meteor.userId(), 'admin'
 				return true
 
+			if RocketChat.authz.hasAtLeastOnePermission('delete-message', message.rid)
+				return true
+
 			return ChatRoom.findOne(message.rid).u?._id is Meteor.userId()
 		order: 20
 
@@ -48,4 +51,3 @@ Meteor.startup ->
 			$('.message-dropdown:visible').hide()
 			RoomHistoryManager.getSurroundingMessages(message, 50)
 		order: 100
-
