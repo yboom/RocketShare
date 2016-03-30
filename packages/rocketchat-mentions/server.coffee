@@ -34,7 +34,7 @@ class MentionsServer
 			channels = _.unique channels
 			verifiedChannels = []
 			channels.forEach (mention) ->
-				verifiedChannel = RocketChat.models.Rooms.findOneByNameAndType(mention, 'c', { fields: {_id: 1, name: 1 } })
+				verifiedChannel = RocketChat.models.Rooms.findOneByNameAndType(mention, 'c', { fields: {_id: 1, name: 1, topic: 1 } })
 				verifiedChannels.push verifiedChannel if verifiedChannel?
 
 			if verifiedChannels.length isnt 0
@@ -50,7 +50,7 @@ class MentionsServer
 			groups = _.unique groups
 			verifiedGroups = []
 			groups.forEach (mention) ->
-				verifiedGroup = RocketChat.models.Rooms.findOneByNameAndType(mention, 'p', { fields: {_id: 1, name: 1 } })
+				verifiedGroup = RocketChat.models.Rooms.findOneByNameAndType(mention, 'p', { fields: {_id: 1, name: 1, topic: 1 } })
 				verifiedGroups.push verifiedGroup if verifiedGroup?
 
 			if verifiedGroups.length isnt 0

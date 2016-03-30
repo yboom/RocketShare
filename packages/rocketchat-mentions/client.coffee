@@ -43,9 +43,16 @@ class MentionsClient
 				channels = channels.join('|')
 				msg = msg.replace new RegExp("(?:^|\\s|\\n)(#(#{channels}))[:.,\s]?", 'g'), (match, mention, channel) ->
 					if not message.temp?
-						if not _.findWhere(message.channels, {name: channel})?
+						@roomInfo = _.findWhere(message.channels, {name: channel})
+						console.log @roomInfo
+						#if not _.findWhere(message.channels, {name: channel})?
+						if not @roomInfo?
 							return match
-					return match.replace mention, "<a href=\"\" class=\"mention-link\" data-channel=\"#{channel}\">#{mention}</a>"
+						if @roomInfo.topic?
+							@roomInfo.topic = ":"+@roomInfo.topic
+						else
+							@roomInfo.topic = ""
+					return match.replace mention, "<a href=\"\" class=\"mention-link\" data-channel=\"#{channel}\">#{mention}#{@roomInfo.topic}</a>"
 
 			#luwei
 			groups = []
@@ -60,9 +67,15 @@ class MentionsClient
 				groups = groups.join('|')
 				msg = msg.replace new RegExp("(?:^|\\s|\\n)(!(#{groups}))[:.,\s]?", 'g'), (match, mention, group) ->
 					if not message.temp?
-						if not _.findWhere(message.groups, {name: group})?
+						@roomInfo = _.findWhere(message.groups, {name: group})
+						#if not _.findWhere(message.groups, {name: group})?
+						if not @roomInfo?
 							return match
-					return match.replace mention, "<a href=\"\" class=\"mention-link\" data-group=\"#{group}\">#{mention}</a>"
+						if @roomInfo.topic?
+							@roomInfo.topic = ":"+@roomInfo.topic
+						else
+							@roomInfo.topic = ""
+					return match.replace mention, "<a href=\"\" class=\"mention-link\" data-group=\"#{group}\">#{mention}#{@roomInfo.topic}</a>"
 
 
 			message.html = msg
