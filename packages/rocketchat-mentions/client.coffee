@@ -44,7 +44,6 @@ class MentionsClient
 				msg = msg.replace new RegExp("(?:^|\\s|\\n)(#(#{channels}))[:.,\s]?", 'g'), (match, mention, channel) ->
 					if not message.temp?
 						@roomInfo = _.findWhere(message.channels, {name: channel})
-						console.log @roomInfo
 						#if not _.findWhere(message.channels, {name: channel})?
 						if not @roomInfo?
 							return match
