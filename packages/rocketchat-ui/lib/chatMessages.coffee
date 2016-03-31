@@ -45,6 +45,7 @@ class @ChatMessages
 		editAllowed = RocketChat.settings.get 'Message_AllowEditing'
 		editOwn = message?.u?._id is Meteor.userId()
 		editMentioned = (Meteor.userId() in (item._id for item in message?.mentions ? [])) #luwei for mentions editable
+		console.log editMentioned if @debug
 		#console.log (item._id for item in message?.mentions)
 
 		return unless hasPermission or (editAllowed and editOwn) or (editAllowed and editMentioned)
@@ -59,14 +60,16 @@ class @ChatMessages
 
 		this.clearEditing()
 		this.input.value = message.msg
-		if editMentioned #luwei for mentions editable
+		if not editOwn and editMentioned #luwei for mentions editable
 			this.input.original_value=message.msg
-			this.input.value=''
+			this.input.value='No part can be edited'
 			pattern = ///\{\{(.*)\}\}///m
 			match = this.input.original_value.match(pattern)
-			console.log match
+			console.log match if @debug
 			if (match?)
 				this.input.value = match[1]
+		else
+			delete this.input.original_value
 		this.editing.element = element
 		this.editing.index = index or this.getEditingIndex(element)
 		this.editing.id = id
@@ -219,7 +222,7 @@ class @ChatMessages
 				this.clearEditing()
 				return
 		else if k is 38 or k is 40 # Arrow Up or down
-			return true #luwei for normal typing experience 
+			return true #luwei for normal typing experience
 			return true if event.shiftKey
 
 			return true if $(input).val().length and !this.editing?.id

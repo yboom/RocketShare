@@ -173,7 +173,7 @@ Template.room.helpers
 		return RoomHistoryManager.getRoom(@_id).unreadNotLoaded.get() + Template.instance().unreadCount.get()
 
 	specifiedAMessage: ->
-		return RoomHistoryManager.getRoom(@_id).specifiedMessage.get()._id?
+		return RoomHistoryManager.getRoom(@_id).specifiedMessage.get()?._id?
 
 	formatUnreadSince: ->
 		room = ChatRoom.findOne(this._id, { reactive: false })
