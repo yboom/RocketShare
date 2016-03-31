@@ -567,6 +567,19 @@ Template.room.onRendered ->
 			childList: true
 		# observer.disconnect()
 
+	jump = $(".specified-bar > .jump-to")
+	#console.log jump
+	if jump? and jump[0]?.nodeType is 1
+		el = jump[0]
+		setTimeout ->
+			if el.fireEvent?
+		    el.fireEvent 'onclick'
+  		else
+		    evObj = document.createEvent('Events')
+    		evObj.initEvent 'click', true, false
+    		el.dispatchEvent evObj
+		, 1000
+
 	template.onWindowResize = ->
 		Meteor.defer ->
 			template.sendToBottomIfNecessaryDebounced()
