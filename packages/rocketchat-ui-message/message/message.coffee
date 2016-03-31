@@ -33,6 +33,20 @@ Template.message.helpers
 		if Template.instance().markNum?
 			return 'mark'+Template.instance().markNum
 
+	messageLink: ->
+		subscription = ChatSubscription.findOne {rid:this.rid}
+		url = ""
+		if subscription?
+			switch subscription.t
+				when 'c'
+						url = url + FlowRouter.path 'channel', { name: subscription.name }
+				when 'p'
+						url = url + FlowRouter.path 'group', { name: subscription.name }
+				when 'd'
+						url = url + FlowRouter.path 'direct', { username: subscription.name }
+			url = url + "?id="+this._id
+		return url;
+
 	edited: ->
 		return Template.instance().wasEdited
 

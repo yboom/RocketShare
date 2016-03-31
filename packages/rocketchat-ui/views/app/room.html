@@ -36,6 +36,13 @@
 						{{/if}}
 					</div>
 				{{/each}}
+				{{#if specifiedAMessage}}
+						<div class="specified-bar">
+							<a class="jump-to">
+								{{_ "Jump_to_specified_message"}}
+							</a>
+						</div>
+				{{/if}}
 				{{#if unreadCount}}
 					{{#if unreadSince}}
 						<div class="unread-bar">

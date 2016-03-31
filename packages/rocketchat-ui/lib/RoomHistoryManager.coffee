@@ -11,6 +11,7 @@
 				isLoading: ReactiveVar false
 				unreadNotLoaded: ReactiveVar 0
 				firstUnread: ReactiveVar {}
+				specifiedMessage: ReactiveVar {}
 				loaded: 0
 
 		return histories[rid]
@@ -42,9 +43,12 @@
 			curRoomDoc = ChatRoom.findOne(_id: rid)
 			typeName = curRoomDoc?.t + curRoomDoc?.name
 
-		Meteor.call 'loadHistory', rid, ts, limit, ls, (err, result) ->
+		console.log FlowRouter.getQueryParam("id") if @debug
+		Meteor.call 'loadHistory', rid, ts, limit, ls, FlowRouter.getQueryParam("id"), (err, result) ->
 			room.unreadNotLoaded.set result?.unreadNotLoaded
 			room.firstUnread.set result?.firstUnread
+			room.specifiedMessage.set result?.specifiedMessage
+			console.log result if @debug
 
 			wrapper = $('.messages-box .wrapper').get(0)
 			if wrapper?

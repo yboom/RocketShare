@@ -2197,7 +2197,7 @@ a.github-fork {
 		}
 	}
 
-	.unread-bar {
+	.unread-bar, .specified-bar {
 		background-color: #E6F4FD;
 		// line-height: 30px;
 		// font-size: 12px;
@@ -2221,6 +2221,12 @@ a.github-fork {
 			&:hover {
 				cursor: pointer;
 			}
+		}
+	}
+	.specified-bar{
+		background-color: rgba(241,221,122,0.3);
+		> a.jump-to {
+			float: right;
 		}
 	}
 }
@@ -2654,12 +2660,28 @@ a.github-fork {
 	.message-cog-container {
 		position: relative;
 		display: inline-block;
+		padding:0 0 0 5px;
 		.message-cog {
 			visibility: hidden;
 			cursor: pointer;
 		}
 	}
 	&:hover:not(.system) .message-cog {
+		visibility: visible;
+	}
+
+	.message-link {
+		color:#aaa;
+	}
+	.message-link-container {
+		position: relative;
+		display: inline-block;
+		padding:0 0 0 5px;
+		.message-link {
+			visibility: hidden;
+		}
+	}
+	&:hover .message-link {
 		visibility: visible;
 	}
 

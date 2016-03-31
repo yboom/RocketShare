@@ -1,5 +1,5 @@
 Meteor.methods
-	loadHistory: (rid, end, limit=20, ls) ->
+	loadHistory: (rid, end, limit=20, ls, specifiedId) ->
 		fromId = Meteor.userId()
 		unless Meteor.call 'canAccessRoom', rid, fromId
 			return false
@@ -31,8 +31,14 @@ Meteor.methods
 				firstUnread = unreadMessages.fetch()[0]
 				unreadNotLoaded = unreadMessages.count()
 
+		if specifiedId?
+			specifiedMessage=_.findWhere messages, {_id:specifiedId}
+			if not specifiedMessage?
+				specifiedMessage = RocketChat.models.Messages.findOneById(specifiedId)
+
 		return {
 			messages: messages
 			firstUnread: firstUnread
 			unreadNotLoaded: unreadNotLoaded
+			specifiedMessage:specifiedMessage
 		}

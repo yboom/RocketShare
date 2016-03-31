@@ -172,6 +172,9 @@ Template.room.helpers
 	unreadCount: ->
 		return RoomHistoryManager.getRoom(@_id).unreadNotLoaded.get() + Template.instance().unreadCount.get()
 
+	specifiedAMessage: ->
+		return RoomHistoryManager.getRoom(@_id).specifiedMessage.get()._id?
+
 	formatUnreadSince: ->
 		room = ChatRoom.findOne(this._id, { reactive: false })
 		room = RoomManager.openedRooms[room?.t + room?.name]
@@ -234,6 +237,16 @@ Template.room.events
 			subscription = ChatSubscription.findOne({ rid: @_id })
 			message = ChatMessage.find({ rid: @_id, ts: { $gt: subscription?.ls } }, { sort: { ts: 1 }, limit: 1 }).fetch()[0]
 			RoomHistoryManager.getSurroundingMessages(message, 50)
+
+	"click .specified-bar > a.jump-to": ->
+		message = RoomHistoryManager.getRoom(@_id)?.specifiedMessage.get()
+		if message?
+			RoomHistoryManager.getSurroundingMessages(message, 50)
+
+	"click .message-link": (e) ->
+		e.preventDefault()
+		toastr.error t('Right_click_to_copy_the_link_for_opening_this_specified_message')
+		return false
 
 	"click .flex-tab .more": (event, t) ->
 		if RocketChat.TabBar.isFlexOpen()
