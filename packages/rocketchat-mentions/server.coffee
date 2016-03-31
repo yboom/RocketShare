@@ -18,6 +18,11 @@ class MentionsServer
 					verifiedMention =
 						_id: mention
 						username: mention
+					room = RocketChat.models.Rooms.findOneById(message.rid)
+					if room?
+						room.usernames.forEach (username) ->
+							vm = Meteor.users.findOne({username: username}, {fields: {_id: 1, username: 1}})
+							verifiedMentions.push vm if vm?
 				else
 					verifiedMention = Meteor.users.findOne({username: mention}, {fields: {_id: 1, username: 1}})
 
