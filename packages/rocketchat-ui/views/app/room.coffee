@@ -558,10 +558,14 @@ Template.room.onRendered ->
 	if not window.MutationObserver?
 		wrapperUl.addEventListener 'DOMSubtreeModified', ->
 			template.sendToBottomIfNecessaryDebounced()
+			$(".message-link").each (index) ->
+				this.setAttribute "target","new"
 	else
 		observer = new MutationObserver (mutations) ->
 			mutations.forEach (mutation) ->
 				template.sendToBottomIfNecessaryDebounced()
+				$(".message-link").each (index) ->
+					this.setAttribute "target","new"
 
 		observer.observe wrapperUl,
 			childList: true
