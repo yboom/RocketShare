@@ -243,10 +243,10 @@ Template.room.events
 		if message?
 			RoomHistoryManager.getSurroundingMessages(message, 50)
 
-	"click .message-link": (e) ->
-		e.preventDefault()
-		toastr.error t('Right_click_to_copy_the_link_for_opening_this_specified_message')
-		return false
+	#"click .message-link": (e) ->
+	#	e.preventDefault()
+	#	toastr.error t('Right_click_to_copy_the_link_for_opening_this_specified_message')
+	#	return false
 
 	"click .flex-tab .more": (event, t) ->
 		if RocketChat.TabBar.isFlexOpen()
@@ -579,6 +579,9 @@ Template.room.onRendered ->
     		evObj.initEvent 'click', true, false
     		el.dispatchEvent evObj
 		, 1000
+
+	$(".message-link").each (index) ->
+		this.setAttribute "target","new"
 
 	template.onWindowResize = ->
 		Meteor.defer ->
