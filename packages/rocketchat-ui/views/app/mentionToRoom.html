@@ -1,7 +1,7 @@
 <template name="mentionToRoom">
 					<a class="room-info" href="{{path}}">
 						<div class="info">
-							<h3><i class="icon-forward"></i><span class="enter-room"><i class="{{type}}"></i>{{roomName}}</span><span class="time"><i class="icon-clock"></i>{{creation}}</span></h3>
+							<h3><span class="enter-room"><i class="{{type}}"></i>{{roomName}}</span><span class="time"><i class="icon-clock"></i>{{creation}}</span></h3>
 						</div>
 					</a>
 					{{#nrr nrrargs 'message' .}}{{/nrr}}
