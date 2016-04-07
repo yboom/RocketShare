@@ -122,3 +122,48 @@ Meteor.startup ->
 		order: 2
 
   #luwei TODO: add message buttons
+	RocketChat.MessageAction.addButton
+		id: 'move-message'
+		icon: 'icon-forward'
+		i18nLabel: 'Move'
+		action: (event, instance) ->
+			message = @_arguments[1]
+			msg = $(event.currentTarget).closest('.message')[0]
+			$("\##{msg.id} .message-dropdown").hide()
+			return if msg.classList.contains("system")
+
+			input = instance.find('.input-message')
+			pattern = ///[!#]([^\s\:]+)///m
+			name = input.value.match(pattern)?[1]
+			if name?
+				swal {
+					title: t('Are_you_sure')
+					text: t('Move_to')+" '"+name+"'."+t('You_will_not_be_able_to_recover')
+					type: 'warning'
+					showCancelButton: true
+					confirmButtonColor: '#DD6B55'
+					confirmButtonText: t('Yes_move_it')
+					cancelButtonText: t('Cancel')
+					closeOnConfirm: false
+					html: false
+				}, ->
+					swal
+						title: t('Moved')
+						text: t('Your_entry_has_been_moved')
+						type: 'success'
+						timer: 1000
+						showConfirmButton: false
+
+					chatMessages[Session.get('openedRoom')].moveMsg(message,name)
+			else
+				swal {
+					title: t('Input_target_name')
+					text: t('Input_channel_or_private_group_in_message_box')
+					type: 'warning'
+					timer: 4000
+					showCancelButton: true
+					showConfirmButton: false
+				}
+		validation: (message) ->
+			return RocketChat.authz.hasAtLeastOnePermission('delete-message', message.rid ) or RocketChat.settings.get('Message_AllowDeleting') and message.u?._id is Meteor.userId()
+		order: 2

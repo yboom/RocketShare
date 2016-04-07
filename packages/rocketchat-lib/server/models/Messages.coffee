@@ -205,6 +205,16 @@ RocketChat.models.Messages = new class extends RocketChat.models._Base
 
 		return @update query, update
 
+	setRidById: (_id, rid) ->
+		query =
+			_id: _id
+
+		update =
+			$set:
+				rid: rid
+
+		return @update query, update
+
 	updateAllUsernamesByUserId: (userId, username) ->
 		query =
 			'u._id': userId

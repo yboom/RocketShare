@@ -126,6 +126,15 @@ class @ChatMessages
 			if error
 				return Errors.throw error.reason
 
+	moveMsg: (message, targetName) ->
+		Meteor.call 'moveMessage', message, targetName, (error, result) ->
+			if error
+				return Errors.throw error.reason
+			else
+				if result?.t? and result?.name?
+					#reload room
+					RoomManager.close result.t+result.name
+
 	pinMsg: (message) ->
 		message.pinned = true
 		Meteor.call 'pinMessage', message, (error, result) ->
