@@ -133,6 +133,53 @@ Template.message.onCreated ->
 					token.text = token.text.replace(/([^\$])(\$[^\$])/gm, '$1$$$2')
 					message.html = message.html.replace token.token, token.text
 
+			#luwei for table
+			if message.html.indexOf("|") >= 0
+				lines = message.html.split(/[\n\r]/)
+				firstLine = true
+				message.html = "<table>"
+				_.forEach lines, (line) ->
+					if firstLine
+						message.html+="<tr class='first'>"
+					else
+						message.html+="<tr>"
+					rows = line.split('|')
+					_.forEach rows, (row) ->
+						message.html+="<td>"+row+"</td>"
+					message.html+="</tr>"
+					firstLine = false
+				message.html+="</table>"
+			# beginTable = false
+			# beginTr = false
+			# beginTd = false
+			# firstOfLine = true
+			# msg.html = msg.html.replace new RegExp("([\|\\n\\r])", 'g'), (match, seperator) ->
+			# 	console.log seperator
+			# 	r = ''
+			# 	if seperator is '|'
+			# 		if not beginTable
+			# 			r = r+"<table>"
+			# 			beginTable = true
+			# 		if firstOfLine
+			# 			firstOfLine = false
+			# 			r = r+"<tr>"
+			# 			beginRow = true
+			# 		if beginTd
+			# 			r=r+"</td>"
+			# 		r=r+"<td>"
+			# 		beginTd=true
+			# 	if seperator is '\n' or seperator is '\r'
+			# 		firstOfLine = true
+			# 		if beginTd
+			# 			r=r+"</td>"
+			# 			beginTd=false
+			# 		if beginTr
+			# 			r=r+"</tr>"
+			# 			beginTr=false
+			# 	return match.replace seperator, r
+			# if beginTable
+			# 	msg.html+="</table>"
+
 			# console.log JSON.stringify message
 			msg.html = message.html.replace /\n/gm, '<br/>'
 
@@ -154,6 +201,7 @@ Template.message.onCreated ->
 
 			#luwei for marks
 			msg.html = msg.html.replace /^\.\d+\s*/m, ''
+			msg.html = msg.html.replace /^(.*td>)\.\d+\s*/m, '$1'
 
 			return msg.html
 
