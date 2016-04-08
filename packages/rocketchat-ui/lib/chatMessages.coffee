@@ -129,6 +129,7 @@ class @ChatMessages
 	moveMsg: (message, targetName) ->
 		Meteor.call 'moveMessage', message, targetName, (error, result) ->
 			if error
+				toastr.error error.reason
 				return Errors.throw error.reason
 			else
 				if result?.t? and result?.name?
