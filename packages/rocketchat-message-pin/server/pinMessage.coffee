@@ -22,12 +22,13 @@ Meteor.methods
 
 		RocketChat.models.Messages.setPinnedByIdAndUserId message._id, message.pinnedBy, message.pinned
 
-		RocketChat.models.Messages.createWithTypeRoomIdMessageAndUser 'message_pinned', message.rid, '', me,
-			attachments: [
-				"text" : message.msg
-				"author_name" : message.u.username,
-				"author_icon" : getAvatarUrlFromUsername(message.u.username)
-			]
+		#luwei removes becuz it's too noisy
+		# RocketChat.models.Messages.createWithTypeRoomIdMessageAndUser 'message_pinned', message.rid, '', me,
+		# 	attachments: [
+		# 		"text" : message.msg
+		# 		"author_name" : message.u.username,
+		# 		"author_icon" : getAvatarUrlFromUsername(message.u.username)
+		# 	]
 
 	unpinMessage: (message) ->
 		if not Meteor.userId()
