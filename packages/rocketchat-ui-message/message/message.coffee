@@ -137,10 +137,13 @@ Template.message.onCreated ->
 			if message.html.indexOf("|") >= 0
 				lines = message.html.split(/[\n\r]/)
 				firstLine = true
-				message.html = "<table>"
+				message.html = ""
 				_.forEach lines, (line) ->
 					if firstLine
-						message.html+="<tr class='first'>"
+						if line.indexOf('|')<0
+							message.html+=line+"<br/>"
+							return
+						message.html+="<table><tr class='first'>"
 					else
 						message.html+="<tr>"
 					rows = line.split('|')
