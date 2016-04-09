@@ -143,7 +143,7 @@ Template.message.onCreated ->
 						if line.indexOf('|')<0
 							message.html+=line+"<br/>"
 							return
-						message.html+="<table><tr class='first'>"
+						message.html+='<div style="overflow-x:auto;"><table><tr class="first">'
 					else
 						message.html+="<tr>"
 					rows = line.split('|')
@@ -151,7 +151,7 @@ Template.message.onCreated ->
 						message.html+="<td>"+row+"</td>"
 					message.html+="</tr>"
 					firstLine = false
-				message.html+="</table>"
+				message.html+="</table></div>"
 			# beginTable = false
 			# beginTr = false
 			# beginTd = false
