@@ -1399,7 +1399,7 @@ a.github-fork {
 		bottom: 0;
 		left: 0;
 		width: 100%;
-		padding: 10px 15px 0px 15px;
+		padding: 5px 15px 0px 15px;
 		text-align: right;
 		min-height: @footer-min-height;
 		height: @footer-min-height;
@@ -4282,6 +4282,30 @@ a.github-fork {
 			}
 			.main-content, .flex-tab-bar {
 				.transform(translateX(@rooms-box-width));
+			}
+		}
+		//luwei to hide footer on mobile
+		.account-box {
+			.options {
+				.calc(height, ~'100% - ' @header-min-height);
+			}
+		}
+		.flex-nav {
+			footer {
+				height: 0px;
+			}
+			.content {
+				.calc(height,
+				~"100% - " @header-min-height);
+			}
+		}
+		.side-nav {
+			.rooms-list {
+				.calc(height,
+				~"100% - " @header-min-height);
+			}
+			.footer {
+				display:none;
 			}
 		}
 	}
