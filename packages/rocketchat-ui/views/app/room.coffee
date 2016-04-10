@@ -558,14 +558,14 @@ Template.room.onRendered ->
 	if not window.MutationObserver?
 		wrapperUl.addEventListener 'DOMSubtreeModified', ->
 			template.sendToBottomIfNecessaryDebounced()
-			$(".message-link").each (index) ->
-				this.setAttribute "target","new"
+			#$(".message-link").each (index) ->
+			#	this.setAttribute "target","new"
 	else
 		observer = new MutationObserver (mutations) ->
 			mutations.forEach (mutation) ->
 				template.sendToBottomIfNecessaryDebounced()
-				$(".message-link").each (index) ->
-					this.setAttribute "target","new"
+				#$(".message-link").each (index) ->
+				#	this.setAttribute "target","new"
 
 		observer.observe wrapperUl,
 			childList: true
@@ -584,8 +584,8 @@ Template.room.onRendered ->
     		el.dispatchEvent evObj
 		, 1000
 
-	$(".message-link").each (index) ->
-		this.setAttribute "target","new"
+	#$(".message-link").each (index) ->
+	#	this.setAttribute "target","new"
 
 	template.onWindowResize = ->
 		Meteor.defer ->
