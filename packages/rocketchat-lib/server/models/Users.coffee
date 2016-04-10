@@ -44,6 +44,11 @@ RocketChat.models.Users = new class extends RocketChat.models._Base
 
 		return @findOne query, options
 
+	findOneByLoginToken: (token, options) ->
+		query =
+			'services.resume.loginTokens.hashedToken' : Accounts._hashLoginToken(token)
+
+		return @findOne query, options
 
 	# FIND
 	findUsersNotOffline: (options) ->
@@ -301,4 +306,3 @@ RocketChat.models.Users = new class extends RocketChat.models._Base
 			'emails.verified': true
 
 		return @find query, { fields: { name: 1, username: 1, emails: 1, 'settings.preferences.emailNotificationMode': 1 } }
-

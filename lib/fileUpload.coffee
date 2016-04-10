@@ -72,11 +72,14 @@ if UploadFS?
 					uid = cookie.get('rc_uid', rawCookies) if rawCookies?
 					token = cookie.get('rc_token', rawCookies) if rawCookies?
 
+					#luwei for some browser (e.g. BB10) fails to set rc_* cookie
+					meteor_token = cookie.get('meteor_login_token', rawCookies) if rawCookies?
+
 					if not uid?
 						uid = req.query.rc_uid
 						token = req.query.rc_token
 
-					unless uid and token and RocketChat.models.Users.findOneByIdAndLoginToken(uid, token)
+					unless ( uid and token and RocketChat.models.Users.findOneByIdAndLoginToken(uid, token) ) or ( meteor_token and RocketChat.models.Users.findOneByLoginToken(meteor_token) )
 						res.writeHead 403
 						return false
 
