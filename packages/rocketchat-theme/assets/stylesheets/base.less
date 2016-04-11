@@ -1590,7 +1590,7 @@ a.github-fork {
 			top: 60px;
 		}
 		&.bottom-unread-rooms {
-			bottom: 70px;
+			bottom: @footer-min-height;
 		}
 
 		i {
@@ -4303,6 +4303,9 @@ a.github-fork {
 			.rooms-list {
 				.calc(height,
 				~"100% - " @header-min-height);
+			}
+			.bottom-unread-rooms {
+				bottom: 0px;
 			}
 			.footer {
 				display:none;
