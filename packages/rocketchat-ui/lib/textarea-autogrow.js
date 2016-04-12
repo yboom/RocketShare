@@ -59,6 +59,8 @@
 					newHeight = settings.preGrowCallback($self, shadow, newHeight, minHeight);
 				}
 
+				newHeight = Math.min(newHeight, $(window).height() / 2);
+
 				$self.height(newHeight);
 
 				if (settings.postGrowCallback !== null) {
