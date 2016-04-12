@@ -60,16 +60,17 @@ class @ChatMessages
 
 		this.clearEditing()
 		this.input.value = message.msg
-		if not editOwn and editMentioned #luwei for mentions editable
-			this.input.original_value=message.msg
+		if (not editOwn) and (not hasPermission) and editMentioned #luwei for mentions editable
+			this.input.setAttribute("original_value",message.msg)
 			this.input.value='No part can be edited'
 			pattern = ///\{\{(.*)\}\}///m
-			match = this.input.original_value.match(pattern)
+			match = message.msg.match(pattern)
 			console.log match if @debug
 			if (match?)
 				this.input.value = match[1]
 		else
-			delete this.input.original_value
+			this.input.removeAttribute("original_value")
+		console.log this.input if @debug
 		this.editing.element = element
 		this.editing.index = index or this.getEditingIndex(element)
 		this.editing.id = id
@@ -93,7 +94,7 @@ class @ChatMessages
 			this.editing.saved = this.input.value
 
 	send: (rid, input) ->
-		if _.trim(input.value) isnt '' or input.original_value? #luwei partly editing allows empty input
+		if _.trim(input.value) isnt '' or input.hasAttribute("original_value") #luwei partly editing allows empty input
 			readMessage.enable()
 			readMessage.readNow()
 			$('.message.first-unread').removeClass('first-unread')
@@ -149,14 +150,15 @@ class @ChatMessages
 				return Errors.throw error.reason
 
 	update: (id, rid, input) ->
-		if _.trim(input.value) isnt '' or input.original_value? #luwei partly editing allows empty input
+		if _.trim(input.value) isnt '' or input.hasAttribute("original_value") #luwei partly editing allows empty input
 			msg = input.value
-			if input.original_value #luwei for mentions editable
-				msg = input.original_value.replace /\{\{(.*)\}\}/m, '{{'+input.value+'}}'
+			if input.hasAttribute("original_value") #luwei for mentions editable
+				msg = input.getAttribute("original_value").replace /\{\{(.*)\}\}/m, '{{'+input.value+'}}'
 				input.value = msg;
-			Meteor.call 'updateMessage', { _id: id, msg: msg, rid: rid }
-			this.clearEditing()
-			this.stopTyping(rid)
+			if _.trim(msg) isnt ''
+				Meteor.call 'updateMessage', { _id: id, msg: msg, rid: rid }
+				this.clearEditing()
+				this.stopTyping(rid)
 
 	startTyping: (rid, input) ->
 		if _.trim(input.value) isnt ''
