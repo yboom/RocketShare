@@ -142,6 +142,25 @@ OEmbed.getUrlMeta = (url, withFragment) ->
 	}
 
 OEmbed.getUrlMetaWithCache = (url, withFragment) ->
+	root = Meteor.absoluteUrl "" #RocketChat.settings.get 'Site_Url'
+	regex = new RegExp("[?&]id(=([^&#]*)|&|#|$)", "i")
+	results = regex.exec(url)
+	if url.startsWith(root) and results? and results[2]?
+		id = decodeURIComponent(results[2].replace(/\+/g, " "));
+		msg = RocketChat.models.Messages.findOneById id
+		if msg?
+			urlObj = URL.parse url
+			parsedUrl = _.pick urlObj, ['host', 'hash', 'pathname', 'protocol', 'port', 'query', 'search']
+			metas = {}
+			metas['description']=msg.msg
+			metas['title']=msg.u.username+" "+moment(msg.ts).format('LL LT')
+			if msg.attachments?
+				metas['ogImage']=msg.attachments[0].image_url
+			return {
+				meta: metas
+				parsedUrl: parsedUrl
+			}
+
 	cache = RocketChat.models.OEmbedCache.findOneById url
 	if cache?
 		return cache.data

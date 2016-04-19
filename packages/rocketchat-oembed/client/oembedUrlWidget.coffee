@@ -31,8 +31,8 @@ Template.oembedUrlWidget.helpers
 		return decodedOgImage or this.meta.twitterImage
 
 	show: ->
-		root = Meteor.absoluteUrl "" #RocketChat.settings.get 'Site_Url'
-		if this.url.startsWith(root)
-			console.log this if @debug
-			return false
+		#root = Meteor.absoluteUrl "" #RocketChat.settings.get 'Site_Url'
+		#if this.url.startsWith(root)
+		#	console.log this if @debug
+		#	return false
 		return getDescription(this)? or getTitle(this)?
