@@ -38,6 +38,19 @@ class @ChatMessages
 			index++
 		return -1
 
+	clone: (element, index) ->
+		readMessage.enable()
+		readMessage.readNow()
+		id = element.getAttribute("id")
+		message = ChatMessage.findOne { _id: id }
+		KonchatNotification.removeRoomNotification(message.rid)
+		message._id = Random.id()
+		message.ts = new Date(message.ts.getTime()+1)
+		#luwei: if the file is cloned together, when cloned message is deleted the original message loses the file.
+		delete message.file
+		delete message.attachments
+		Meteor.call 'cloneMessage', message
+
 	edit: (element, index) ->
 		id = element.getAttribute("id")
 		message = ChatMessage.findOne { _id: id }

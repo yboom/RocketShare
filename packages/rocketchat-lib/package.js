@@ -82,6 +82,7 @@ Package.onUse(function(api) {
 	api.addFiles('server/methods/saveSetting.coffee', 'server');
 	api.addFiles('server/methods/sendInvitationEmail.coffee', 'server');
 	api.addFiles('server/methods/sendMessage.coffee', 'server');
+	api.addFiles('server/methods/cloneMessage.coffee', 'server');
 	api.addFiles('server/methods/sendSMTPTestEmail.coffee', 'server');
 	api.addFiles('server/methods/setAdminStatus.coffee', 'server');
 	api.addFiles('server/methods/setRealName.coffee', 'server');
@@ -107,6 +108,7 @@ Package.onUse(function(api) {
 
 	// CLIENT METHODS
 	api.addFiles('client/methods/sendMessage.coffee', 'client');
+	api.addFiles('client/methods/cloneMessage.coffee', 'client');
 	api.addFiles('client/AdminBox.coffee', 'client');
 	api.addFiles('client/Notifications.coffee', 'client');
 	api.addFiles('client/TabBar.coffee', 'client');
@@ -125,11 +127,12 @@ Package.onUse(function(api) {
 	api.use('templating', 'client');
 	var _ = Npm.require('underscore');
 	var fs = Npm.require('fs');
-	tapi18nFiles = _.compact(_.map(fs.readdirSync('packages/rocketchat-lib/i18n'), function(filename) {
-		if (fs.statSync('packages/rocketchat-lib/i18n/' + filename).size > 16) {
-			return 'i18n/' + filename;
-		}
-	}));
+	tapi18nFiles = _.compact(_.map(fs.readdirSync('packages/rocketchat-lib/i18n'),
+		function(filename) {
+			if (fs.statSync('packages/rocketchat-lib/i18n/' + filename).size > 16) {
+				return 'i18n/' + filename;
+			}
+		}));
 	api.use('tap:i18n');
 	api.addFiles(tapi18nFiles);
 

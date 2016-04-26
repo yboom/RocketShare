@@ -167,3 +167,15 @@ Meteor.startup ->
 		validation: (message) ->
 			return RocketChat.authz.hasAtLeastOnePermission('delete-message', message.rid ) or RocketChat.settings.get('Message_AllowDeleting') and message.u?._id is Meteor.userId()
 		order: 2
+
+	RocketChat.MessageAction.addButton
+		id: 'clone-message'
+		icon: 'icon-chat-1'
+		i18nLabel: 'Clone'
+		action: (event, instance) ->
+			message = @_arguments[1]
+			msg = $(event.currentTarget).closest('.message')[0]
+			$("\##{msg.id} .message-dropdown").hide()
+			return if msg.classList.contains("system")
+			chatMessages[Session.get('openedRoom')].clone(msg)
+		order: 2
