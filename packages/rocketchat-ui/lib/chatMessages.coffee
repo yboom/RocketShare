@@ -150,6 +150,13 @@ class @ChatMessages
 					#reload room
 					RoomManager.close result.t+result.name
 
+	copyMsg: (message) ->
+		this.clearEditing()
+		this.input.value = message.msg
+		setTimeout =>
+			this.input.focus()
+		, 5
+
 	pinMsg: (message) ->
 		message.pinned = true
 		Meteor.call 'pinMessage', message, (error, result) ->

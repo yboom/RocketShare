@@ -88,6 +88,18 @@ Meteor.startup ->
 		order: 1
 
 	RocketChat.MessageAction.addButton
+		id: 'copy-message'
+		icon: 'icon-paste'
+		i18nLabel: 'Copy'
+		action: (event, instance) ->
+			message = @_arguments[1]
+			msg = $(event.currentTarget).closest('.message')[0]
+			$("\##{msg.id} .message-dropdown").hide()
+			return if msg.classList.contains("system")
+			chatMessages[Session.get('openedRoom')].copyMsg(message)
+		order: 1
+
+	RocketChat.MessageAction.addButton
 		id: 'delete-message'
 		icon: 'icon-trash-1'
 		i18nLabel: 'Delete'
@@ -121,7 +133,6 @@ Meteor.startup ->
 			return RocketChat.authz.hasAtLeastOnePermission('delete-message', message.rid ) or RocketChat.settings.get('Message_AllowDeleting') and message.u?._id is Meteor.userId()
 		order: 2
 
-  #luwei TODO: add message buttons
 	RocketChat.MessageAction.addButton
 		id: 'move-message'
 		icon: 'icon-forward'

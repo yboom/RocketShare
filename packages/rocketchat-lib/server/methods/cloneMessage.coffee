@@ -61,7 +61,7 @@ Meteor.methods
 
 		return message
 
-# Limit a user to copying 5 msgs/second
+# Limit a user to cloning 5 msgs/second
 DDPRateLimiter.addRule
 	type: 'method'
 	name: 'cloneMessage'
