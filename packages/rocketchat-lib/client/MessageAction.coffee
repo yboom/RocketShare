@@ -88,6 +88,19 @@ Meteor.startup ->
 		order: 1
 
 	RocketChat.MessageAction.addButton
+		id: 'reply-message'
+		icon: 'icon-reply'
+		i18nLabel: 'Reply'
+		action: (event, instance) ->
+			message = @_arguments[1]
+			msg = $(event.currentTarget).closest('.message')[0]
+			$("\##{msg.id} .message-dropdown").hide()
+			return if msg.classList.contains("system")
+			url = $("\##{msg.id} .message-link").prop("href");
+			chatMessages[Session.get('openedRoom')].replyMsg(message,url)
+		order: 1
+
+	RocketChat.MessageAction.addButton
 		id: 'copy-message'
 		icon: 'icon-paste'
 		i18nLabel: 'Copy'
@@ -135,7 +148,7 @@ Meteor.startup ->
 
 	RocketChat.MessageAction.addButton
 		id: 'move-message'
-		icon: 'icon-forward'
+		icon: 'icon-export'
 		i18nLabel: 'Move'
 		action: (event, instance) ->
 			message = @_arguments[1]

@@ -150,6 +150,17 @@ class @ChatMessages
 					#reload room
 					RoomManager.close result.t+result.name
 
+	replyMsg: (message,url) ->
+		this.clearEditing()
+		this.input.value = "@"+message.u.username+" : \n> "+url
+		pattern = ///^\.(\d+)///m
+		markNum = message.msg.match(pattern)?[1]
+		if markNum?
+			this.input.value = "."+markNum+" "+this.input.value
+		setTimeout =>
+			this.input.focus()
+		, 5
+
 	copyMsg: (message) ->
 		this.clearEditing()
 		this.input.value = message.msg
