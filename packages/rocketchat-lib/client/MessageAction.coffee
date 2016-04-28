@@ -200,6 +200,7 @@ Meteor.startup ->
 			message = @_arguments[1]
 			msg = $(event.currentTarget).closest('.message')[0]
 			$("\##{msg.id} .message-dropdown").hide()
+			msg2 = $(msg).next('.message')[0]
 			return if msg.classList.contains("system")
-			chatMessages[Session.get('openedRoom')].clone(msg)
+			chatMessages[Session.get('openedRoom')].clone(msg,msg2)
 		order: 2
