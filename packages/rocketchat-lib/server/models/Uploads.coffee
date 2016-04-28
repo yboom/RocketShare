@@ -14,3 +14,11 @@ RocketChat.models.Uploads = new class extends RocketChat.models._Base
 				rid: rid
 
 		return @update query, update
+
+	removeByRoomId: (roomId) ->
+		query =
+			rid: roomId
+		cursor = @find query, {}
+		cursor.forEach (upload) ->
+			Meteor.fileStore.delete upload._id
+		return @remove query
