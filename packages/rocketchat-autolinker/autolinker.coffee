@@ -19,6 +19,9 @@ class AutoLinker
 							twitter: false
 							replaceFn: (autolinker, match) ->
 								if match.getType() is 'url'
+									root = Meteor.absoluteUrl "" #RocketChat.settings.get 'Site_Url'
+									if match.getUrl().startsWith(root)
+										return '<a href="'+match.getUrl()+'" target="new"><i class="icon-link"></i></a>'
 									return /(:\/\/|www\.).+/.test match.matchedText
 								return true
 
