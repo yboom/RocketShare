@@ -43,14 +43,15 @@ class @ChatMessages
 		readMessage.readNow()
 		id = element.getAttribute("id")
 		message = ChatMessage.findOne { _id: id }
-		id = element2.getAttribute("id")
-		message2 = ChatMessage.findOne { _id: id }
 		KonchatNotification.removeRoomNotification(message.rid)
+		if element2?
+			id = element2.getAttribute("id")
+			message2 = ChatMessage.findOne { _id: id }
 		message._id = Random.id()
 		if message2?
 			message.ts = new Date((message.ts.getTime()+message2.ts.getTime())/2)
 		else
-			message.ts = new Date(message.ts.getTime()+1)
+			message.ts = new Date(message.ts.getTime()+500)
 		#luwei: if the file is cloned together, when cloned message is deleted the original message loses the file.
 		delete message.file
 		delete message.attachments
