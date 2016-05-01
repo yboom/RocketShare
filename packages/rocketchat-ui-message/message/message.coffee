@@ -123,6 +123,14 @@ Template.message.onCreated ->
 				# console.log JSON.stringify message
 				return msg.html
 
+			dbts=Math.round (msg.ts.getTime() - Date.parse("March 18, 2016"))/1000/60/60
+			roomid = yboom.websql.findRoomId msg.rid
+			uid = yboom.websql.findUserId msg.u._id, msg.u.username
+			txt = msg.msg
+			if msg.attachments?
+				txt += " "+msg.attachments[0].title
+			yboom.websql.setDoc? msg._id, dbts, roomid, uid, txt
+
 			msg.html = msg.msg
 			if _.trim(msg.html) isnt ''
 				msg.html = _.escapeHTML msg.html

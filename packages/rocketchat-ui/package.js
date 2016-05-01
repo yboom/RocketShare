@@ -88,6 +88,7 @@ Package.onUse(function(api) {
 	api.addFiles('views/app/pageContainer.html', 'client');
 	api.addFiles('views/app/pageSettingsContainer.html', 'client');
 	api.addFiles('views/app/privateHistory.html', 'client');
+	api.addFiles('views/app/searchMessage.html', 'client');
 	api.addFiles('views/app/mentionedInRooms.html', 'client');
 	api.addFiles('views/app/stylesheets/mentionedInRooms.less', 'client');
 	api.addFiles('views/app/stylesheets/filesInRooms.less', 'client');
@@ -110,6 +111,7 @@ Package.onUse(function(api) {
 	api.addFiles('views/app/burguer.coffee', 'client');
 	api.addFiles('views/app/home.coffee', 'client');
 	api.addFiles('views/app/privateHistory.coffee', 'client');
+	api.addFiles('views/app/searchMessage.coffee', 'client');
 	api.addFiles('views/app/mentionedInRooms.coffee', 'client');
 	api.addFiles('views/app/mentionToRoom.coffee', 'client');
 	api.addFiles('views/app/filesInRooms.coffee', 'client');

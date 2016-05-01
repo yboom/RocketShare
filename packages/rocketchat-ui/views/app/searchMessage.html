@@ -1,0 +1,31 @@
+<template name="searchMessage">
+	<section class="page-container page-list">
+		<header class="fixed-title">
+			{{> burger}}
+			<h2>
+				<span class="room-title">{{_ "Search"}} {{_ "Read_Message"}}</span>
+			</h2>
+		</header>
+		<div class="content">
+			<form class="search-form" role="form">
+				<div class="input-line search">
+					<input type="text" id="search-term" placeholder="{{_ "Search"}}" dir="auto">
+					<i class="icon-search"></i>
+				</div>
+			</form>
+			<div class="results">
+				{{{_ "Showing_results" result.length}}}
+			</div>
+			<div class="list">
+				{{#each result.items}}
+					<a href="{{path}}" target="new">
+						<div class="info">
+							<h3>{{u.username}} <i class="{{type}}"></i><span class="enter-room">{{name}}</span></h3>
+							<p>{{msg}}</p>
+						</div>
+					</a>
+				{{/each}}
+			</div>
+		</div>
+	</section>
+</template>

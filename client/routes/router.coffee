@@ -75,6 +75,17 @@ FlowRouter.route '/history/private',
 		RocketChat.TabBar.showGroup 'private-history'
 		BlazeLayout.render 'main', {center: 'privateHistory'}
 
+FlowRouter.route '/search-message',
+	name: 'searchMessage'
+
+	subscriptions: (params, queryParams) ->
+		@register 'searchMessage', Meteor.subscribe('searchMessage')
+
+	action: ->
+		Session.setDefault('searchMessageFilter', '')
+		RocketChat.TabBar.showGroup 'search-message'
+		BlazeLayout.render 'main', {center: 'searchMessage'}
+
 FlowRouter.route '/mentioned-in',
 	name: 'mentionedInRooms'
 

@@ -512,6 +512,9 @@ Template.room.onCreated ->
 			delete record._id
 			RoomModeratorsAndOwners.upsert { rid: record.rid, "u._id": record.u._id }, record
 
+	roomData = Session.get('roomData' + this.data._id)
+	yboom.websql.updateRoom roomData._id,roomData.name,roomData.t
+
 Template.room.onDestroyed ->
 	window.removeEventListener 'resize', this.onWindowResize
 

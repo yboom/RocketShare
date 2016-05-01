@@ -20,6 +20,9 @@ Template.sideNav.helpers
 	canShowRoomType: ->
 		return RocketChat.roomTypes.checkCondition(@)
 
+	canShowSearch: ->
+		return yboom.websql.searchMessage?
+
 	templateName: ->
 		return @template
 
