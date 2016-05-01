@@ -12,6 +12,9 @@ Template.searchMessage.helpers
 				length: 0
 			}
 
+	totalNum: ->
+		return Template.instance().messageTotalNum.get()
+
 	type: ->
 		switch this.t
 			when 'd' then 'icon-at'
@@ -63,12 +66,17 @@ Template.searchMessage.onCreated ->
 	@limit = new ReactiveVar 20
 	@ready = new ReactiveVar true
 
+	@messageTotalNum = new ReactiveVar 0
+	Tracker.nonreactive =>
+		yboom.websql.getMessageTotalNum? (result) =>
+			@messageTotalNum.set result
+
 	@search = =>
 		@ready.set false
 		value = @$('#search-term').val()
 		Tracker.nonreactive =>
 			yboom.websql.searchMessage value, @limit.get(), (error, result) =>
-				console.log result
+				#console.log result
 				@currentSearchTerm.set value
 				@ready.set true
 				if result? and (result.length > 0)

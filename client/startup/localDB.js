@@ -181,7 +181,7 @@ yboom.websql.init = function() {
 								rid: room._id,
 								t: room.t,
 								name: room.n,
-								msg: row["txt"]
+								msg: row["txt"].replace(/\n/gm, '<br/>')
 							});
 						}
 						callback(null, items);
@@ -189,6 +189,28 @@ yboom.websql.init = function() {
 					function(tx, e) {
 						console.error(" DB error: " + e.message + "(" + e.code + ")");
 						callback(e, []);
+					});
+			});
+		}
+	}
+
+	yboom.websql.getMessageTotalNum = function(callback) {
+		var db = yboom.websql.db; //yboom.websql.open();
+		if (db) {
+			db.transaction(function(tx) {
+				tx.executeSql(
+					"SELECT COUNT(*) as count FROM document", [],
+					function(tx, results) {
+						//console.log("replaced " + _id + "," + roomid);
+						if (results.rows.length > 0) {
+							callback(results.rows.item(0)["count"]);
+						} else {
+							callback(0);
+						}
+					},
+					function(tx, e) {
+						console.error(" DB error: " + e.message + "(" + e.code + ")");
+						callback(0);
 					});
 			});
 		}

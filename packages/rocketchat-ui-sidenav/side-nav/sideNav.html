@@ -11,6 +11,12 @@
 				<div class="wrapper">
 					{{ > unreadRooms }}
 
+					{{#if canShowSearch}}
+					<h3 class="history-div">
+						<a href="{{pathFor 'searchMessage'}}"><i class="icon-search"></i>{{_ "Search"}}</a>
+					</h3>
+					{{/if}}
+					
 					<h3 class="history-div">
 						<a href="{{pathFor 'mentionedInRooms'}}"><i class="icon-at"></i>{{_ "Mentioned"}}</a>
 					</h3>
@@ -28,12 +34,6 @@
 					<h3 class="history-div">
 						<a href="{{pathFor 'privateHistory'}}"><i class="icon-history"></i>{{_ "History"}}</a>
 					</h3>
-
-					{{#if canShowSearch}}
-					<h3 class="history-div">
-						<a href="{{pathFor 'searchMessage'}}"><i class="icon-search"></i>{{_ "Search"}}</a>
-					</h3>
-					{{/if}}
 				</div>
 			</div>
 			<div class="unread-rooms bottom-unread-rooms hidden">
