@@ -47,17 +47,21 @@ yboom.websql.findRoomId = function(_id) {
 	return yboom.websql.rooms.length - 1;
 }
 yboom.websql.updateRoom = function(_id, name, type) {
+	var found = false;
 	for (i = 0; i < yboom.websql.rooms.length; i++) {
 		if (yboom.websql.rooms[i]._id == _id) {
 			yboom.websql.rooms[i].n = name;
 			yboom.websql.rooms[i].t = type;
+			found = true;
 		}
 	}
-	yboom.websql.rooms.push({
-		_id: _id,
-		n: name,
-		t: type
-	});
+	if (!found) {
+		yboom.websql.rooms.push({
+			_id: _id,
+			n: name,
+			t: type
+		});
+	}
 	localStorage.setItem("yboom.rooms", JSON.stringify(yboom.websql.rooms));
 }
 
@@ -84,15 +88,19 @@ yboom.websql.findUserId = function(_id, name) {
 	return yboom.websql.users.length - 1;
 }
 yboom.websql.updateUser = function(_id, name) {
+	var found = false;
 	for (i = 0; i < yboom.websql.users.length; i++) {
 		if (yboom.websql.users[i]._id == _id) {
 			yboom.websql.users[i].n = name;
+			found = true;
 		}
 	}
-	yboom.websql.users.push({
-		_id: _id,
-		n: name
-	});
+	if (!found) {
+		yboom.websql.users.push({
+			_id: _id,
+			n: name
+		});
+	}
 	localStorage.setItem("yboom.users", JSON.stringify(yboom.websql.users));
 }
 

@@ -513,6 +513,9 @@ Template.room.onCreated ->
 			RoomModeratorsAndOwners.upsert { rid: record.rid, "u._id": record.u._id }, record
 
 	roomData = Session.get('roomData' + this.data._id)
+	if !roomData.name?
+		subscription = ChatSubscription.findOne {rid:this.data._id}
+		roomData.name= subscription?.name
 	yboom.websql.updateRoom roomData._id,roomData.name,roomData.t
 
 Template.room.onDestroyed ->
