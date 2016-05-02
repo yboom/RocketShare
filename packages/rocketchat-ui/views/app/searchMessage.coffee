@@ -32,6 +32,10 @@ Template.searchMessage.helpers
 				url = url +  FlowRouter.path 'direct', { username: this.name }
 		url = url + "?id="+this._id
 
+	datetime: ->
+		d = new Date( parseInt(this.ts)*60*1000 + yboom.websql.startTime)
+		return moment(d).format('LL LT')
+
 Template.searchMessage.events
 	'keydown #search-term': (event) ->
 		if event.which is 13

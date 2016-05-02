@@ -187,6 +187,7 @@ yboom.websql.init = function() {
 									_id: u._id,
 									username: u.n
 								},
+								ts: row["ts"],
 								rid: room._id,
 								t: room.t,
 								name: room.n,
