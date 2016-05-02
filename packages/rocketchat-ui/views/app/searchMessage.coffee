@@ -81,7 +81,8 @@ Template.searchMessage.onCreated ->
 				@ready.set true
 				if result? and (result.length > 0)
 					@searchResult.set result
-					if result.messages?.length + result.users?.length + result.channels?.length < @limit.get()
-						@hasMore.set false
+					#luwei TODO: paging
+					#if result.messages?.length + result.users?.length + result.channels?.length < @limit.get()
+					#	@hasMore.set false
 				else
 					@searchResult.set()

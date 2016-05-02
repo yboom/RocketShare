@@ -163,7 +163,7 @@ yboom.websql.init = function() {
 			db.transaction(function(tx) {
 				tx.executeSql(
 					"SELECT * FROM document WHERE txt LIKE ? ORDER BY ts DESC", [
-						'%' + keyword + '%'
+						'%' + keyword.trim().replace(/\s+/gm, '%') + '%'
 					],
 					function(tx, results) {
 						//console.log("replaced " + _id + "," + roomid);
