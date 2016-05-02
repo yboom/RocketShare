@@ -123,7 +123,8 @@ Template.message.onCreated ->
 				# console.log JSON.stringify message
 				return msg.html
 
-			dbts=Math.round (msg.ts.getTime() - Date.parse("March 18, 2016"))/1000/60/60
+			dbts= msg.editedAt ? msg.ts
+			dbts=Math.round (dbts.getTime() - yboom.websql.startTime)/1000/60
 			roomid = yboom.websql.findRoomId msg.rid
 			uid = yboom.websql.findUserId msg.u._id, msg.u.username
 			txt = msg.msg

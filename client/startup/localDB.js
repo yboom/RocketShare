@@ -98,6 +98,7 @@ yboom.websql.updateUser = function(_id, name) {
 
 yboom.websql.db = null;
 yboom.websql.user = null;
+yboom.websql.startTime = Date.parse("March 18, 2016");
 //yboom.websql.insertNum=0;
 yboom.websql.onSuccess = function(tx, rs) {
 	console.log("操作成功");
