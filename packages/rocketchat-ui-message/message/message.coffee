@@ -126,6 +126,10 @@ Template.message.onCreated ->
 			dbts= msg.editedAt ? msg.ts
 			dbts=Math.round (dbts.getTime() - yboom.websql.startTime)/1000/60
 			roomid = yboom.websql.findRoomId msg.rid
+			if !(yboom.websql.rooms[roomid].n?)
+				subscription = ChatSubscription.findOne {rid:msg.rid} # can't use ChatRoom.findOne when no room ever opened
+				if subscription?
+					yboom.websql.updateRoom msg.rid,subscription.name,subscription.t
 			uid = yboom.websql.findUserId msg.u._id, msg.u.username
 			txt = msg.msg
 			if msg.attachments?
