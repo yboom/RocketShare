@@ -147,7 +147,7 @@ Template.message.onCreated ->
 					message.html = message.html.replace token.token, token.text
 
 			#luwei for table
-			if message.html.indexOf("|") >= 0
+			if message.html.split("|").length > 2 #message.html.indexOf("|") >= 0
 				lines = message.html.split(/[\n\r]/)
 				firstLine = true
 				message.html = ""
@@ -165,6 +165,25 @@ Template.message.onCreated ->
 					message.html+="</tr>"
 					firstLine = false
 				message.html+="</table></div>"
+			else
+				if message.html.split("\t").length > 2
+					lines = message.html.split(/[\n\r]/)
+					firstLine = true
+					message.html = ""
+					_.forEach lines, (line) ->
+						if firstLine
+							if line.indexOf('\t')<0
+								message.html+=line+"<br/>"
+								return
+							message.html+='<div style="overflow-x:auto;"><table><tr class="first">'
+						else
+							message.html+="<tr>"
+						rows = line.split('\t')
+						_.forEach rows, (row) ->
+							message.html+="<td>"+row+"</td>"
+						message.html+="</tr>"
+						firstLine = false
+					message.html+="</table></div>"
 			# beginTable = false
 			# beginTr = false
 			# beginTd = false
