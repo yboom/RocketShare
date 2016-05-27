@@ -1,6 +1,6 @@
 <template name="starredRooms">
 	{{#if total}}
-		<h3 class="{{isActive}}"><i class="icon-star"></i>{{_ "Favorites"}}</h3>
+		<h3 class="display-tree {{isActive}}">{{_ "Favorites"}} <i class="icon-sitemap"></i></h3>
 		<ul>
 			{{#each rooms}}
 				{{> chatRoomItem }}

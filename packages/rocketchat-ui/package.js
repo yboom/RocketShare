@@ -60,6 +60,7 @@ Package.onUse(function(api) {
 	api.addFiles('lib/tapi18n.coffee', 'client');
 	api.addFiles('lib/textarea-autogrow.js', 'client');
 	api.addFiles('lib/updateModeratorsAndOwners.js', 'client');
+	api.addFiles('lib/displayTree.js', 'client');
 
 	// LIB CORDOVA
 	api.addFiles('lib/cordova/facebook-login.coffee', 'client');

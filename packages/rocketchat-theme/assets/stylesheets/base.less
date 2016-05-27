@@ -1,3 +1,31 @@
+body>svg{
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 99999;
+	background-color:rgba(255,255,255,0.75);
+}
+.node {
+	cursor: pointer;
+}
+
+.node circle {
+	fill: #fff;
+	stroke: steelblue;
+	stroke-width: 3px;
+}
+
+.node text {
+	font: 12px sans-serif;
+}
+
+.link {
+	fill: none;
+	stroke: gray;
+	stroke-width: 1px;
+}
+
 .clearfix {
 	clear: both;
 	&::after {
@@ -1452,7 +1480,7 @@ a.github-fork {
 		}
 		&:hover {
 		}
-		&.add-room {
+		&.add-room,&.display-tree {
 			i {
 				position: absolute;
 				right: 6px;
