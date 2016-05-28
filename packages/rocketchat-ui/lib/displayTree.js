@@ -16,6 +16,7 @@ window.displayTree = function(treeData, treeDepth, treeWidth) {
     height = treeWidth * 680 / 30;
   }
   wstep = width / treeDepth;
+  wstep1 = wstep * 0.5;
 
   var i = 0,
     duration = 300,
@@ -55,7 +56,12 @@ window.displayTree = function(treeData, treeDepth, treeWidth) {
 
     // Normalize for fixed-depth.
     nodes.forEach(function(d) {
-      d.y = d.depth * wstep;
+      if (d.depth < 2) {
+        d.y = d.depth * wstep1
+      } else {
+        d.y = d.depth * (width - wstep1) / (treeDepth - 1) + wstep1 - (
+          width - wstep1) / (treeDepth - 1);
+      }
     });
 
     // Update the nodes…
@@ -188,7 +194,11 @@ window.displayTree = function(treeData, treeDepth, treeWidth) {
       }, 500);
     }
     if (d.url) {
-      window.location.href = d.url;
+      if (d.children || d._children) {
+        if (confirm("Open " + d.url))
+          window.location.href = d.url;
+      } else
+        window.location.href = d.url;
     }
   }
 
@@ -201,7 +211,7 @@ window.breakNameToNodes = function(data) {
   var depth = 0;
   var lastdirs = [],
     lastnodes = [];
-  console.log(data);
+  //console.log(data);
   for (i = 0; i < data.length; i++) {
     var dirs = data[i].name.split("-");
     if (dirs.length > depth)
