@@ -15,7 +15,7 @@ Template.starredRooms.helpers
 Template.starredRooms.events
 	'click .display-tree': (e, instance) ->
 		treeData = [{
-			"name": "Exit",
+			"name": t("Close"),
 			"parent": null,
 			"children": []}]
 
@@ -30,7 +30,8 @@ Template.starredRooms.events
 		cursor.forEach (sub) ->
 			console.log sub
 			favorites.push {"name":sub.name, "url":RocketChat.roomTypes.getRouteLink(sub.t,sub)}
-		treeData[0].children.push {"name":t('Favorites'),"children":breakNameToNodes(favorites)}
+		favorites=breakNameToNodes(favorites)
+		treeData[0].children.push {"name":t('Favorites'),"children":favorites.nodes}
 
 		privateGroups = []
 		query = { t: { $in: ['p']}, f: { $ne: true }, archived: { $ne: true } }
@@ -38,7 +39,8 @@ Template.starredRooms.events
 		cursor.forEach (sub) ->
 			console.log sub
 			privateGroups.push {"name":sub.name, "url":RocketChat.roomTypes.getRouteLink(sub.t,sub)}
-		treeData[0].children.push {"name":t('Private_Groups'),"children":breakNameToNodes(privateGroups)}
+		privateGroups=breakNameToNodes(privateGroups)
+		treeData[0].children.push {"name":t('Private_Groups'),"children":privateGroups.nodes}
 		#console.log treeData
 
 		channels=[]
@@ -57,11 +59,12 @@ Template.starredRooms.events
 		cursor.forEach (sub) ->
 			console.log sub
 			channels.push {"name":sub.name, "url":RocketChat.roomTypes.getRouteLink(sub.t,sub)}
-		treeData[0].children.push {"name":t('Channels'),"children":breakNameToNodes(channels)}
+		channels=breakNameToNodes(channels)
+		treeData[0].children.push {"name":t('Channels'),"children":channels.nodes}
 
 		#list all channels
 		#Meteor.call 'channelsList', '', 1000, (err, result) =>
 		#	if result
 		#		console.log result
 
-		displayTree(treeData)
+		displayTree(treeData, Math.max(favorites.depth, privateGroups.depth, channels.depth)+2, favorites.nodes.length+privateGroups.nodes.length+channels.nodes.length)

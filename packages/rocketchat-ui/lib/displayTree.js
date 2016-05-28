@@ -1,10 +1,10 @@
 // ************** Generate the tree diagram	 *****************
-window.displayTree = function(treeData) {
+window.displayTree = function(treeData, treeDepth, treeWidth) {
   var margin = {
     top: 20,
-    right: 120,
+    right: 20,
     bottom: 20,
-    left: 120
+    left: 60
   };
   var width = window.innerWidth || document.documentElement.clientWidth ||
     document.body.clientWidth;
@@ -12,6 +12,10 @@ window.displayTree = function(treeData) {
     document.body.clientHeight;
   width = width - margin.right - margin.left;
   height = height - margin.top - margin.bottom;
+  if (treeWidth) {
+    height = treeWidth * 680 / 30;
+  }
+  wstep = width / treeDepth;
 
   var i = 0,
     duration = 300,
@@ -26,9 +30,10 @@ window.displayTree = function(treeData) {
     });
   var id = (new Date()).getTime();
 
-  var svg = d3.select("body").append("svg")
+  var svg = d3.select("body").append("div")
     .attr("id", id)
-    .attr("data-tooltip", "click to exit")
+    .attr("class", "treecontainer")
+    .append("svg")
     .attr("width", width + margin.right + margin.left)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
@@ -50,7 +55,7 @@ window.displayTree = function(treeData) {
 
     // Normalize for fixed-depth.
     nodes.forEach(function(d) {
-      d.y = d.depth * 180;
+      d.y = d.depth * wstep;
     });
 
     // Update the nodes…
@@ -168,7 +173,6 @@ window.displayTree = function(treeData) {
 
   // Toggle children on click.
   function click(d) {
-    console.log(d);
     if (d.children) {
       d._children = d.children;
       d.children = null;
@@ -183,6 +187,9 @@ window.displayTree = function(treeData) {
         svg.parentNode.removeChild(svg);
       }, 500);
     }
+    if (d.url) {
+      window.location.href = d.url;
+    }
   }
 
   return id;
@@ -191,11 +198,14 @@ window.displayTree = function(treeData) {
 
 window.breakNameToNodes = function(data) {
   var ret = [];
+  var depth = 0;
   var lastdirs = [],
     lastnodes = [];
   console.log(data);
   for (i = 0; i < data.length; i++) {
     var dirs = data[i].name.split("-");
+    if (dirs.length > depth)
+      depth = dirs.length;
     var j = 0;
     for (; j < Math.min(lastdirs.length, dirs.length); j++) {
       if (dirs[j] != lastdirs[j])
@@ -227,5 +237,8 @@ window.breakNameToNodes = function(data) {
     }
     lastdirs = dirs;
   }
-  return ret;
+  return {
+    "nodes": ret,
+    "depth": depth
+  };
 }
