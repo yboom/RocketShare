@@ -26,6 +26,13 @@ Template.sideNav.helpers
 	templateName: ->
 		return @template
 
+	mentionedNum: ->
+		today = new Date()
+		yesterday = new Date(today)
+		yesterday.setDate(today.getDate() - 1)
+		num = MentionsInRooms.find({"ts" : {"$gte": yesterday}},{ sort: { ts: -1 } }).count()
+		return num;
+
 Template.sideNav.events
 	'click .close-flex': ->
 		SideNav.closeFlex()

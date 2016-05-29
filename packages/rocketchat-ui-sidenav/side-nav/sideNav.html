@@ -16,13 +16,17 @@
 						<a href="{{pathFor 'searchMessage'}}"><i class="icon-search"></i>{{_ "Search"}}</a>
 					</h3>
 					{{/if}}
-					
+
 					<h3 class="history-div">
-						<a href="{{pathFor 'mentionedInRooms'}}"><i class="icon-at"></i>{{_ "Mentioned"}}</a>
+						<a href="{{pathFor 'mentionedInRooms'}}"><i class="icon-at"></i>{{_ "Mentioned"}}
+							{{#if mentionedNum}}
+								<span class="unread">{{mentionedNum}}</span>
+							{{/if}}
+						</a>
 					</h3>
 
 					<h3 class="history-div">
-						<a href="{{pathFor 'filesInRooms'}}"><i class="icon-docs"></i>{{_ "Files"}}</a>
+						<a href="{{pathFor 'filesInRooms'}}"><i class="icon-docs"></i>{{_ "My_Files"}}</a>
 					</h3>
 
 					{{#each roomType}}
