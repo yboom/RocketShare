@@ -247,8 +247,15 @@ window.breakNameToNodes = function(data) {
     }
     lastdirs = dirs;
   }
+  var w = 0;
+  for (i = 0; i < ret.length; i++) {
+    if (ret[i].children) {
+      w += ret[i].children.length;
+    }
+  }
   return {
     "nodes": ret,
-    "depth": depth
+    "depth": depth,
+    "width": Math.max(ret.length, w)
   };
 }

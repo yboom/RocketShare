@@ -67,4 +67,4 @@ Template.starredRooms.events
 		#	if result
 		#		console.log result
 
-		displayTree(treeData, Math.max(favorites.depth, privateGroups.depth, channels.depth)+2, favorites.nodes.length+privateGroups.nodes.length+channels.nodes.length)
+		displayTree(treeData, Math.max(favorites.depth, privateGroups.depth, channels.depth)+2, favorites.width+privateGroups.width+channels.width)
