@@ -34,7 +34,8 @@ Template.starredRooms.events
 		treeData[0].children.push {"name":t('Favorites'),"children":favorites.nodes}
 
 		privateGroups = []
-		query = { t: { $in: ['p']}, f: { $ne: true }, archived: { $ne: true } }
+		#query = { t: { $in: ['p']}, f: { $ne: true }, archived: { $ne: true } }
+		query = { t: { $in: ['p']}, archived: { $ne: true } }
 		cursor = ChatSubscription.find query, { sort: 't': 1, 'name': 1 }
 		cursor.forEach (sub) ->
 			#console.log sub
@@ -48,8 +49,8 @@ Template.starredRooms.events
 			t: { $in: ['c']},
 			open: true
 
-		if !RocketChat.settings.get 'Disable_Favorite_Rooms'
-			query.f = { $ne: true }
+		#if !RocketChat.settings.get 'Disable_Favorite_Rooms'
+		#	query.f = { $ne: true }
 
 		if Meteor.user()?.settings?.preferences?.unreadRoomsMode
 			query.alert =
