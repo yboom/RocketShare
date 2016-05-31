@@ -218,7 +218,7 @@ window.breakNameToNodes = function(data) {
       depth = dirs.length;
     var j = 0;
     for (; j < Math.min(lastdirs.length, dirs.length); j++) {
-      if (dirs[j] != lastdirs[j])
+      if (dirs[j].toUpperCase() != lastdirs[j].toUpperCase())
         break;
     }
     var n = lastnodes.length;
