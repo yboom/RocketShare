@@ -39,6 +39,23 @@ window.displayTree = function(treeData, treeDepth, treeWidth) {
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  var input = document.createElement("input");
+  document.getElementById(id).appendChild(input);
+  input.setAttribute("id", "input" + id);
+  input.setAttribute("class", "treesearch");
+  input.setAttribute("placeholder", "Search");
+  var searchValue = "";
+  var searchTimer = setInterval(function() {
+    if (input.value != searchValue) {
+      searchValue = input.value;
+      svg.selectAll('text').style("fill", function(d) {
+        return searchValue.length > 0 && d.name.toUpperCase().indexOf(
+            searchValue.toUpperCase()) >=
+          0 ?
+          "red" : "black";
+      });
+    }
+  }, 1000);
 
   root = treeData[0];
   root.x0 = height / 2;
@@ -97,6 +114,11 @@ window.displayTree = function(treeData, treeDepth, treeWidth) {
       })
       .text(function(d) {
         return d.name;
+      })
+      .style("fill", function(d) {
+        return searchValue.length > 0 && d.name.toUpperCase().indexOf(
+            searchValue.toUpperCase()) >= 0 ?
+          "red" : "black";
       })
       .style("fill-opacity", 1e-6);
 
@@ -188,6 +210,7 @@ window.displayTree = function(treeData, treeDepth, treeWidth) {
     }
     update(d);
     if (d.parent === null) {
+      clearInterval(searchTimer);
       setTimeout(function() {
         var svg = document.getElementById(id);
         svg.parentNode.removeChild(svg);
