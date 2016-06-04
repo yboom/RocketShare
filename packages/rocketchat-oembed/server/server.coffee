@@ -152,7 +152,10 @@ OEmbed.getUrlMetaWithCache = (url, withFragment) ->
 			urlObj = URL.parse url
 			parsedUrl = _.pick urlObj, ['host', 'hash', 'pathname', 'protocol', 'port', 'query', 'search']
 			metas = {}
-			metas['description']=msg.msg
+			msg.html = msg.msg
+			if _.trim(msg.html) isnt ''
+				msg.html = _.escapeHTML msg.html
+				metas['description']=RocketChat.RichMessageFormat msg.html
 			metas['title']=msg.u.username+" "+moment(msg.ts).format('LL LT')
 			if msg.attachments?
 				metas['ogImage']=msg.attachments[0].image_url

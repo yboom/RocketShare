@@ -91,6 +91,7 @@ rocketchat:ui-sidenav
 rocketchat:version
 rocketchat:webrtc
 rocketchat:wordpress
+rocketchat:richmessageformat
 #rocketchat:chatops
 #rocketchat:hubot
 #rocketchat:irc
