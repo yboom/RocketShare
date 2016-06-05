@@ -188,9 +188,38 @@ class RichMessageFormat
 		#luwei for mentions editable
 		message.html = message.html.replace /\{\{(.*)\}\}/m, '$1'
 
-		#luwei for checkbox. TODO: click to edit
-		message.html = message.html.replace /\[\]/gm, '<input type="checkbox" disabled="disabled"/>'
-		message.html = message.html.replace /\[[xX]\]/gm, '<input type="checkbox" checked="checked" disabled="disabled"/>'
+		#luwei for checkbox.
+		canEdit = false
+		if message.rid?
+			if Meteor.isClient
+				hasPermission = RocketChat.authz.hasAtLeastOnePermission('edit-message', message.rid)
+			else
+				hasPermission = RocketChat.authz.hasPermission(Meteor.userId(), 'edit-message', message.rid)
+			editAllowed = RocketChat.settings.get 'Message_AllowEditing'
+			editOwn = message?.u?._id is Meteor.userId()
+			editMentioned = (Meteor.userId() in (item._id for item in message?.mentions ? [])) #luwei for mentions editable
+			canEdit = hasPermission or (editAllowed and editOwn) or (editAllowed and editMentioned)
+		reg = /\[([xX]*)\]/gm
+		cnt = 0
+		lastIndex=0
+		html = ""
+		while (result = reg.exec(message.html))?
+			cid = message._id+"-"+cnt
+			html += message.html.substring(lastIndex,result.index)
+			html += '<input id="'+cid+'" class="message-checkbox" type="checkbox" '
+			if _.trim(result[1])
+				html+='checked="checked"'
+			if canEdit
+				html+='/>'
+			else
+				html+=' disabled="disabled"/>'
+			cnt++
+			lastIndex=reg.lastIndex
+		if lastIndex<message.html.length
+			html+=message.html.substring(lastIndex,message.html.length)
+		message.html=html
+		#message.html = message.html.replace /\[\]/gm, '<input type="checkbox" disabled="disabled"/>'
+		#message.html = message.html.replace /\[[xX]\]/gm, '<input type="checkbox" checked="checked" disabled="disabled"/>'
 
 		#luwei for progress bar
 		reg = /==(\d+)%/gm
