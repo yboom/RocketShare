@@ -251,33 +251,49 @@ Template.room.events
 	"click .message-checkbox": (e) ->
 		#e.preventDefault()
 		#toastr.error t('Right_click_to_copy_the_link_for_opening_this_specified_message')
-		ids=e.target.id.split('-')
-		msgid=ids[0]
-		idx=parseInt(ids[1])
-		console.log(msgid+"#"+idx+e.target.checked) if window.rocketDebug
-		message = ChatMessage.findOne { _id: msgid }
-		if message?
-  		reg = /\[([xX]*)\]/gm
-  		cnt = 0
-  		lastIndex=0
-  		msg = ""
-  		while (result = reg.exec(message.msg))?
-  			msg += message.msg.substring(lastIndex,result.index)
-  			if cnt==idx
-  				if e.target.checked
-  					msg +="[x]"
-  				else
-  					msg +="[]"
-  			else
-  				msg += result[0]
-  			cnt++
-  			lastIndex=reg.lastIndex
-  		if lastIndex<message.msg.length
-  			msg+=message.msg.substring(lastIndex,message.msg.length)
-  		console.log msg if window.rocketDebug
-  		#Run to allow local encryption
-  		#Meteor.call 'onClientBeforeSendMessage', {}
-  		Meteor.call 'updateMessage', { _id: msgid, msg: msg, rid: message.rid }
+		swal {
+			title: t('Are_you_sure')
+			text: t('Change_checkbox_status')
+			type: 'warning'
+			showCancelButton: true
+			confirmButtonColor: '#DD6B55'
+			confirmButtonText: t('Yes')
+			cancelButtonText: t('Cancel')
+			closeOnConfirm: true
+			closeOnCancel: true
+		}, (isConfirm) ->
+      console.log(isConfirm)
+      if isConfirm is true
+        ids=e.target.id.split('-')
+        msgid=ids[0]
+        idx=parseInt(ids[1])
+        console.log(msgid+"#"+idx+e.target.checked) if window.rocketDebug
+        message = ChatMessage.findOne { _id: msgid }
+        if message?
+          reg = /\[([xX]*)\]/gm
+          cnt = 0
+          lastIndex=0
+          msg = ""
+          while (result = reg.exec(message.msg))?
+            msg += message.msg.substring(lastIndex,result.index)
+            if cnt==idx
+              if e.target.checked
+                msg +="[x]"
+              else
+                msg +="[]"
+            else
+              msg += result[0]
+            cnt++
+            lastIndex=reg.lastIndex
+          if lastIndex<message.msg.length
+            msg+=message.msg.substring(lastIndex,message.msg.length)
+          console.log msg if window.rocketDebug
+          #Run to allow local encryption
+          #Meteor.call 'onClientBeforeSendMessage', {}
+          Meteor.call 'updateMessage', { _id: msgid, msg: msg, rid: message.rid }
+      else
+        e.target.checked = !e.target.checked
+
 
 	"click .flex-tab .more": (event, t) ->
 		if RocketChat.TabBar.isFlexOpen()
