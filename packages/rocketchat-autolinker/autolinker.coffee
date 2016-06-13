@@ -5,6 +5,21 @@
 
 class AutoLinker
 	constructor: (message) ->
+		if Meteor.isClient
+			URL={}
+			URL.parse = (url) ->
+				a = document.createElement('a');
+				a.href=url
+				ret =
+					href: a.href
+					protocol: a.protocol
+					host: a.host
+					hostname: a.hostname
+					port: a.port
+					pathname: a.pathname
+				return ret
+		else
+			URL = Npm.require('url')
 		if _.trim message.html
 			# Separate text in code blocks and non code blocks
 			msgParts = message.html.split /(```\w*[\n ]?[\s\S]*?```+?)|(`(?:[^`]+)`)/
@@ -20,7 +35,10 @@ class AutoLinker
 							replaceFn: (autolinker, match) ->
 								if match.getType() is 'url'
 									root = Meteor.absoluteUrl "" #RocketChat.settings.get 'Site_Url'
-									if match.getUrl().startsWith(root)
+									rootObj = URL.parse root
+									urlObj = URL.parse match.getUrl()
+									console.log(rootObj.hostname+" "+urlObj.hostname)
+									if rootObj.hostname is urlObj.hostname #match.getUrl().startsWith(root)
 										return '<a href="'+match.getUrl()+'" target="new"><i class="icon-link"></i></a>'
 									return /(:\/\/|www\.).+/.test match.matchedText
 								return true

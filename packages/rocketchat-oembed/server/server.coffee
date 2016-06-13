@@ -143,9 +143,11 @@ OEmbed.getUrlMeta = (url, withFragment) ->
 
 OEmbed.getUrlMetaWithCache = (url, withFragment) ->
 	root = Meteor.absoluteUrl "" #RocketChat.settings.get 'Site_Url'
+	rootObj = URL.parse root
+	urlObj = URL.parse url
 	regex = new RegExp("[?&]id(=([^&#]*)|&|#|$)", "i")
 	results = regex.exec(url)
-	if url.startsWith(root) and results? and results[2]?
+	if urlObj.hostname is rootObj.hostname and results? and results[2]?
 		id = decodeURIComponent(results[2].replace(/\+/g, " "));
 		msg = RocketChat.models.Messages.findOneById id
 		if msg?
