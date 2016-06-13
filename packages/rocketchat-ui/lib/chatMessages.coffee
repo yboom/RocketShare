@@ -165,6 +165,13 @@ class @ChatMessages
 		#console.log(grp)
 		if grp?
 			rid=grp.rid
+			if rid?
+				FlowRouter.go 'group', { name: name }
+				msg = "[]完成 进度==0%\n>"+url
+				msgObject = { _id: Random.id(), rid: rid, msg: msg}
+				#Run to allow local encryption
+				#Meteor.call 'onClientBeforeSendMessage', {}
+				Meteor.call 'sendMessage', msgObject
 		else
 			Meteor.call 'createPrivateGroup', name, [], (err, result) ->
 				if err
@@ -175,14 +182,15 @@ class @ChatMessages
 					#if err.error is 'archived-duplicate-name'
 					#	return
 				else
-					rid=result?.rid?
-		if rid?
-			FlowRouter.go 'group', { name: name }
-			msg = "[]完成 进度==0%\n>"+url
-			msgObject = { _id: Random.id(), rid: rid, msg: msg}
-			#Run to allow local encryption
-			#Meteor.call 'onClientBeforeSendMessage', {}
-			Meteor.call 'sendMessage', msgObject
+					if result?.rid?
+						rid = result?.rid
+						FlowRouter.go 'group', { name: name }
+						#TODO: above could be a bit slow and if the following returns quicker and message could be in gray
+						msg = "[]完成 进度==0%\n>"+url
+						msgObject = { _id: Random.id(), rid: rid, msg: msg}
+						#Run to allow local encryption
+						#Meteor.call 'onClientBeforeSendMessage', {}
+						Meteor.call 'sendMessage', msgObject
 
 	replyMsg: (message,url) ->
 		this.clearEditing()

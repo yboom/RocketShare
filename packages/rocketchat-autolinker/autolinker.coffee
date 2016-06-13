@@ -37,7 +37,6 @@ class AutoLinker
 									root = Meteor.absoluteUrl "" #RocketChat.settings.get 'Site_Url'
 									rootObj = URL.parse root
 									urlObj = URL.parse match.getUrl()
-									console.log(rootObj.hostname+" "+urlObj.hostname)
 									if rootObj.hostname is urlObj.hostname #match.getUrl().startsWith(root)
 										return '<a href="'+match.getUrl()+'" target="new"><i class="icon-link"></i></a>'
 									return /(:\/\/|www\.).+/.test match.matchedText
