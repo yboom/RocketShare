@@ -156,6 +156,34 @@ class @ChatMessages
 					#reload room
 					RoomManager.close result.t+result.name
 
+	todoMsg: (message,url) ->
+		name = Meteor.user().username+"-todo"
+		query = { t: { $in: ['p']}, name: name, open: true }
+		if Meteor.user()?.settings?.preferences?.todoGroup?
+			query.name=Meteor.user()?.settings?.preferences?.todoGroup
+		grp = ChatSubscription.findOne(query)
+		#console.log(grp)
+		if grp?
+			rid=grp.rid
+		else
+			Meteor.call 'createPrivateGroup', name, [], (err, result) ->
+				if err
+					if err.error is 'name-invalid'
+						return toastr.error err.reason
+					#if err.error is 'duplicate-name'
+					#	return
+					#if err.error is 'archived-duplicate-name'
+					#	return
+				else
+					rid=result?.rid?
+		if rid?
+			FlowRouter.go 'group', { name: name }
+			msg = "[]完成 进度==0%\n>"+url
+			msgObject = { _id: Random.id(), rid: rid, msg: msg}
+			#Run to allow local encryption
+			#Meteor.call 'onClientBeforeSendMessage', {}
+			Meteor.call 'sendMessage', msgObject
+
 	replyMsg: (message,url) ->
 		this.clearEditing()
 		this.input.value = "@"+message.u.username+" : \n> "+url

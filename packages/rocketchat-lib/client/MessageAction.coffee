@@ -88,31 +88,6 @@ Meteor.startup ->
 		order: 1
 
 	RocketChat.MessageAction.addButton
-		id: 'reply-message'
-		icon: 'icon-reply'
-		i18nLabel: 'Reply'
-		action: (event, instance) ->
-			message = @_arguments[1]
-			msg = $(event.currentTarget).closest('.message')[0]
-			$("\##{msg.id} .message-dropdown").hide()
-			return if msg.classList.contains("system")
-			url = $("\##{msg.id} .message-link").prop("href");
-			chatMessages[Session.get('openedRoom')].replyMsg(message,url)
-		order: 1
-
-	RocketChat.MessageAction.addButton
-		id: 'copy-message'
-		icon: 'icon-paste'
-		i18nLabel: 'Copy'
-		action: (event, instance) ->
-			message = @_arguments[1]
-			msg = $(event.currentTarget).closest('.message')[0]
-			$("\##{msg.id} .message-dropdown").hide()
-			return if msg.classList.contains("system")
-			chatMessages[Session.get('openedRoom')].copyMsg(message)
-		order: 1
-
-	RocketChat.MessageAction.addButton
 		id: 'delete-message'
 		icon: 'icon-trash-1'
 		i18nLabel: 'Delete'
@@ -144,6 +119,44 @@ Meteor.startup ->
 				chatMessages[Session.get('openedRoom')].deleteMsg(message)
 		validation: (message) ->
 			return RocketChat.authz.hasAtLeastOnePermission('delete-message', message.rid ) or RocketChat.settings.get('Message_AllowDeleting') and message.u?._id is Meteor.userId()
+		order: 2
+
+	RocketChat.MessageAction.addButton
+		id: 'todo-message'
+		icon: 'icon-ok-squared'
+		i18nLabel: 'Todo'
+		action: (event, instance) ->
+			message = @_arguments[1]
+			msg = $(event.currentTarget).closest('.message')[0]
+			$("\##{msg.id} .message-dropdown").hide()
+			return if msg.classList.contains("system")
+			url = $("\##{msg.id} .message-link").prop("href");
+			chatMessages[Session.get('openedRoom')].todoMsg(message,url)
+		order: 2
+
+	RocketChat.MessageAction.addButton
+		id: 'reply-message'
+		icon: 'icon-reply'
+		i18nLabel: 'Reply'
+		action: (event, instance) ->
+			message = @_arguments[1]
+			msg = $(event.currentTarget).closest('.message')[0]
+			$("\##{msg.id} .message-dropdown").hide()
+			return if msg.classList.contains("system")
+			url = $("\##{msg.id} .message-link").prop("href");
+			chatMessages[Session.get('openedRoom')].replyMsg(message,url)
+		order: 2
+
+	RocketChat.MessageAction.addButton
+		id: 'copy-message'
+		icon: 'icon-paste'
+		i18nLabel: 'Copy'
+		action: (event, instance) ->
+			message = @_arguments[1]
+			msg = $(event.currentTarget).closest('.message')[0]
+			$("\##{msg.id} .message-dropdown").hide()
+			return if msg.classList.contains("system")
+			chatMessages[Session.get('openedRoom')].copyMsg(message)
 		order: 2
 
 	RocketChat.MessageAction.addButton
