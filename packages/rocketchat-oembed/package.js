@@ -32,6 +32,9 @@ Package.onUse(function(api) {
 	api.addFiles('client/oembedUrlWidget.html', 'client');
 	api.addFiles('client/oembedUrlWidget.coffee', 'client');
 
+	api.addFiles('client/oembedInternalUrlWidget.html', 'client');
+	api.addFiles('client/oembedInternalUrlWidget.coffee', 'client');
+
 	api.addFiles('client/oembedFrameWidget.html', 'client');
 
 	api.addFiles('server/server.coffee', 'server');

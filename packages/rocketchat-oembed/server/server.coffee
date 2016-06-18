@@ -153,7 +153,8 @@ OEmbed.getUrlMetaWithCache = (url, withFragment) ->
 		if msg?
 			urlObj = URL.parse url
 			parsedUrl = _.pick urlObj, ['host', 'hash', 'pathname', 'protocol', 'port', 'query', 'search']
-			metas = {}
+			metas =
+				msg: msg
 			msg.html = msg.msg
 			if _.trim(msg.html) isnt ''
 				msg.html = _.escapeHTML msg.html
@@ -192,7 +193,9 @@ getRelevantHeaders = (headersObj) ->
 getRelevantMetaTags = (metaObj) ->
 	tags = {}
 	for key, value of metaObj
-		if /^(og|fb|twitter|oembed).+|description|title|pageTitle$/.test(key.toLowerCase()) and value?.trim() isnt ''
+		if /^(og|fb|twitter|oembed).+|description|title|msg|pageTitle$/.test(key.toLowerCase())
+			if (_.isString(value) and value?.trim() is '')
+				continue
 			tags[key] = value
 
 	if Object.keys(tags).length > 0

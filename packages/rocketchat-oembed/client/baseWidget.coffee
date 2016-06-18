@@ -15,4 +15,7 @@ Template.oembedBaseWidget.helpers
 		if this.meta?.oembedHtml?
 			return 'oembedFrameWidget'
 
+		if this.meta?.msg?
+			return 'oembedInternalUrlWidget'
+
 		return 'oembedUrlWidget'

@@ -2843,13 +2843,14 @@ a.github-fork {
 		padding-top: 4px;
 		padding-bottom: 4px;
 		margin-top: 0px;
-		.user {
+		/* luwei add & > becuz message could be rendered in blockquote now */
+		& > .user {
 			display: none;
 		}
-		.thumb:not(.thumb-small) {
+		& > .thumb:not(.thumb-small) {
 			display: none;
 		}
-		.info {
+		& > .info {
 			position: absolute;
 			text-align: right;
 			left: 5px;
@@ -2871,7 +2872,7 @@ a.github-fork {
 				margin-left: 1px;
 			}
 		}
-		.body {
+		& > .body {
 			margin-top: 0px;
 		}
 

@@ -4,7 +4,7 @@ Template.message.helpers
 	isGroupable: ->
 		return 'false' if this.groupable is false
 	isSequential: ->
-		return 'sequential' if this.groupable isnt false
+		return 'sequential' if this.groupable isnt false and (this.quoted ? false) is false
 	getEmoji: (emoji) ->
 		return emojione.toImage emoji
 	own: ->
@@ -93,6 +93,11 @@ Template.message.helpers
 
 		return false unless this.u?.username not in RocketChat.settings.get('API_EmbedDisabledFor')?.split(',')
 
+		return true
+
+	isNotQuoted: ->
+		if this.quoted?
+			return not this.quoted
 		return true
 
 Template.message.onCreated ->
@@ -341,7 +346,7 @@ Template.message.onCreated ->
 			# msg.html = msg.html.replace /^(.*td>)\.\d+\s*/m, '$1'
 			#
 			# return msg.html
-			
+
 			message = RocketChat.RichMessageFormat message
 			return message.html
 
