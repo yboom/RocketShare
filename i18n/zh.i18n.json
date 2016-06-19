@@ -208,6 +208,7 @@
   "Push_production": "生产",
   "Quick_Search": "快速搜索",
   "quote": "引用",
+  "Quoted_message_is_a_snapshot": "被引用的消息是一个拷贝，要编辑请在原消息上操作。",
   "Read_Message": "已读消息",
   "Recents": "最近",
   "Register": "注册一个新帐号",

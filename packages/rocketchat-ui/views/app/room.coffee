@@ -248,7 +248,12 @@ Template.room.events
 	#	toastr.error t('Right_click_to_copy_the_link_for_opening_this_specified_message')
 	#	return false
 
-	"click .message-checkbox": (e) ->
+	"click blockquote .message-checkbox": (e) ->
+		e.preventDefault()
+		toastr.info t('Quoted_message_is_a_snapshot')
+		return false
+
+	"click :not(blockquote) > .message > .body > .message-checkbox": (e) ->
 		#e.preventDefault()
 		#toastr.error t('Right_click_to_copy_the_link_for_opening_this_specified_message')
 		swal {
