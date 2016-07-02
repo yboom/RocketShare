@@ -9,11 +9,16 @@ Meteor.publish 'mobileMessages', (rid, start) ->
 
 	if not Meteor.call 'canAccessRoom', rid, this.userId
 		return this.ready()
-
+		
 	cursor = RocketChat.models.Messages.findVisibleByRoomId rid,
 		sort:
 			ts: -1
 		limit: 50
+	if start
+		cursor = RocketChat.models.Messages.findVisibleByRoomIdBeforeTimestamp rid,start,
+			sort:
+				ts: -1
+			limit: 50
 
 	cursorHandle = cursor.observeChanges
 		added: (_id, record) ->
