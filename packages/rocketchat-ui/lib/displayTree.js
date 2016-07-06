@@ -31,6 +31,15 @@ window.displayTree = function(treeData, treeDepth, treeWidth) {
     });
   var id = (new Date()).getTime();
 
+  function close() {
+    clearInterval(searchTimer);
+    setTimeout(function() {
+      var svg = document.getElementById(id);
+      svg.parentNode.removeChild(svg);
+    }, 500);
+  }
+  window.closeTree = close;
+
   var svg = d3.select("body").append("div")
     .attr("id", id)
     .attr("class", "treecontainer")
@@ -39,7 +48,17 @@ window.displayTree = function(treeData, treeDepth, treeWidth) {
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
   var input = document.createElement("input");
+  document.getElementById(id).appendChild(input);
+  input.setAttribute("id", "exit" + id);
+  input.setAttribute("type", "button");
+  input.setAttribute("class", "treeclose");
+  input.value = "X";
+  input.setAttribute("onclick",
+    "window.closeTree();");
+
+  input = document.createElement("input");
   document.getElementById(id).appendChild(input);
   input.setAttribute("id", "input" + id);
   input.setAttribute("class", "treesearch");
@@ -210,11 +229,7 @@ window.displayTree = function(treeData, treeDepth, treeWidth) {
     }
     update(d);
     if (d.parent === null) {
-      clearInterval(searchTimer);
-      setTimeout(function() {
-        var svg = document.getElementById(id);
-        svg.parentNode.removeChild(svg);
-      }, 500);
+      close();
     }
     if (d.url) {
       if (d.children || d._children) {
