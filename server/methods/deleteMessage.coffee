@@ -30,6 +30,7 @@ Meteor.methods
 		else
 			if not showDeletedStatus
 				RocketChat.models.Messages.removeById originalMessage._id
+				RocketChat.models.Rooms.incMsgCountAndSetLastMessageTimestampById(originalMessage.rid, -1, originalMessage.ts); # modify msgs
 
 			if originalMessage.file?._id?
 				RocketChat.models.Uploads.remove originalMessage.file._id
