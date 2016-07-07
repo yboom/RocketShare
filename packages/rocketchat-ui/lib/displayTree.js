@@ -68,6 +68,22 @@ window.displayTree = function(treeData, treeDepth, treeWidth) {
     if (input.value != searchValue) {
       searchValue = input.value;
       svg.selectAll('text.name')
+        .style("text-decoration", function(d) {
+          if (searchValue.length > 0 && Array.isArray(d.usernames)) {
+            var found = false;
+            for (var i = 0; i < d.usernames.length; i++) {
+              if (d.usernames[i].toUpperCase().indexOf(
+                  searchValue.toUpperCase()) >= 0) {
+                found = true;
+                break;
+              }
+            }
+            if (found)
+              return "underline";
+          }
+
+          return "none";
+        })
         .style("fill", function(d) {
           if (d.alert)
             return "none";
@@ -108,8 +124,9 @@ window.displayTree = function(treeData, treeDepth, treeWidth) {
       if (d.depth < 2) {
         d.y = d.depth * wstep1
       } else {
-        d.y = d.depth * (width - wstep1) / (treeDepth - 1) + wstep1 - (
-          width - wstep1) / (treeDepth - 1);
+        d.y = d.depth * (width - wstep1) / (treeDepth - 1) + wstep1 -
+          (
+            width - wstep1) / (treeDepth - 1);
       }
     });
 
@@ -325,6 +342,9 @@ window.breakNameToNodes = function(data) {
         node.url = data[i].url;
         node.unread = data[i].unread;
         node.alert = data[i].alert;
+        node.usernames = data[i].usernames;
+        node.lm = data[i].lm;
+        node.msgs = data[i].msgs;
       } else {
         node.children = [];
       }

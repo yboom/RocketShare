@@ -39,7 +39,19 @@ Template.starredRooms.events
 		cursor = ChatSubscription.find query, { sort: 't': 1, 'name': 1 }
 		cursor.forEach (sub) ->
 			#console.log sub
-			privateGroups.push {"name":sub.name, "url":RocketChat.roomTypes.getRouteLink(sub.t,sub) ,"unread":sub.unread, "alert":sub.alert}
+			grp = {"name":sub.name, "url":RocketChat.roomTypes.getRouteLink(sub.t,sub) ,"unread":sub.unread, "alert":sub.alert}
+			room = ChatRoom.findOne(sub.rid, { reactive: false })
+			if room?
+				#console.log room
+				grp.usernames = room.usernames
+				grp.lm = room.lm
+				grp.msgs = room.msgs
+			#else	#TODO: only opened room gets room.usernames.
+			#	Meteor.call 'getRoomModeratorsAndOwners', sub.rid, 1000, (err, result) =>
+			#		if result
+			#			console.log result
+
+			privateGroups.push grp
 		privateGroups=breakNameToNodes(privateGroups)
 		treeData[0].children.push {"name":t('Private_Groups'),"children":privateGroups.nodes}
 		#console.log treeData
@@ -62,6 +74,11 @@ Template.starredRooms.events
 			channels.push {"name":sub.name, "url":RocketChat.roomTypes.getRouteLink(sub.t,sub) ,"unread":sub.unread, "alert":sub.alert}
 		channels=breakNameToNodes(channels)
 		treeData[0].children.push {"name":t('Channels'),"children":channels.nodes}
+
+		#query = { t: { $in: ['d']}, archived: { $ne: true } }
+		#cursor = ChatSubscription.find query, { sort: 't': 1, 'name': 1 }
+		#cursor.forEach (sub) ->
+		#	console.log sub
 
 		#list all channels
 		#Meteor.call 'channelsList', '', 1000, (err, result) =>
