@@ -120,6 +120,7 @@ window.displayTree = function(treeData, treeDepth, treeWidth) {
         return d.url ? "steelblue" : "gray";
       })
       .style("fill", function(d) {
+        if (d.unread > 0) return "#1dce73";
         return d._children ? "lightsteelblue" : "#fff";
       });
 
@@ -141,6 +142,21 @@ window.displayTree = function(treeData, treeDepth, treeWidth) {
       })
       .style("fill-opacity", 1e-6);
 
+    nodeEnter.append("text")
+      .attr("x", function(d) {
+        return 0;
+      })
+      .attr("dy", ".35em")
+      .attr("text-anchor", function(d) {
+        return "middle";
+      })
+      .text(function(d) {
+        return d.unread > 0 ? d.unread : "";
+      })
+      .style("fill", function(d) {
+        return "white";
+      });
+
     // Transition nodes to their new position.
     var nodeUpdate = node.transition()
       .duration(duration)
@@ -151,6 +167,7 @@ window.displayTree = function(treeData, treeDepth, treeWidth) {
     nodeUpdate.select("circle")
       .attr("r", 10)
       .style("fill", function(d) {
+        if (d.unread > 0) return "#1dce73";
         return d._children ? "lightsteelblue" : "#fff";
       });
 
@@ -268,6 +285,7 @@ window.breakNameToNodes = function(data) {
       };
       if (k == dirs.length - 1) {
         node.url = data[i].url;
+        node.unread = data[i].unread;
       } else {
         node.children = [];
       }
