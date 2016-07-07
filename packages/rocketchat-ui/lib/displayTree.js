@@ -67,12 +67,25 @@ window.displayTree = function(treeData, treeDepth, treeWidth) {
   var searchTimer = setInterval(function() {
     if (input.value != searchValue) {
       searchValue = input.value;
-      svg.selectAll('text').style("fill", function(d) {
-        return searchValue.length > 0 && d.name.toUpperCase().indexOf(
-            searchValue.toUpperCase()) >=
-          0 ?
-          "red" : "black";
-      });
+      svg.selectAll('text.name')
+        .style("fill", function(d) {
+          if (d.alert)
+            return "none";
+          else
+            return searchValue.length > 0 && d.name.toUpperCase().indexOf(
+                searchValue.toUpperCase()) >=
+              0 ?
+              "red" : "black";
+        })
+        .style("stroke", function(d) {
+          if (d.alert)
+            return searchValue.length > 0 && d.name.toUpperCase().indexOf(
+                searchValue.toUpperCase()) >=
+              0 ?
+              "red" : "black";
+          else
+            return "none";
+        });
     }
   }, 1000);
 
@@ -135,11 +148,36 @@ window.displayTree = function(treeData, treeDepth, treeWidth) {
       .text(function(d) {
         return d.name;
       })
+      .attr("class", "name")
       .style("fill", function(d) {
-        return searchValue.length > 0 && d.name.toUpperCase().indexOf(
-            searchValue.toUpperCase()) >= 0 ?
-          "red" : "black";
+        if (d.alert)
+          return "none";
+        else
+          return searchValue.length > 0 && d.name.toUpperCase().indexOf(
+              searchValue.toUpperCase()) >=
+            0 ?
+            "red" : "black";
       })
+      .style("stroke", function(d) {
+        if (d.alert)
+          return searchValue.length > 0 && d.name.toUpperCase().indexOf(
+              searchValue.toUpperCase()) >=
+            0 ?
+            "red" : "black";
+        else
+          return "none";
+      })
+      /*.style("font-weight", function(d) {
+        return d.alert ?
+          "bold" : "normal";
+      })
+      .style("text-decoration", function(d) {
+        return d.alert ?
+          "underline" : "none";
+      })*/
+      /*.style("stroke-width", function(d) {
+        return 0.5;
+      })*/
       .style("fill-opacity", 1e-6);
 
     nodeEnter.append("text")
@@ -286,6 +324,7 @@ window.breakNameToNodes = function(data) {
       if (k == dirs.length - 1) {
         node.url = data[i].url;
         node.unread = data[i].unread;
+        node.alert = data[i].alert;
       } else {
         node.children = [];
       }
