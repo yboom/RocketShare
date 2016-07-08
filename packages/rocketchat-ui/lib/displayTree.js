@@ -68,7 +68,7 @@ window.displayTree = function(treeData, treeDepth, treeWidth) {
     if (input.value != searchValue) {
       searchValue = input.value;
       svg.selectAll('text.name')
-        .style("text-decoration", function(d) {
+        .style("text-shadow", function(d) {
           if (searchValue.length > 0 && Array.isArray(d.usernames)) {
             var found = false;
             for (var i = 0; i < d.usernames.length; i++) {
@@ -79,7 +79,7 @@ window.displayTree = function(treeData, treeDepth, treeWidth) {
               }
             }
             if (found)
-              return "underline";
+              return "1px 1px 4px red";
           }
 
           return "none";

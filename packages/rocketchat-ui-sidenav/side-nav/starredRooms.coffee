@@ -12,8 +12,21 @@ Template.starredRooms.helpers
 	isActive: ->
 		return 'active' if ChatSubscription.findOne({ f: true, rid: Session.get('openedRoom') }, { fields: { _id: 1 } })?
 
+Template.starredRooms.onCreated ->
+	instance = @
+	@ready = new ReactiveVar true
+	@autorun ->
+		subscription = instance.subscribe 'privateHistory'	#to load rooms info into client
+		instance.ready.set subscription.ready()
+	@rooms = ->
+		query = {}
+
+		return ChatRoom.find(query, { sort: { default: -1, name: 1 } })
+
 Template.starredRooms.events
 	'click .display-tree': (e, instance) ->
+		console.log Template.instance().ready?.get()
+		console.log Template.instance().rooms?().count()
 		treeData = [{
 			"name": t("Close"),
 			"parent": null,
@@ -40,13 +53,13 @@ Template.starredRooms.events
 		cursor.forEach (sub) ->
 			#console.log sub
 			grp = {"name":sub.name, "url":RocketChat.roomTypes.getRouteLink(sub.t,sub) ,"unread":sub.unread, "alert":sub.alert}
-			room = ChatRoom.findOne(sub.rid, { reactive: false })
+			room = ChatRoom.findOne({"_id":sub.rid})
 			if room?
 				#console.log room
 				grp.usernames = room.usernames
 				grp.lm = room.lm
 				grp.msgs = room.msgs
-			#else	#TODO: only opened room gets room.usernames.
+			#else	#only opened room gets room.usernames.
 			#	Meteor.call 'getRoomModeratorsAndOwners', sub.rid, 1000, (err, result) =>
 			#		if result
 			#			console.log result

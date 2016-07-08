@@ -7,7 +7,7 @@ Meteor.publish 'privateHistory', ->
 			t: 1
 			name: 1
 			msgs: 1
+			usernames:1
 			ts: 1
 			lm: 1
 			cl: 1
-
