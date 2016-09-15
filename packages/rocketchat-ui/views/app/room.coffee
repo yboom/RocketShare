@@ -247,6 +247,26 @@ Template.room.events
 	#	e.preventDefault()
 	#	toastr.error t('Right_click_to_copy_the_link_for_opening_this_specified_message')
 	#	return false
+	"click .equ-link": (e) ->
+		#console.log e
+		e.preventDefault()
+		$('a').removeClass('equ-removelink').addClass('equ-link')
+		$('#showInfoId').remove()
+		html = '<span id="showInfoId" style="margin-left:10px;cursor:default;color:gray;">'+e.target.title+'</span>'
+		$(e.target).removeClass('equ-link').addClass('equ-removelink')
+		$(e.target).append(html)
+		#toastr.info t(e.target.title)
+		return false
+	"click .equ-removelink": (e) ->
+		#console.log e
+		e.preventDefault()
+		#toastr.info t(e.target.title)
+		if(e.target.id == 'showInfoId')
+			return false
+		else
+			$('#showInfoId').remove()
+			$(e.target).removeClass('equ-removelink').addClass('equ-link')
+			return false
 
 	"click blockquote .message-checkbox": (e) ->
 		e.preventDefault()
