@@ -38,7 +38,7 @@ class RichMessageFormat
 					if array.length >= column
 						s_value = array[column-1]
 						if s_value.length == 0
-							return 0
+							s = s + 0
 						else
 							str_value = s_value.replace(/（/gm,'(')
 							str_value = str_value.replace(/）/gm,')')
@@ -47,9 +47,6 @@ class RichMessageFormat
 								for str, j in sumArray
 									if j == 0
 										continue
-								#if s_value.lastIndexOf('sum(') > -1
-								#	last = s_value.lastIndexOf('sum(')
-								#	str = s_value.substring(last+4)
 									index = str.indexOf(')')
 									v = sumEval(url.meta.msg,str.substring(0,index))
 									s_value = s_value.replace('sum('+str.substring(0, index)+')',v)
@@ -565,12 +562,12 @@ class RichMessageFormat
 		#luwei for marks
 		message.html = message.html.replace /^\.\d+\s*/m, ''
 		message.html = message.html.replace /^(.*td>)\.\d+\s*/m, '$1'
-
+		
 		if not _.isString msg
 			msg = message
 		else
 			msg = message.html
-
+		
 		console.log 'RichMessageFormat', msg if window?.rocketDebug
 
 		return msg
