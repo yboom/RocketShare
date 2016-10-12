@@ -150,7 +150,7 @@ Meteor.methods
 							#// Retry until max tries is reach
 							#// But don't retry if these errors occur
 							console.log err
-							if tries < self.maxTries and not _.contains([400, 404], err.error)
+							if tries < maxTries and not _.contains([400, 404], err.error)
 								tries += 1
 								#// Wait 1 sec before retrying
 								Meteor.setTimeout(sendChunk, 1000)
@@ -171,7 +171,7 @@ Meteor.methods
 									#// Limit to max chunk size
 								if maxChunkSize > 0 and length > maxChunkSize
 									length = maxChunkSize
-							#self.onProgress(file, self.getProgress())
+							#onProgress(file, getProgress())
 							sendChunk()
 				else
 					#// Finish the upload by telling the store the upload is complete
