@@ -1,5 +1,5 @@
 Meteor.methods
-	FileUpload: (file,roomId,user, options) ->
+	FileUpload: (file,roomId,user,msgId,msgContent, options) ->
 		if file.size > RocketChat.settings.get('FileUpload_MaxFileSize')
 			throw new Meteor.Error 400, '[methods] FileUpload -> uploadFile size exceed FileUpload_MaxFileSize'
 
@@ -120,16 +120,35 @@ Meteor.methods
 						attachment.video_url = url
 						attachment.video_type = file.type
 						attachment.video_size = file.size
-					msg =
-						_id: Random.id()
-						rid: roomId
-						msg: file.name.substr(0, file.name.lastIndexOf('.')) || file.name
-						file:
+
+					msg = null
+					if msgId
+						msg = RocketChat.models.Messages.findOneById msgId
+					if msg
+						originalFileId = null
+						if msg.file?._id?
+							originalFileId = msg.file._id
+						msg.file =
 							_id: file._id
-						groupable: false
-						attachments: [attachment]
-					Meteor.call 'sendMessage', msg, ->
-						return msg
+						msg.attachments = [attachment]
+						Meteor.call 'updateMessage', msg, ->
+							if originalFileId
+								RocketChat.models.Uploads.remove originalFileId
+								Meteor.fileStore.delete originalFileId
+							return msg
+					else
+						if not msgContent
+							msgContent = file.name.substr(0, file.name.lastIndexOf('.')) || file.name
+						msg =
+							_id: Random.id()
+							rid: roomId
+							msg: msgContent
+							file:
+								_id: file._id
+							groupable: false
+							attachments: [attachment]
+						Meteor.call 'sendMessage', msg, ->
+							return msg
 
 		upload = ->
 			length = chunkSize
@@ -190,12 +209,6 @@ Meteor.methods
 		start = ->
 			if not fileId
         		#// Insert the file in the collection
-        		#console.log 'UploadFS.Uploader'
-        		#console.log store
-        		#console.log file
-        		#console.log options
-        		#fileId = uploadId
-        		#file._id = fileId
         		file.userId = user._id
         		file.extension = file.type.split('/').pop()
         		file.store = store.getName()
@@ -218,12 +231,10 @@ Meteor.methods
 							upload()
 				)
 		if Meteor.isServer
-			#beginFileStore()
 			start()
 		else
 			return 0
 
-			#RocketChat.sendMessage user, msg, room, options
 
 # Limit a user to sending 5 msgs/second
 DDPRateLimiter.addRule

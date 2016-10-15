@@ -93,6 +93,8 @@ readAsArrayBuffer = (file, callback) ->
 
 						onComplete: (file) ->
 							self = this
+							#console.log file
+							#console.log this
 							url = file.url.replace(Meteor.absoluteUrl(), '/')
 
 							attachment =
@@ -114,23 +116,66 @@ readAsArrayBuffer = (file, callback) ->
 								attachment.video_url = url
 								attachment.video_type = file.type
 								attachment.video_size = file.size
+							textarea = $('.input-message')
+							message = _.trim($(textarea).val())
+							if $(textarea).hasClass('editing')
+								li = $('.messages-box .editing')
+								id = $(li).attr('id')
+								if id and id != 'undefined'
+									or_message = ChatMessage.findOne { _id: id }
+									if or_message
+										or_fileId = null
+										if or_message.file?._id?
+											or_fileId = or_message.file._id
+										if message.length > 0
+											or_message.msg = message
+										or_message.file = 
+											_id:file._id
+										or_message.attachments = [attachment]
+										Meteor.call 'updateMessage', or_message, ->
+											$(li).removeClass("editing")
+											$(textarea).removeClass("editing")
+											$(textarea).closest('.message-form').removeClass('editing')
+											$(textarea).val('')
+											Meteor.setTimeout ->
+												uploading = Session.get 'uploading'
+												if uploading?
+													item = _.findWhere(uploading, {id: self.id})
+													Session.set 'uploading', _.without(uploading, item)
+											, 2000
+											if or_fileId
+												RocketChat.models.Uploads.remove or_fileId
+												Meteor.fileStore.delete or_fileId
+									else
+										RocketChat.models.Uploads.remove file._id
+										Meteor.fileStore.delete file._id
+										alert('Not found original message')
+										return
+								else
+									RocketChat.models.Uploads.remove file._id
+									Meteor.fileStore.delete file._id
+									alert('Not found message id')
+									return
+							else
+								if not message or message.length == 0
+									message =  file.name.substr(0, file.name.lastIndexOf('.')) || file.name#luwei:""
+								msg =
+									_id: Random.id()
+									rid: roomId
+									msg: message
+									file:
+										_id: file._id
+									groupable: false
+									attachments: [attachment]
 
-							msg =
-								_id: Random.id()
-								rid: roomId
-								msg: file.name.substr(0, file.name.lastIndexOf('.')) || file.name#luwei:""
-								file:
-									_id: file._id
-								groupable: false
-								attachments: [attachment]
-
-							Meteor.call 'sendMessage', msg, ->
-								Meteor.setTimeout ->
-									uploading = Session.get 'uploading'
-									if uploading?
-										item = _.findWhere(uploading, {id: self.id})
-										Session.set 'uploading', _.without(uploading, item)
-								, 2000
+								Meteor.call 'sendMessage', msg, ->
+									$(textarea).val('')
+									Meteor.setTimeout ->
+										uploading = Session.get 'uploading'
+										if uploading?
+											item = _.findWhere(uploading, {id: self.id})
+											Session.set 'uploading', _.without(uploading, item)
+									, 2000
 
 					upload.id = Random.id()
 
