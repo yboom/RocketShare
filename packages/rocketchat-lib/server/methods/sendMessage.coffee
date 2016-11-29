@@ -1,5 +1,7 @@
 Meteor.methods
 	sendMessage: (message, options) ->
+		# console.log(message.msg);
+		message.msg = message.msg.replace('【】','[]');
 		if message.msg?.length > RocketChat.settings.get('Message_MaxAllowedSize')
 			throw new Meteor.Error 400, '[methods] sendMessage -> Message size exceed Message_MaxAllowedSize'
 
