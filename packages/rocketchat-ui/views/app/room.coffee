@@ -268,6 +268,67 @@ Template.room.events
 			$(e.target).removeClass('equ-removelink').addClass('equ-link')
 			return false
 
+	"click .toggle-formattable": (e) ->
+		e.preventDefault()
+		messages = $('.messages-box > div.wrapper > ul > li.message')
+		if messages.length == 0
+			return false
+		tableWidth=[]
+		table_width = 0
+		prevTable = 0
+		#console.log messages
+		for  message,i in messages
+			li = message
+			body = $(li).children('.body')
+			table=$(body).find('table')
+			if(table.length > 0)
+				tr = $(table[0]).children('tr.first')
+				if(tr.length == 0)
+					tr = $(table[0]).children('tbody').children('tr.first')
+				#console.log tr
+				if(tr.length > 0)
+					td = $(tr).children('td')
+					if(td.length > 0)
+						#console.log prevTable
+						#console.log table[0].parentNode.previousSibling
+						if(prevTable && tableWidth.length > 0 && table[0].parentNode.previousSibling.nodeType!=Node.ELEMENT_NODE && $(table[0]).closest("blockquote").length<=0 )
+							if table_width > 0
+								$(table[0]).width(table_width)
+							count = td.length
+							if(tableWidth.length < count)
+								count = tableWidth.length
+							tstyle = 0
+							for j in [0..count] # for(var j=0;j<count;j++)
+								if j == td.length
+									break
+								$(td[j]).width(tableWidth[j])
+								if($(td[j]).width() > tableWidth[j])
+									if not tstyle
+										$(table[0]).css({"table-layout":"fixed"})
+										$(td[j]).css({"word-wrap":"break-word"})
+										tstyle = 1
+							$(li).removeClass('sequential').addClass('sequential')
+						else
+							prevTable = 1
+							tableWidth = []
+							table_width = $(table[0]).width()
+							for j in [0..td.length] #for(var j = 0;j<td.length;j++)
+								if j == td.length
+									break
+								tableWidth.push($(td[j]).width())
+							#console.log tableWidth
+					else
+						prevTable = 0
+						tableWidth = []
+				else
+					prevTable = 0
+					tableWidth = []
+				#console.log tr
+			else
+				prevTable = 0
+				tableWidth = []
+		return false
+
 	"click blockquote .message-checkbox": (e) ->
 		e.preventDefault()
 		toastr.info t('Quoted_message_is_a_snapshot')
