@@ -281,7 +281,7 @@ Template.room.events
 			li = message
 			body = $(li).children('.body')
 			table=$(body).find('table')
-			if(table.length > 0)
+			if(table.length > 0 && $(table[0]).closest("blockquote").length<=0) #contains a non-quoted table
 				tr = $(table[0]).children('tr.first')
 				if(tr.length == 0)
 					tr = $(table[0]).children('tbody').children('tr.first')
@@ -291,16 +291,14 @@ Template.room.events
 					if(td.length > 0)
 						#console.log prevTable
 						#console.log table[0].parentNode.previousSibling
-						if(prevTable && tableWidth.length > 0 && table[0].parentNode.previousSibling.nodeType!=Node.ELEMENT_NODE && $(table[0]).closest("blockquote").length<=0 )
+						if(prevTable && tableWidth.length > 0 && table[0].parentNode.previousSibling.nodeType!=Node.ELEMENT_NODE )
 							if table_width > 0
 								$(table[0]).width(table_width)
 							count = td.length
 							if(tableWidth.length < count)
 								count = tableWidth.length
 							tstyle = 0
-							for j in [0..count] # for(var j=0;j<count;j++)
-								if j == td.length
-									break
+							for j in [0..count-1] # for(var j=0;j<count;j++)
 								$(td[j]).width(tableWidth[j])
 								if($(td[j]).width() > tableWidth[j])
 									if not tstyle
@@ -312,9 +310,7 @@ Template.room.events
 							prevTable = 1
 							tableWidth = []
 							table_width = $(table[0]).width()
-							for j in [0..td.length] #for(var j = 0;j<td.length;j++)
-								if j == td.length
-									break
+							for j in [0..td.length-1] #for(var j = 0;j<td.length;j++)
 								tableWidth.push($(td[j]).width())
 							#console.log tableWidth
 					else
