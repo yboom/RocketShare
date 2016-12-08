@@ -292,11 +292,16 @@ Template.room.events
 						#console.log prevTable
 						#console.log table[0].parentNode.previousSibling
 						if(prevTable && tableWidth.length > 0 && table[0].parentNode.previousSibling.nodeType!=Node.ELEMENT_NODE )
-							if table_width > 0
-								$(table[0]).width(table_width)
 							count = td.length
 							if(tableWidth.length < count)
 								count = tableWidth.length
+							if table_width > 0
+								differ = td.length - count
+								tw = table_width
+								if differ > 0
+									for j in [count..td.length-1]
+										tw = tw + $(td[j]).outerWidth()+1
+								$(table[0]).width(tw)
 							tstyle = 0
 							for j in [0..count-1] # for(var j=0;j<count;j++)
 								$(td[j]).width(tableWidth[j])
