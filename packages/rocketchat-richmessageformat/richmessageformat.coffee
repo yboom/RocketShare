@@ -10,9 +10,9 @@ class RichMessageFormat
 				html : msg
 		else
 			message = msg
-		
+
 		selfString = null
-		
+
 		sumEval = (message,column) ->
 			#console.log column
 			#console.log message
@@ -65,7 +65,7 @@ class RichMessageFormat
 							s = Eval(s_value,true) + s
 							#s = g + s
 			return s
-		
+
 		Eval = (string,t) ->
 					cal='+-*/().:＋－＊／（）：' #['+','-','*','/','(',')','.','－','d','a','y'];
 					sep = 0
@@ -154,14 +154,14 @@ class RichMessageFormat
 							if j == string.length-1
 								str = string.substring(string.length-j-1)
 							#console.log str
-							newstr = str 
+							newstr = str
 							str = str.replace(/（/gm,'(')
 							str = str.replace(/）/gm,')')
 							str = str.replace(/＋/gm,'+')
 							str = str.replace(/－/gm,'-')
 							str = str.replace(/＊/gm,'*')
 							str = str.replace(/／/gm,'/')
-							
+
 							#if str.indexOf('(') > -1 and str.indexOf(')') > -1
 							left = str.split('(')
 							right = str.split(')')
@@ -201,7 +201,7 @@ class RichMessageFormat
 										result = 0
 							break
 					return result
-		
+
 		evalExpression = (string) ->
 					cal='+-*/().:＋－＊／（）：' #['+','-','*','/','(',')','.','－','d','a','y'];
 					sep = 0
@@ -268,9 +268,9 @@ class RichMessageFormat
 							if j == string.length-1
 								result = string.substring(string.length-j-1)
 							#console.log str
-							break 
+							break
 					return result
-		
+
 		htmlEval = (value) ->
 			#console.log value
 			string = value.replace(/=？/gm,'=?')
@@ -562,16 +562,22 @@ class RichMessageFormat
 		#luwei for marks
 		message.html = message.html.replace /^\.\d+\s*/m, ''
 		message.html = message.html.replace /^(.*td>)\.\d+\s*/m, '$1'
-		
+
 		if not _.isString msg
 			msg = message
 		else
 			msg = message.html
-		
+
 		console.log 'RichMessageFormat', msg if window?.rocketDebug
 
 		return msg
 
+	@transform: (message) ->
+		message.msg = message.msg.replace /【】/g, '[]'
+		message.msg = message.msg.replace /［］/g, '[]'
+		return message
+
+RocketChat.callbacks.add 'beforeSaveMessage', RichMessageFormat.transform, RocketChat.callbacks.priority.LOW
 #RocketChat.callbacks.add 'renderMessage', RichMessageFormat, RocketChat.callbacks.priority.HIGH
 RocketChat.RichMessageFormat = RichMessageFormat
 
