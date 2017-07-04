@@ -71,6 +71,10 @@ Meteor.startup ->
 				input.focus()
 			, 200
 		validation: (message) ->
+			editMsg = message.msg.replace '：', ':'
+			editMsg = editMsg.replace '＝', '='
+			if editMsg.indexOf(':=') == 0
+				return false
 			hasPermission = RocketChat.authz.hasAtLeastOnePermission('edit-message', message.rid)
 			isEditAllowed = RocketChat.settings.get 'Message_AllowEditing'
 			#console.log message.mentions
@@ -118,6 +122,10 @@ Meteor.startup ->
 					chatMessages[Session.get('openedRoom')].clearEditing(message)
 				chatMessages[Session.get('openedRoom')].deleteMsg(message)
 		validation: (message) ->
+			deleteMsg = message.msg.replace '：', ':'
+			deleteMsg = deleteMsg.replace '＝', '='
+			if deleteMsg.indexOf(':=') == 0
+				return false
 			return RocketChat.authz.hasAtLeastOnePermission('delete-message', message.rid ) or RocketChat.settings.get('Message_AllowDeleting') and message.u?._id is Meteor.userId()
 		order: 2
 

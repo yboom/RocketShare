@@ -292,6 +292,10 @@ RocketChat.models.Rooms = new class extends RocketChat.models._Base
 
 		return @update query, update, { multi: true }
 
+	updateRoomExtById: (query, update) ->
+
+		return @update query, update, {upsert: true, multi: true }
+
 	replaceMutedUsername: (previousUsername, username) ->
 		query =
 			muted: previousUsername

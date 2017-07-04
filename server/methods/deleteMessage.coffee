@@ -11,8 +11,16 @@ Meteor.methods
 		deleteAllowed = RocketChat.settings.get 'Message_AllowDeleting'
 
 		deleteOwn = originalMessage?.u?._id is Meteor.userId()
+		
+		deleteExtMsg = true
+		deleteMsg = message.msg.replace '：', ':'
+		deleteMsg = deleteMsg.replace '＝', '='
+		if deleteMsg.indexOf(':=') == 0
+			deleteExtMsg = false
 
-		unless hasPermission or (deleteAllowed and deleteOwn)
+		unless deleteExtMsg
+			throw new Meteor.Error 'message-deleting-not-allowed', "[methods] deleteMessage -> Message deleting not allowed"
+		unless hasPermission or (deleteAllowed and deleteOwn) 
 			throw new Meteor.Error 'message-deleting-not-allowed', "[methods] deleteMessage -> Message deleting not allowed"
 
 		keepHistory = RocketChat.settings.get 'Message_KeepHistory'
@@ -29,6 +37,14 @@ Meteor.methods
 
 		else
 			if not showDeletedStatus
+				deletemsg = {}
+				deletemsg._id = originalMessage._id
+				if originalMessage.file?._id?
+					if originalMessage.attachments
+						attach = originalMessage.attachments
+						if attach.length > 0
+							deletemsg.image_url = attach[0].image_url
+							
 				RocketChat.models.Messages.removeById originalMessage._id
 				RocketChat.models.Rooms.incMsgCountAndSetLastMessageTimestampById(originalMessage.rid, -1, new Date()); # modify msgs
 

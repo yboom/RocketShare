@@ -111,16 +111,12 @@ Template.accountBox.events
 			grp = {"name":sub.name, "url":RocketChat.roomTypes.getRouteLink(sub.t,sub) ,"unread":sub.unread, "alert":sub.alert}
 			room = ChatRoom.findOne({"_id":sub.rid})
 			if room?
-				#console.log room
-				grp.usernames = room.usernames
-				grp.lm = room.lm
-				grp.msgs = room.msgs
+				privateGroups.push room
 			#else	#only opened room gets room.usernames.
 			#	Meteor.call 'getRoomModeratorsAndOwners', sub.rid, 1000, (err, result) =>
 			#		if result
 			#			console.log result
 
-			privateGroups.push grp
 		console.log privateGroups
 
 	'click .options .status': (event) ->

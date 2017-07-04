@@ -15,8 +15,16 @@ Meteor.methods
 		#console.log (item._id for item in originalMessage?.mentions)
 
 		me = RocketChat.models.Users.findOneById Meteor.userId()
+		
+		editMsgs = true
+		editMsg = originalMessage.msg.replace('：',':')
+		editMsg = editMsg.replace('＝','=')
+		if editMsg.indexOf(':=') == 0
+			editMsgs = false
 
-		unless hasPermission or (editAllowed and editOwn) or (editAllowed and editMentioned)
+		unless editMsgs
+			throw new Meteor.Error 'message-editing-not-allowed', "[methods] updateMessage -> Message editing not allowed"
+		unless hasPermission or (editAllowed and editOwn) or (editAllowed and editMentioned) 
 			throw new Meteor.Error 'message-editing-not-allowed', "[methods] updateMessage -> Message editing not allowed"
 
 		blockEditInMinutes = RocketChat.settings.get 'Message_AllowEditing_BlockEditInMinutes'

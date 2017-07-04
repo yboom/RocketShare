@@ -48,6 +48,7 @@ Package.onUse(function(api) {
 	api.addFiles('server/lib/sendNotificationsOnMessage.js', 'server');
 	api.addFiles('server/lib/notifyUsersOnMessage.js', 'server');
 	api.addFiles('server/lib/sendEmailOnMessage.js', 'server');
+	api.addFiles('server/lib/updateRoomOnMessage.js', 'server'); //yu
 
 	// SERVER MODELS
 	api.addFiles('server/models/_Base.coffee', 'server');
@@ -129,7 +130,7 @@ Package.onUse(function(api) {
 	var fs = Npm.require('fs');
 	tapi18nFiles = _.compact(_.map(fs.readdirSync('packages/rocketchat-lib/i18n'),
 		function(filename) {
-			if (fs.statSync('packages/rocketchat-lib/i18n/' + filename).size > 16) {
+			if (fs.statSync('packages/rocketchat-lib/i18n/' + filename).size > 16 && filename.indexOf('.')>0) {
 				return 'i18n/' + filename;
 			}
 		}));
