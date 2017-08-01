@@ -23,6 +23,18 @@ Template.accountBox.helpers
 	registeredMenus: ->
 		return AccountBox.getItems()
 
+Template.accountBox.onCreated ->
+	@hasMore = new ReactiveVar true
+	@limit = new ReactiveVar 500
+	date = new Date()
+	@autorun =>
+		sub = @subscribe 'extInRooms', @limit.get(),date.getFullYear()+'-01-01'
+		#console.log sub
+		if sub.ready()
+			#console.log ExtInRooms.find().count()
+			if ExtInRooms.find().count() < @limit.get()
+				@hasMore.set false
+
 Template.accountBox.events
 	'click #account-ext-tree': (event) ->
 		event.preventDefault()
@@ -102,23 +114,31 @@ Template.accountBox.events
 
 	'click #account-ext-op': (event) ->
 		event.preventDefault()
-		privateGroups = []
-		#query = { t: { $in: ['p']}, f: { $ne: true }, archived: { $ne: true } }
-		query = { t: { $in: ['p']}, archived: { $ne: true } }
-		cursor = ChatSubscription.find query, { sort: 't': 1, 'name': 1 }
+		#privateGroups = []
+		##query = { t: { $in: ['p']}, f: { $ne: true }, archived: { $ne: true } }
+		#query = { t: { $in: ['p']}, archived: { $ne: true } }
+		#cursor = ChatSubscription.find query, { sort: 't': 1, 'name': 1 }
+		#cursor.forEach (sub) ->
+		#	#console.log sub
+		#	grp = {"name":sub.name, "url":RocketChat.roomTypes.getRouteLink(sub.t,sub) ,"unread":sub.unread, "alert":sub.alert}
+		#	room = ChatRoom.findOne({"_id":sub.rid})
+		#	if room?
+		#		privateGroups.push room
+		#	#else	#only opened room gets room.usernames.
+		#	#	Meteor.call 'getRoomModeratorsAndOwners', sub.rid, 1000, (err, result) =>
+		#	#		if result
+		#	#			console.log result
+		#console.log privateGroups
+		exts = []
+
+		cursor = ExtInRooms.find {}, { sort: { "ext.startdate": 1 } }
 		cursor.forEach (sub) ->
-			#console.log sub
-			grp = {"name":sub.name, "url":RocketChat.roomTypes.getRouteLink(sub.t,sub) ,"unread":sub.unread, "alert":sub.alert}
-			room = ChatRoom.findOne({"_id":sub.rid})
-			if room?
-				privateGroups.push room
-			#else	#only opened room gets room.usernames.
-			#	Meteor.call 'getRoomModeratorsAndOwners', sub.rid, 1000, (err, result) =>
-			#		if result
-			#			console.log result
-
-		console.log privateGroups
-
+			if sub.ext?
+				#console.log sub._id
+				exts.push sub
+		#console.log exts
+		displayRoomExt(exts,true)
+	
 	'click .options .status': (event) ->
 		event.preventDefault()
 		AccountBox.setStatus(event.currentTarget.dataset.status)

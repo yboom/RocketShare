@@ -1,7 +1,13 @@
 <template name="flexTabBar">
 	{{#each buttons}}
-		<div class="tab-button {{active}} {{visible}}" title="{{title}}">
-			<i class="{{icon}}" aria-label="{{title}}" role="button" tabindex="0"></i>
-		</div>
+		{{#if title}}
+			<div class="tab-button {{active}} {{visible}}" title="{{title}}">
+				<i class="{{icon}}" aria-label="{{title}}" role="button" tabindex="0"></i>
+			</div>
+		{{else}}
+			<div class="tab-button room-ext {{active}} {{visible}}" title="room-ext">
+				<i class="{{icon}}" aria-label="room-ext" role="button" tabindex="0"></i>
+			</div>
+		{{/if}}
 	{{/each}}
 </template>

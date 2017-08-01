@@ -64,6 +64,7 @@ rocketchat:markdown
 rocketchat:me
 rocketchat:mentions
 rocketchat:mentions-flextab
+rocketchat:room-ext-flextab
 rocketchat:message-attachments
 rocketchat:message-pin
 rocketchat:message-star

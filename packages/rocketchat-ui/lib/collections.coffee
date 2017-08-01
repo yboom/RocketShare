@@ -4,6 +4,7 @@
 @RoomModeratorsAndOwners = new Mongo.Collection null
 @UserAndRoom = new Meteor.Collection null
 @CachedChannelList = new Meteor.Collection null
+@ExtInRooms = new Mongo.Collection 'ext_in_rooms'
 
 RocketChat.models.Users = _.extend {}, RocketChat.models.Users, Meteor.users
 RocketChat.models.Subscriptions = _.extend {}, RocketChat.models.Subscriptions, @ChatSubscription

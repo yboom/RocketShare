@@ -20,7 +20,7 @@ RocketChat.callbacks.add('afterSaveMessage', function(message, room) {
 			msg = msg.replace(/”/gm,'"');
 			msg = msg.replace(/‘/gm,'"');
 			msg = msg.replace(/’/gm,'"');
-			msg = msg.replace(/'/gm,'"');
+			//msg = msg.replace(/'/gm,'"');
 			json = JSON.parse(msg);
 			if(json && json instanceof Array)
 			{
