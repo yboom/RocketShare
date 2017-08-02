@@ -507,6 +507,12 @@ class RichMessageFormat
 				 		firstLine = false
 					message.html+="</table></div>"
 
+		msge = message.html
+		msge = msge.replace '：', ':'
+		msge = msge.replace '＝', '='
+		if msge.indexOf(':=') == 0
+			message.html = msge.replace ':=', '<span class="dim">'
+			message.html = message.html + '</span>'
 		# console.log JSON.stringify message
 		message.html = message.html.replace /\n/gm, '<br/>'
 
