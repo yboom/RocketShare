@@ -1,6 +1,7 @@
 window.displayRoomExt=function(ext,showTitle)
 {
 	var rooms = ext;
+	var isTitle = showTitle;
   	var weekDays = ["日","一","二","三","四","五","六"];
   	var dayClassName = ["tuanhao","people","hotel_name","hotel_fukuan","hotel_double","hotel_single","hotel_sidao","book_number","bus_company","bus_use_time","driver","dinner","jingdian","airport"];
 	var cal = "+-*/().%＋－＊／（）％";
@@ -207,14 +208,14 @@ window.displayRoomExt=function(ext,showTitle)
   	}
   	var div = $(".tablecontainer");
   	//console.log($(e).position());
-  	//console.log();
-  	divTop = $('#'+id).scrollTop();
-  	top = $(e).position().top+$(e).height()+23;
-  	if(divTop == 0) top += 28;
-  	left = $(e).position().left;
-  	w = width/5;
-  	h = height/3+5;
-  	cw = document.body.clientWidth || 0;
+  	//console.log($(e).offset());
+  	//console.log($('#'+id).scrollTop());
+  	var top = $(e).position().top+$(e).height()+23;
+  	//if(isTitle) top = top + 28;
+  	var left = $(e).position().left;
+  	var w = width/5;
+  	var h = height/3+5;
+  	var cw = document.body.clientWidth || 0;
   	if(left + w > width) left = left - w;
   	else if(left + w > cw) left = left - w;
   	if(left < 0) left = 0;
@@ -353,13 +354,12 @@ window.displayRoomExt=function(ext,showTitle)
   		json = r.ext.days[day][className];
   	}
   	var div = $(".tablehotel");
-  	divTop = $('#'+id).scrollTop();
-  	top = $(e).position().top+$(e).height()+23;
-  	if(divTop == 0) top += 28;
-  	left = $(e).position().left;
-  	w = width/5;
-  	h = height/3+5;
-  	cw = document.body.clientWidth || 0;
+  	var top = $(e).position().top+$(e).height()+23;
+  	//if(isTitle) top = top + 28;
+  	var left = $(e).position().left;
+  	var w = width/5;
+  	var h = height/3+5;
+  	var cw = document.body.clientWidth || 0;
   	if(left + w > width) left = left - w;
   	else if(left + w > cw) left = left - w;
   	if(left < 0) left = 0;
@@ -462,13 +462,13 @@ window.displayRoomExt=function(ext,showTitle)
   	var name = '付款情况';
   	var name_info = '付款详细信息';
   	if($(e).attr("class") == "book_number") name = "预订号",name_info = name+'信息';
-  	divTop = $('#'+id).scrollTop();
-  	top = $(e).position().top+$(e).height()+23;
-  	if(divTop == 0) top += 28;
-  	left = $(e).position().left;
-  	w = width/5;
-  	h = height/3+5;
-  	cw = document.body.clientWidth || 0;
+
+  	var top = $(e).position().top+$(e).height()+23;
+  	//if(isTitle) top = top + 28;
+  	var left = $(e).position().left;
+  	var w = width/5;
+  	var h = height/3+5;
+  	var cw = document.body.clientWidth || 0;
   	if(left + w > width) left = left - w;
   	else if(left + w > cw) left = left - w;
   	if(left < 0) left = 0;
@@ -542,13 +542,13 @@ window.displayRoomExt=function(ext,showTitle)
   	if($(e).attr("class") == "bus_company") name = "车公司";
   	else if($(e).attr("class") == "bus_use_time") name = "用车时间";
   	else if($(e).attr("class") == "driver") name = "司机"
-  	divTop = $('#'+id).scrollTop();
-  	top = $(e).position().top+$(e).height()+23;
-  	if(divTop == 0) top += 28;
-  	left = $(e).position().left;
-  	w = width/5;
-  	h = 90;//height/3+5;
-  	cw = document.body.clientWidth || 0;
+  	
+  	var top = $(e).position().top+$(e).height()+23;
+  	//if(isTitle) top = top + 28;
+  	var left = $(e).position().left;
+  	var w = width/5;
+  	var h = 90;//height/3+5;
+  	var cw = document.body.clientWidth || 0;
   	if(left + w > width) left = left - w;
   	else if(left + w > cw) left = left - w;
   	if(left < 0) left = 0;
@@ -623,13 +623,13 @@ window.displayRoomExt=function(ext,showTitle)
   		json = r.ext.days[day][className];
   	}
   	var div = $(".tabledinner");
-  	divTop = $('#'+id).scrollTop();
-  	top = $(e).position().top+$(e).height()+23;
-  	if(divTop == 0) top += 28;
-  	left = $(e).position().left;
-  	w = width/5;
-  	h = height/3+5-90;
-  	cw = document.body.clientWidth || 0;
+  	
+  	var top = $(e).position().top+$(e).height()+23;
+  	//if(isTitle) top = top + 28;
+  	var left = $(e).position().left;
+  	var w = width/5;
+  	var h = height/3+5-90;
+  	var cw = document.body.clientWidth || 0;
   	if(left + w > width) left = left - w;
   	else if(left + w > cw) left = left - w;
   	if(left < 0) left = 0;
@@ -744,13 +744,13 @@ window.displayRoomExt=function(ext,showTitle)
   		json = r.ext.days[day][className];
   	}
   	var div = $(".tablejingdian");
-  	divTop = $('#'+id).scrollTop();
-  	top = $(e).position().top+$(e).height()+23;
-  	if(divTop == 0) top += 28;
-  	left = $(e).position().left;
-  	w = width/5;
-  	h = height/3+5;
-  	cw = document.body.clientWidth || 0;
+  	
+  	var top = $(e).position().top+$(e).height()+23;
+  	//if(isTitle) top = top + 28;
+  	var left = $(e).position().left;
+  	var w = width/5;
+  	var h = height/3+5;
+  	var cw = document.body.clientWidth || 0;
   	if(left + w > width) left = left - w;
   	else if(left + w > cw) left = left - w;
   	if(left < 0) left = 0;
@@ -987,13 +987,14 @@ window.displayRoomExt=function(ext,showTitle)
   		json = r.ext.days[day][className];
   	}
   	var div = $(".tableairport");
-  	divTop = $('#'+id).scrollTop();
-  	top = $(e).position().top+$(e).height()+23;
-  	if(divTop == 0) top += 28;
-  	left = $(e).position().left;
-  	w = width/5;
-  	h = height/3+5;
-  	cw = document.body.clientWidth || 0;
+  	var divTop = $('#'+id).scrollTop();
+  	//console.log(divTop);
+  	var top = $(e).position().top+$(e).height()+23;
+  	//if(divTop == 0 && isTitle) top += 28;
+  	var left = $(e).position().left;
+  	var w = width/5;
+  	var h = height/3+5;
+  	var cw = document.body.clientWidth || 0;
   	if(left + w > width) left = left - w;
   	else if(left + w > cw) left = left - w;
   	if(left < 0) left = 0;
@@ -2318,7 +2319,7 @@ window.displayRoomExt=function(ext,showTitle)
   function tabPageHTML()
   {
   	var tab_html = '';
-  	tab_html+='<div id = "tab_page">';
+  	tab_html+='<div id = "tab_page" style="margin-top:-20px;">';
   	for(var i=0;i<15;i++)
   	{
   		if(i==0) tab_html += '<li class="on" onclick="window.changeTabPage(this,'+i+')">全部</li>';
@@ -2425,34 +2426,6 @@ window.displayRoomExt=function(ext,showTitle)
   		$(".tableTextAreaDiv").hide();
   	}
   });
-  /*$("#start-date").on('change',function(e){
-  	var startValue = $(e.target).val();
-  	var endValue = $("#end-date").val();
-  	if(endValue && endValue.length>0)
-  	{
-  		var startDate = new Date(startValue);
-  		var endDate = new Date(endValue);
-  		var time = endDate.getTime() - startDate.getTime();
-  		console.log(time/1000/3600/24);
-  		if( time<= 0)
-  		{
-  			alert('结束日期要大于开始日期');
-  		} 
-  		else
-  		{
-  			tr = $(e.target).parent().parent().parent();
-  			trs = $(tr).siblings("tr.day");
-  			if(trs && trs.length>0)
-  			{
-  				
-  			}
-  			else
-  			{
-  			
-  			}
-  		}
-  	}
-  });//*/
   $("#end-date").on('change',function(e){
   	var endValue = $(e.target).val();
   	var startValue = $("#start-date").val();
