@@ -2188,7 +2188,7 @@ window.displayRoomExt=function(ext,showTitle)
         {
         	var info = single.ext;
         	tbody_html +='<tr>';
-        	tbody_html +='<td colspan="15"><span>项目名称：<input id="'+single._id+'" style="width:300px;border:0px;height:25px;" class="name" placeholder="项目名称" onclick="window.daysInputClick(this)" value="'+(info.name ? info.name : "")+'" onchange="window.inputChange(this,\''+single._id+'\')" /></span>';
+        	tbody_html +='<td colspan="15"><span>项目名称：<input id="'+single._id+'" style="width:340px;border:0px;height:25px;" class="name" placeholder="项目名称" onclick="window.daysInputClick(this)" value="'+(info.name ? info.name : "")+'" onchange="window.inputChange(this,\''+single._id+'\')" /></span>';
         	tbody_html +='<span>组团单位：<input id="'+single._id+'" style="width:300px;border:0px;height:25px;" class="ztdanwei" placeholder="组团单位" onclick="window.daysInputClick(this)" value="'+(info.ztdanwei ? info.ztdanwei : "")+'"  onchange="window.inputChange(this,\''+single._id+'\')" /></span>';
         	tbody_html +='<span>团号：<input id="'+single._id+'" style="width:200px;border:0px;height:25px;" class="zttuanhao" placeholder="团号" onclick="window.daysInputClick(this)" value="'+(info.zttuanhao ? info.zttuanhao : "")+'"  onchange="window.inputChange(this,\''+single._id+'\')" /></span></td></tr>';
         	tbody_html +='<tr><td colspan="15"><span>大人人数：<input id="'+single._id+'" style="width:50px;border:0px;height:25px;" value="'+(info.adult_number ? info.adult_number : "")+'" class="adult_number" onclick="window.daysInputClick(this)" onchange="window.inputChange(this,\''+single._id+'\')" /></span>';
