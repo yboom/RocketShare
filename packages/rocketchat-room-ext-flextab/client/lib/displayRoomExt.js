@@ -1362,12 +1362,13 @@ window.displayRoomExt=function(ext,showTitle)
 				tr_html+='<td';
 				if(j==7) tr_html+=' style="width:110px;">';
 				else if(j==9) tr_html+=' style="width:80px;">';
+				else if(j==10) tr_html+=' style="max-width:70px;">';
 				else if(j==6) tr_html+=' style="width:60px;">';
 				else tr_html+= '>';
 				tr_html+='<input class="'+dayClassName[j]+'" onclick="window.showSimpleDiv(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			}
 			else if(j==11)
-				tr_html+='<td><input class="'+dayClassName[j]+'" onclick="window.showDinnerDiv(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
+				tr_html+='<td style="width:110px"><input class="'+dayClassName[j]+'" onclick="window.showDinnerDiv(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			else if(j==12)
 				tr_html+='<td><input class="'+dayClassName[j]+'" onclick="window.showJingDianDiv(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			else if(j==13)
@@ -2056,6 +2057,7 @@ window.displayRoomExt=function(ext,showTitle)
 				tr_html+='<td';
 				if(j==7) tr_html+=' style="width:110px;">';
 				else if(j==9) tr_html+=' style="width:80px;">';
+				else if(j==10) tr_html+=' style="max-width:70px;">';
 				else if(j==6) tr_html+=' style="width:60px;">';
 				else tr_html+= '>';
 				tr_html+='<input class="'+dayClassName[j]+'" onclick="window.showSimpleDiv(this)" value="'+value+'" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
@@ -2084,7 +2086,7 @@ window.displayRoomExt=function(ext,showTitle)
 					}
 					if(value.length>0) value = value.replace(/"/g,'&quot;');
 				}
-				tr_html+='<td><input class="'+dayClassName[j]+'" onclick="window.showDinnerDiv(this)" value="'+value+'" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
+				tr_html+='<td style="width:110px"><input class="'+dayClassName[j]+'" onclick="window.showDinnerDiv(this)" value="'+value+'" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			}
 			else if(j==12)
 			{
