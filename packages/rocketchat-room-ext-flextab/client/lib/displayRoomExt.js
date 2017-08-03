@@ -369,7 +369,7 @@ window.displayRoomExt=function(ext,showTitle)
   	  	$(div).css({'top':top+'px','left':left+'px'});
   	  	$(div).attr("id",$(e).attr("id"));
   	  	$(div).attr("data-day",$(e).attr("data-day"));
-  	  	if(json.hotel_base_xc)
+  	  	if(json.hotel_base_xc || json.hotel_base_dm)
   	  	{
   	  		for(var key in json)
   	  		{
@@ -542,6 +542,7 @@ window.displayRoomExt=function(ext,showTitle)
   	if($(e).attr("class") == "bus_company") name = "车公司";
   	else if($(e).attr("class") == "bus_use_time") name = "用车时间";
   	else if($(e).attr("class") == "driver") name = "司机"
+  	else if($(e).attr("class") == "hotel_sidao") name = "其他";
 
   	var top = $(e).position().top+$(e).height()+23;
   	//if(isTitle) top = top + 28;
@@ -762,7 +763,7 @@ window.displayRoomExt=function(ext,showTitle)
   	  	$(div).attr("data-day",$(e).attr("data-day"));
   	  	var fixed = $(div).find('.jingdian_fixed');
   	  	$(div).find('.jingdian_fixed').remove();
-  	  	if(json.jingdian1_base)
+  	  	if(json.jingdian1_base || json.jingdian2_base|| json.jingdian3_base|| json.jingdian4_base|| json.jingdian5_base)
   	  	{
   	  		for(var key in json)
   	  		{
@@ -1006,7 +1007,8 @@ window.displayRoomExt=function(ext,showTitle)
   	  	$(div).attr("data-day",$(e).attr("data-day"));
   	  	var fixed = $(div).find('.hb_fixed');
   	  	$(div).find('.hb_fixed').remove();
-  	  	if(json.hb_arrive1_base_hbh || json.hb_leave1_base_hbh)
+  	  	if(json.hb_arrive1_base_hbh|| json.hb_arrive2_base_hbh|| json.hb_arrive3_base_hbh|| json.hb_arrive4_base_hbh|| json.hb_arrive5_base_hbh
+  	  		|| json.hb_leave1_base_hbh|| json.hb_leave2_base_hbh|| json.hb_leave3_base_hbh|| json.hb_leave4_base_hbh|| json.hb_leave5_base_hbh)
   	  	{
   	  		for(var key in json)
   	  		{
@@ -1346,14 +1348,21 @@ window.displayRoomExt=function(ext,showTitle)
 					tr_html+='<td style="width:140px;"><input class="'+dayClassName[j]+'" onclick="window.showDiv(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'"/></td>';
 			}
 			else if(j==2)
-				tr_html+='<td style="width:300px;"><input class="'+dayClassName[j]+'" onclick="window.showHotelDiv(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
+				tr_html+='<td style="width:280px;"><input class="'+dayClassName[j]+'" onclick="window.showHotelDiv(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			else if(j==3 || j==7)
-				tr_html+='<td style="width:200px;"><input class="'+dayClassName[j]+'" onclick="window.showTextAreaDiv(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
-			else if(j==8 || j==9 || j==10)
+			{
+				tr_html+='<td';
+				if(j==7) tr_html+=' style="width:120px;">';
+				else if(j==3) tr_html+=' style="width:182px;">';
+				else tr_html+= '>';
+				tr_html+='<input class="'+dayClassName[j]+'" onclick="window.showTextAreaDiv(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
+			}
+			else if(j==6 || j==8 || j==9 || j==10)
 			{
 				tr_html+='<td';
 				if(j==7) tr_html+=' style="width:110px;">';
-				else if(j==9) tr_html+=' style="width:85px;">';
+				else if(j==9) tr_html+=' style="width:80px;">';
+				else if(j==6) tr_html+=' style="width:60px;">';
 				else tr_html+= '>';
 				tr_html+='<input class="'+dayClassName[j]+'" onclick="window.showSimpleDiv(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			}
@@ -1632,8 +1641,10 @@ window.displayRoomExt=function(ext,showTitle)
   			alert('结束日期要大于开始日期');
   			if(trs && trs.length>0)
   			{
-  				first = new Date(dateformat($($(trs[0]).children('td')[1]).text()));
-  				end = new Date(dateformat($($(trs[trs.length-1]).children('td')[1]).text()));
+  				//console.log($($(trs[0]).children('td')[1]).find('span').get(0));
+  				//console.log($($(trs[trs.length-1]).children('td')[1]).find('span').get(0));
+  				var first = new Date(dateformat($($($(trs[0]).children('td')[1]).find('span').get(0)).text()));
+  				var end = new Date(dateformat($($($(trs[trs.length-1]).children('td')[1]).find('span').get(0)).text()));
   				$(t).val(end.getFullYear()+'-'+ (end.getMonth()+1 < 10 ? '0'+(end.getMonth()+1) : end.getMonth()+1)+'-'+(end.getDate() < 10 ? '0'+end.getDate() : end.getDate()));
   				$("#"+startId).val(first.getFullYear()+'-'+ (first.getMonth()+1 < 10 ? ('0'+(first.getMonth()+1)) : (first.getMonth()+1))+'-'+(first.getDate() < 10 ? ('0'+first.getDate()) : (first.getDate())));
   			}
@@ -2023,25 +2034,29 @@ window.displayRoomExt=function(ext,showTitle)
 					//console.log(value);
 					if(value.length>0) value = value.replace(/"/g,'&quot;');
 					//console.log(value);
-				}
-				tr_html+='<td style="width:300px;"><input class="'+dayClassName[j]+'" onclick="window.showHotelDiv(this)" value="'+value+'" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
+				}// onmouseover="window.showHotelDiv(this)" onmouseout="window.daysInputClick(this)"
+				tr_html+='<td style="width:280px;"><input class="'+dayClassName[j]+'" onclick="window.showHotelDiv(this)"  value="'+value+'" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			}
 			else if(j==3 || j==7)
 			{
 				if(json[dayClassName[j]] && json[dayClassName[j]].textarea_base)
 					value = json[dayClassName[j]].textarea_base;
 				if(value.length>0) value = value.replace(/"/g,'&quot;');
-
-				tr_html+='<td style="width:200px;"><input class="'+dayClassName[j]+'" onclick="window.showTextAreaDiv(this)" value="'+value+'" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
+				tr_html+='<td';
+				if(j==7) tr_html+=' style="width:120px;">';
+				else if(j==3) tr_html+=' style="width:182px;">';
+				else tr_html+= '>';
+				tr_html+='<input class="'+dayClassName[j]+'" onclick="window.showTextAreaDiv(this)" value="'+value+'" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			}
-			else if(j==8 || j==9 || j==10)
+			else if(j==6 || j==8 || j==9 || j==10)
 			{
 				if(json[dayClassName[j]] && json[dayClassName[j]].simple_base)
 					value = json[dayClassName[j]].simple_base;
 				if(value.length>0) value = value.replace(/"/g,'&quot;');
 				tr_html+='<td';
 				if(j==7) tr_html+=' style="width:110px;">';
-				else if(j==9) tr_html+=' style="width:85px;">';
+				else if(j==9) tr_html+=' style="width:80px;">';
+				else if(j==6) tr_html+=' style="width:60px;">';
 				else tr_html+= '>';
 				tr_html+='<input class="'+dayClassName[j]+'" onclick="window.showSimpleDiv(this)" value="'+value+'" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			}
@@ -2349,7 +2364,7 @@ window.displayRoomExt=function(ext,showTitle)
 	html+='</th><th class="third" rowspan="2"><div class="th-inner">车公司</div></th><th class="third" rowspan="2"><div class="th-inner">用车时间</div></th><th class="third" rowspan="2"><div class="th-inner">司机</div>';
 	html+='</th><th class="third" rowspan="2"><div class="th-inner">用餐</div></th><th class="third" rowspan="2"><div class="th-inner">景点门票</div></th><th class="third" rowspan="2"><div class="th-inner">抵达／离开时间</div>';
 	html+='</th></tr><tr class="complex-bottom"><th class="second"><div class="th-inner">酒店名</div></th><th class="second"><div class="th-inner">付款</div></th><th class="second"><div class="th-inner">双</div>';
-	html+='</th><th class="second"><div class="th-inner">单</div></th><th class="second"><div class="th-inner">司导</div></th></tr></thead><tbody class="tbody_content">';
+	html+='</th><th class="second"><div class="th-inner">单</div></th><th class="second"><div class="th-inner">其他</div></th></tr></thead><tbody class="tbody_content">';
 
     html+= tbodyHTML(ext);
 
@@ -2425,6 +2440,502 @@ window.displayRoomExt=function(ext,showTitle)
   		$(".tableTextAreaDiv").hide();
   	}
   });
+  /*function printTrHtml(date,begin,length,rid)
+  {
+  	var tr_html = '';
+  	var startDate = date;
+  	for(var i=begin;i<=length;i++)
+	{
+		tr_html+='<tr class="day" data-days="'+(i+1)+'">';
+		w = startDate.getDay();
+		month = startDate.getMonth()+1;
+		if(month>12) month = 1;
+		if(w == 0 || w==5 || w==6)
+		{
+			tr_html +='<td><span style="color:red;">';
+		}
+		else
+		{
+			tr_html +='<td><span>';
+		}
+		day = startDate.getDate();
+		if(day<10) day = '0'+day;
+		tr_html +=weekDays[w]+'</span></td><td><span style="display:none;">'+month+'/'+day+'/'+startDate.getFullYear()+'</span><span>'+month+'/'+day+'</span></td>'
+		for(var j=0;j<14;j++)
+		{
+			if(j==0)
+			{
+				//if(i==0)
+				//	tr_html+='<td><input class="'+dayClassName[j]+'" onclick="window.daysInputClick(this)" onchange="window.daysInputChange(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
+				//else
+					tr_html+='<td style="width:140px;"><span style="width:100%;border:0px;height:25px;"></span></td>';
+			}
+			else if(j==2)
+				tr_html+='<td style="width:300px;"><span style="width:100%;border:0px;height:25px;"></span></td>';
+			else if(j==3 || j==7)
+				tr_html+='<td style="width:200px;"><span style="width:100%;border:0px;height:25px;"></span></td>';
+			else if(j==8 || j==9 || j==10)
+			{
+				tr_html+='<td';
+				if(j==7) tr_html+=' style="width:110px;">';
+				else if(j==9) tr_html+=' style="width:80px;">';
+				else tr_html+= '>';
+				tr_html+='<span style="width:100%;border:0px;height:25px;"></span></td>';
+			}
+			else if(j==11 || j==12 || j==13)
+				tr_html+='<td><span style="width:100%;border:0px;height:25px;"></span></td>';
+			else
+			{
+				if(j==1) continue;
+				tr_html+='<td style="width:';
+				if(j==1) tr_html+='60px;">';
+				else tr_html+='36px;">';
+				tr_html +='<span style="width:100%;border:0px;height:25px;"></span></td>';
+			}
+		}
+		tr_html += '</tr>';
+		startDate.setDate(startDate.getDate()+1);
+	}
+  	return tr_html;
+  }
+  function printTrHTMLByJSON(json,rid,key)
+  {
+  	tr_html = '';
+  	i = key - 1;
+  	var startDate = new Date(dateformat(json.date));
+  	tr_html+='<tr  id="'+rid+'" class="day" data-days="'+(i+1)+'">';
+		w = startDate.getDay();
+		if(w == 0 || w==5 || w==6)
+		{
+			tr_html +='<td><span style="color:red;">';
+		}
+		else
+		{
+			tr_html +='<td><span>';
+		}
+		day = startDate.getDate();
+		if(day<10) day = '0'+day;
+		tr_html += (json.week ? json.week : weekDays[w])+'</span></td><td><span style="display:none;">'+json.date+'</span><span>'+(startDate.getMonth()+1)+'/'+day+'</span></td>'
+		for(var j=0;j<14;j++)
+		{
+			var valueHTML = '';
+			if(j==0)
+			{
+				if(json[dayClassName[j]])
+				{
+					valueHTML='<div><span style="width:75%;">姓名：'+(json[dayClassName[j]].th_base_name ? json[dayClassName[j]].th_base_name : "")+'</span></div>';
+  					valueHTML += '<div><span style="width:75%;">城市：'+(json[dayClassName[j]].th_base_city ? json[dayClassName[j]].th_base_city : "")+'</span></div>';
+  					valueHTML += '<div><span style="width:75%;">电话：'+(json[dayClassName[j]].th_xmdh ? json[dayClassName[j]].th_xmdh : "")+'</span></div>';
+  					valueHTML += '<div><span style="width:75%;">工资：'+(json[dayClassName[j]].th_gongzi ? json[dayClassName[j]].th_gongzi : "")+'</span>';
+  					var r='';
+  					if(json[dayClassName[j]].th_gongzi)
+  					{
+  						var expression = getExpression(json[dayClassName[j]].th_gongzi);
+  						r = eval(expression);
+  						if(isNaN(r))
+  						{
+  							r = '';
+  						}
+  					}
+  					valueHTML += '<span style="width:15%">='+r+'</span></div>';
+  					valueHTML += '<div><span style="width:75%;">小费：'+(json[dayClassName[j]].th_fee ? json[dayClassName[j]].th_fee : "")+'</span>';
+  					r='';
+  					if(json[dayClassName[j]].th_fee)
+  					{
+  						var expression = getExpression(json[dayClassName[j]].th_fee);
+  						r = eval(expression);
+  						if(isNaN(r))
+  						{
+  							r = '';
+  						}
+  					}
+  					valueHTML += '<span style="width:15%">='+r+'</span></div>';
+  					valueHTML += '<div><span style="width:75%;">餐补：'+(json[dayClassName[j]].th_cfbz ? json[dayClassName[j]].th_cfbz : "")+'</span>';
+  					r='';
+  					if(json[dayClassName[j]].th_cfbz)
+  					{
+  						var expression = getExpression(json[dayClassName[j]].th_cfbz);
+  						r = eval(expression);
+  						if(isNaN(r))
+  						{
+  							r = '';
+  						}
+  					}
+  					valueHTML += '<span style="width:15%">='+r+'</span></div>';
+  					valueHTML += '<div><span style="width:75%;">垫付：'+(json[dayClassName[j]].th_df ? json[dayClassName[j]].th_df : "")+'</span>';
+  					r='';
+  					if(json[dayClassName[j]].th_df)
+  					{
+  						var expression = getExpression(json[dayClassName[j]].th_df);
+  						r = eval(expression);
+  						if(isNaN(r))
+  						{
+  							r = '';
+  						}
+  					}
+  					valueHTML += '<span style="width:15%">='+r+'</span></div>';
+  					valueHTML += '<div><span style="width:75%">合计：'+(json[dayClassName[j]].th_total ? json[dayClassName[j]].th_total : "")+'</span></div>';
+  					valueHTML += '<div><span style="width:95%">结算：'+(json[dayClassName[j]].th_jiesuan ? json[dayClassName[j]].th_jiesuan : "")+'</span></div>';
+  					valueHTML += '<div><span> style="width:95%"报价：'+(json[dayClassName[j]].th_baojie ? json[dayClassName[j]].th_baojie : "")+'</span></div>';
+  					valueHTML += '</div>';
+				}
+				tr_html+='<td style="width:140px;">'+valueHTML+'</td>';
+			}
+			else if(j==2)
+			{
+				if(json[dayClassName[j]])
+				{
+					valueHTML = '<div style="margin-left:6px;margin-top:2px;"><div><span style="width:96.5%;">行程：'+(json[dayClassName[j]].hotel_base_xc ? json[dayClassName[j]].hotel_base_xc : "")+'</span></div>';
+  		valueHTML += '<div><span style="width:96.5%;">酒店名：'+(json[dayClassName[j]].hotel_base_dm ? json[dayClassName[j]].hotel_base_dm : "")+'</span></div>';
+  		valueHTML += '<div><span style="width:96.5%;">星级：'+(json[dayClassName[j]].hotel_xingji ? json[dayClassName[j]].hotel_xingji : "")+'</span></div>';
+  		valueHTML += '<div><span style="width:96.5%;">地址：'+(json[dayClassName[j]].hotel_address ? json[dayClassName[j]].hotel_address : "")+'</span></div>';
+  		valueHTML += '<div><span style="margin-left:10px;width:95%;height:120px;">报价：'+(json[dayClassName[j]].hotel_baojie ? json[dayClassName[j]].hotel_baojie : "")+'</span></div>';
+  		valueHTML += '<div>取消政策：<div style="margin-left:15px;">';
+  		valueHTML += '<div><span style="width:100%;">1：'+(json[dayClassName[j]].hotel_cancelzc1_day ? json[dayClassName[j]].hotel_cancelzc1_day : "-1")+'天内，退款';
+  		valueHTML += ''+(json[dayClassName[j]].hotel_cancelzc1_bfb ? json[dayClassName[j]].hotel_cancelzc1_bfb : "0")+'％，说明：';
+  		valueHTML += ''+(json[dayClassName[j]].hotel_cancelzc1_info ? json[dayClassName[j]].hotel_cancelzc1_info : "无")+'</span></div>';
+
+  		valueHTML += '<div><span style="width:100%;">2：'+(json[dayClassName[j]].hotel_cancelzc2_day ? json[dayClassName[j]].hotel_cancelzc2_day : "-1")+'天内，退款';
+  		valueHTML += ''+(json[dayClassName[j]].hotel_cancelzc2_bfb ? json[dayClassName[j]].hotel_cancelzc2_bfb : "0")+'％，说明：';
+  		valueHTML += ''+(json[dayClassName[j]].hotel_cancelzc2_info ? json[dayClassName[j]].hotel_cancelzc2_info : "无")+'</span></div>';
+
+  		valueHTML += '<div><span style="width:100%;">3：'+(json[dayClassName[j]].hotel_cancelzc3_day ? json[dayClassName[j]].hotel_cancelzc3_day : "-1")+'天内，退款';
+  		valueHTML += ''+(json[dayClassName[j]].hotel_cancelzc3_bfb ? json[dayClassName[j]].hotel_cancelzc3_bfb : "0")+'％，说明：';
+  		valueHTML += ''+(json[dayClassName[j]].hotel_cancelzc3_info ? json[dayClassName[j]].hotel_cancelzc3_info : "无")+'</span></div>';
+
+  		valueHTML += '<div><span style="width:100%;">4：'+(json[dayClassName[j]].hotel_cancelzc4_day ? json[dayClassName[j]].hotel_cancelzc4_day : "-1")+'天内，退款';
+  		valueHTML += ''+(json[dayClassName[j]].hotel_cancelzc4_bfb ? json[dayClassName[j]].hotel_cancelzc4_bfb : "0")+'％，说明：';
+  		valueHTML += ''+(json[dayClassName[j]].hotel_cancelzc4_info ? json[dayClassName[j]].hotel_cancelzc4_info : "无")+'</span></div>';
+
+  		valueHTML += '<div><span style="width:100%;">5：'+(json[dayClassName[j]].hotel_cancelzc5_day ? json[dayClassName[j]].hotel_cancelzc5_day : "-1")+'天内，退款';
+  		valueHTML += ''+(json[dayClassName[j]].hotel_cancelzc5_bfb ? json[dayClassName[j]].hotel_cancelzc5_bfb : "0")+'％，说明：';
+  		valueHTML += ''+(json[dayClassName[j]].hotel_cancelzc5_info ? json[dayClassName[j]].hotel_cancelzc5_info : "无")+'</span></div>';
+  		valueHTML += '</div></div>';
+				}
+				tr_html+='<td style="width:300px;">'+valueHTML+'</td>';
+			}
+			else if(j==3 || j==7)
+			{
+				var name = '付款';
+			  	if(dayClassName[j] == "book_number") name = "预订号";
+				valueHTML = '<div style="margin-left:6px;margin-top:2px;"><div><span style="width:100%;"><span class="class_name">'+name+'：</span>'+(json[dayClassName[j]].textarea_base ? json[dayClassName[j]].textarea_base : "")+'</span></div>';
+  				valueHTML += '</div>';
+				tr_html+='<td style="width:200px;">'+valueHTML+'</td>';
+			}
+			else if(j==8 || j==9 || j==10)
+			{
+				var name = "";
+  				if(dayClassName[j] == "bus_company") name = "车公司";
+  				else if(dayClassName[j] == "bus_use_time") name = "用车时间";
+  				else if(dayClassName[j] == "driver") name = "司机"
+				valueHTML = '<div style="margin-left:6px;margin-top:2px;"><div><span style="width:100%;"><span class="class_name">'+name+'：</span>'+(json[dayClassName[j]].simple_base ? json[dayClassName[j]].simple_base : "")+'" /></span></div>';
+  				valueHTML += '</div>';
+
+				tr_html+='<td';
+				if(j==7) tr_html+=' style="width:110px;">';
+				else if(j==9) tr_html+=' style="width:80px;">';
+				else tr_html+= '>';
+				tr_html+=''+valueHTML+'</td>';
+			}
+			else if(j==11)
+			{
+				if(json[dayClassName[j]])
+				{
+					valueHTML = '<div style="margin-left:6px;margin-top:2px;">';
+  		valueHTML += '<div><span style="margin-left:10px;width:95%;height:30px;">L午餐：'+(json[dayClassName[j]].lunch_base ? json[dayClassName[j]].lunch_base : "")+'</span></div>';
+  		valueHTML += '<div><spanstyle="margin-left:10px;width:95%;">午餐注释：'+(json[dayClassName[j]].lunch_info ? json[dayClassName[j]].lunch_info : "")+'</span></div>';
+  		valueHTML += '<div><span style="margin-left:10px;width:95%;height:30px;">D晚餐：'+(json.dinner_base ? json[dayClassName[j]].dinner_base : "")+'</span></div>';
+  		valueHTML += '<div><spanstyle="margin-left:10px;width:95%;">晚餐注释：'+(json[dayClassName[j]].dinner_info ? json[dayClassName[j]].dinner_info : "")+'</span></div>';
+  		valueHTML += '</div>';
+				}
+				tr_html+='<td>'+valueHTML+'</td>';
+			}
+			else if(j==12)
+			{
+				if(json[dayClassName[j]])
+				{
+					valueHTML = '<div class="jingdian_fixed" style="background-color:rgba(238, 238, 238, 0.8);width:'+(w-18)+'px;position:fixed;z-index:3;margin-bottom:5px;line-height: 22px;"><label style="margin-left:6px;font-size:18px;">景点门票信息</label></div><div style="margin-left:6px;margin-top:25px;"><div style="margin-left:6px;">';
+  		valueHTML +='<div><span style="margin-left:10px;width:95%;height:30px;">1、名称：<input style="margin-left:10px;width:95%;height:30px;" placeholder="名称" class="jingdian1_base" value="'+(json.jingdian1_base ? json.jingdian1_base.replace(/"/g,'&quot;') : "")+'" /></span></div>';
+  		valueHTML +='<div>活动时间：<div style="margin-left:8px;">';
+  		valueHTML +='<div>开始时间：<input style="margin-left:10px;width:95%;height:30px;" placeholder="开始时间" class="jingdian1_xq_hdsj_start" value="'+(json.jingdian1_xq_hdsj_start ? json.jingdian1_xq_hdsj_start : "")+'" /></div>';
+  		valueHTML +='<div>结束时间：<input style="margin-left:10px;width:95%;height:30px;" placeholder="结束时间" class="jingdian1_xq_hdsj_end" value="'+(json.jingdian1_xq_hdsj_end ? json.jingdian1_xq_hdsj_end : "")+'" /></div></div></div>';
+  		valueHTML +='<div>最晚付款时间:<input style="margin-left:10px;width:95%;height:30px;" placeholder="最晚付款时间" class="jingdian1_xq_zwfksj" value="'+(json.jingdian1_xq_zwfksj ? json.jingdian1_xq_zwfksj : "")+'" /></div>';
+  		valueHTML +='<div>价格：<input style="margin-left:2px;width:68%;height:30px;" placeholder="价格" onblur="window.computeJingDianAndAirPortResult(this)" class="jingdian1_xq_price" value="'+(json.jingdian1_xq_price ? json.jingdian1_xq_price.replace(/"/g,'&quot;') : "")+'" />';
+  		var r = '';
+  		if(json.jingdian1_xq_price)
+  		{
+  			var expression = getExpression(json.jingdian1_xq_price);
+  			r = eval(expression);
+  			if(isNaN(r))
+  			{
+  				r = '';
+  			}
+  		}
+  		valueHTML +='<span style="width:15%">='+r+'</span></div>';
+  		valueHTML +='<div>预订号：<input style="margin-left:10px;width:95%;height:30px;" placeholder="预订号" class="jingdian1_xq_ydh" value="'+(json.jingdian1_xq_ydh ? json.jingdian1_xq_ydh.replace(/"/g,'&quot;') : "")+'" /></div>';
+  		valueHTML +='<div>结算情况：<input style="margin-left:10px;width:95%;height:30px;" placeholder="结算情况" class="jingdian1_xq_jsqk" value="'+(json.jingdian1_xq_jsqk ? json.jingdian1_xq_jsqk.replace(/"/g,'&quot;') : "")+'" /></div>';
+  		valueHTML +='<div>其他：<textarea style="margin-left:10px;width:95%;height:'+((h-150)>120 ?(h-150):120)+'px;" placeholder="其他信息" class="jingdian1_xq_other">'+(json.jingdian1_xq_other ? json.jingdian1_xq_other : "")+'</textarea></div>';
+  		//info_html +='</div></div>';
+
+  		info_html +='<div><span>2、名称：<input style="margin-left:10px;width:95%;height:30px;" placeholder="名称" class="jingdian2_base" value="'+(json.jingdian2_base ? json.jingdian2_base.replace(/"/g,'&quot;') : "")+'" /></span></div>';
+  		//info_html +='<div><span>景点2详情：<textarea style="margin-left:10px;width:95%;height:'+(h-150)+'px;" placeholder="景点2详情" class="jingdian2_xq">'+(json.jingdian2_xq ? json.jingdian2_xq : "")+'</textarea></span></div>';
+  		//info_html +='<div>详情：<div style="margin-left:13px;">';
+  		//info_html +='<div>活动时间：<textarea style="margin-left:10px;width:95%;height:'+((h-190)>100 ?(h-190):100)+'px;" placeholder="活动时间" class="jingdian2_xq_hdsj">'+(json.jingdian2_xq_hdsj ? json.jingdian2_xq_hdsj : "")+'</textarea></div>';
+  		info_html +='<div>活动时间：<div style="margin-left:8px;">';
+  		info_html +='<div>开始时间：<input style="margin-left:10px;width:95%;height:30px;" placeholder="开始时间" class="jingdian2_xq_hdsj_end" value="'+(json.jingdian2_xq_hdsj_start ? json.jingdian2_xq_hdsj_start : "")+'" /></div>';
+  		info_html +='<div>结束时间：<input style="margin-left:10px;width:95%;height:30px;" placeholder="结束时间" class="jingdian2_xq_hdsj_end" value="'+(json.jingdian2_xq_hdsj_end ? json.jingdian2_xq_hdsj_end : "")+'" /></div></div></div>';
+  		info_html +='<div>最晚付款时间:<input style="margin-left:10px;width:95%;height:30px;" placeholder="最晚付款时间" class="jingdian2_xq_zwfksj" value="'+(json.jingdian2_xq_zwfksj ? json.jingdian2_xq_zwfksj : "")+'" /></div>';
+  		info_html +='<div>价格：<input style="margin-left:2px;width:68%;height:30px;" placeholder="价格" onblur="window.computeJingDianAndAirPortResult(this)" class="jingdian2_xq_price" value="'+(json.jingdian2_xq_price ? json.jingdian2_xq_price.replace(/"/g,'&quot;') : "")+'" />';
+  		r = '';
+  		if(json.jingdian2_xq_price)
+  		{
+  			var expression = getExpression(json.jingdian2_xq_price);
+  			r = eval(expression);
+  			if(isNaN(r))
+  			{
+  				r = '';
+  			}
+  		}
+  		info_html +='<span style="width:15%">='+r+'</span></div>';
+  		info_html +='<div>预订号：<input style="margin-left:10px;width:95%;height:30px;" placeholder="预订号" class="jingdian2_xq_ydh" value="'+(json.jingdian2_xq_ydh ? json.jingdian2_xq_ydh.replace(/"/g,'&quot;') : "")+'" /></div>';
+  		info_html +='<div>结算情况：<input style="margin-left:10px;width:95%;height:30px;" placeholder="结算情况" class="jingdian2_xq_jsqk" value="'+(json.jingdian2_xq_jsqk ? json.jingdian2_xq_jsqk.replace(/"/g,'&quot;') : "")+'" /></div>';
+  		info_html +='<div>其他：<textarea style="margin-left:10px;width:95%;height:'+((h-150)>120 ?(h-150):120)+'px;" placeholder="其他信息" class="jingdian2_xq_other">'+(json.jingdian2_xq_other ? json.jingdian2_xq_other : "")+'</textarea></div>';
+  		//info_html +='</div></div>';
+
+  		info_html +='<div><span>3、名称：<input style="margin-left:10px;width:95%;height:30px;" placeholder="名称" class="jingdian3_base" value="'+(json.jingdian3_base ? json.jingdian3_base.replace(/"/g,'&quot;') : "")+'" /></span></div>';
+  		//info_html +='<div><span>景点3详情：<textarea style="margin-left:10px;width:95%;height:'+(h-150)+'px;" placeholder="景点3详情" class="jingdian3_xq">'+(json.jingdian3_xq ? json.jingdian3_xq : "")+'</textarea></span></div>';
+  		//info_html +='<div>详情：<div style="margin-left:13px;">';
+  		//info_html +='<div>活动时间：<textarea style="margin-left:10px;width:95%;height:'+((h-190)>100 ?(h-190):100)+'px;" placeholder="活动时间" class="jingdian3_xq_hdsj">'+(json.jingdian3_xq_hdsj ? json.jingdian3_xq_hdsj : "")+'</textarea></div>';
+  		info_html +='<div>活动时间：<div style="margin-left:8px;">';
+  		info_html +='<div>开始时间：<input style="margin-left:10px;width:95%;height:30px;" placeholder="开始时间" class="jingdian3_xq_hdsj_end" value="'+(json.jingdian3_xq_hdsj_start ? json.jingdian3_xq_hdsj_start : "")+'" /></div>';
+  		info_html +='<div>结束时间：<input style="margin-left:10px;width:95%;height:30px;" placeholder="结束时间" class="jingdian3_xq_hdsj_end" value="'+(json.jingdian3_xq_hdsj_end ? json.jingdian3_xq_hdsj_end : "")+'" /></div></div></div>';
+  		info_html +='<div>最晚付款时间:<input style="margin-left:10px;width:95%;height:30px;" placeholder="最晚付款时间" class="jingdian3_xq_zwfksj" value="'+(json.jingdian3_xq_zwfksj ? json.jingdian3_xq_zwfksj : "")+'" /></div>';
+  		info_html +='<div>价格：<input style="margin-left:2px;width:68%;height:30px;" placeholder="价格" onblur="window.computeJingDianAndAirPortResult(this)" class="jingdian3_xq_price" value="'+(json.jingdian3_xq_price ? json.jingdian3_xq_price.replace(/"/g,'&quot;') : "")+'" />';
+  		r = '';
+  		if(json.jingdian3_xq_price)
+  		{
+  			var expression = getExpression(json.jingdian3_xq_price);
+  			r = eval(expression);
+  			if(isNaN(r))
+  			{
+  				r = '';
+  			}
+  		}
+  		info_html +='<span style="width:15%">='+r+'</span></div>';
+  		info_html +='<div>预订号：<input style="margin-left:10px;width:95%;height:30px;" placeholder="预订号" class="jingdian3_xq_ydh" value="'+(json.jingdian3_xq_ydh ? json.jingdian3_xq_ydh.replace(/"/g,'&quot;') : "")+'" /></div>';
+  		info_html +='<div>结算情况：<input style="margin-left:10px;width:95%;height:30px;" placeholder="结算情况" class="jingdian3_xq_jsqk" value="'+(json.jingdian3_xq_jsqk ? json.jingdian3_xq_jsqk.replace(/"/g,'&quot;') : "")+'" /></div>';
+  		info_html +='<div>其他：<textarea style="margin-left:10px;width:95%;height:'+((h-150)>120 ?(h-150):120)+'px;" placeholder="其他信息" class="jingdian3_xq_other">'+(json.jingdian3_xq_other ? json.jingdian3_xq_other : "")+'</textarea></div>';
+  		//info_html +='</div></div>';
+
+  		info_html +='<div><span>4、名称：<input style="margin-left:10px;width:95%;height:30px;" placeholder="名称" class="jingdian4_base" value="'+(json.jingdian4_base ? json.jingdian4_base.replace(/"/g,'&quot;') : "")+'" /></span></div>';
+  		//info_html +='<div><span>景点4详情：<textarea style="margin-left:10px;width:95%;height:'+(h-150)+'px;" placeholder="景点4详情" class="jingdian4_xq">'+(json.jingdian4_xq ? json.jingdian4_xq : "")+'</textarea></span></div>';
+  		//info_html +='<div>详情：<div style="margin-left:13px;">';
+  		//info_html +='<div>活动时间：<textarea style="margin-left:10px;width:95%;height:'+((h-190)>100 ?(h-190):100)+'px;" placeholder="活动时间" class="jingdian4_xq_hdsj">'+(json.jingdian4_xq_hdsj ? json.jingdian4_xq_hdsj : "")+'</textarea></div>';
+  		info_html +='<div>活动时间：<div style="margin-left:8px;">';
+  		info_html +='<div>开始时间：<input style="margin-left:10px;width:95%;height:30px;" placeholder="开始时间" class="jingdian4_xq_hdsj_end" value="'+(json.jingdian4_xq_hdsj_start ? json.jingdian4_xq_hdsj_start : "")+'" /></div>';
+  		info_html +='<div>结束时间：<input style="margin-left:10px;width:95%;height:30px;" placeholder="结束时间" class="jingdian4_xq_hdsj_end" value="'+(json.jingdian4_xq_hdsj_end ? json.jingdian4_xq_hdsj_end : "")+'" /></div></div></div>';
+  		info_html +='<div>最晚付款时间:<input style="margin-left:10px;width:95%;height:30px;" placeholder="最晚付款时间" class="jingdian4_xq_zwfksj" value="'+(json.jingdian4_xq_zwfksj ? json.jingdian4_xq_zwfksj : "")+'" /></div>';
+  		info_html +='<div>价格：<input style="margin-left:2px;width:68%;height:30px;" placeholder="价格" onblur="window.computeJingDianAndAirPortResult(this)" class="jingdian4_xq_price" value="'+(json.jingdian4_xq_price ? json.jingdian4_xq_price.replace(/"/g,'&quot;') : "")+'" />';
+  		r = '';
+  		if(json.jingdian4_xq_price)
+  		{
+  			var expression = getExpression(json.jingdian4_xq_price);
+  			r = eval(expression);
+  			if(isNaN(r))
+  			{
+  				r = '';
+  			}
+  		}
+  		info_html +='<span style="width:15%">='+r+'</span></div>';
+  		info_html +='<div>预订号：<input style="margin-left:10px;width:95%;height:30px;" placeholder="预订号" class="jingdian4_xq_ydh" value="'+(json.jingdian4_xq_ydh ? json.jingdian4_xq_ydh.replace(/"/g,'&quot;') : "")+'" /></div>';
+  		info_html +='<div>结算情况：<input style="margin-left:10px;width:95%;height:30px;" placeholder="结算情况" class="jingdian4_xq_jsqk" value="'+(json.jingdian4_xq_jsqk ? json.jingdian4_xq_jsqk.replace(/"/g,'&quot;') : "")+'" /></div>';
+  		info_html +='<div>其他：<textarea style="margin-left:10px;width:95%;height:'+((h-150)>120 ?(h-150):120)+'px;" placeholder="其他信息" class="jingdian4_xq_other">'+(json.jingdian4_xq_other ? json.jingdian4_xq_other : "")+'</textarea></div>';
+  		//info_html +='</div></div>';
+
+  		info_html +='<div><span>5、名称：<input style="margin-left:10px;width:95%;height:30px;" placeholder="名称" class="jingdian5_base" value="'+(json.jingdian5_base ? json.jingdian5_base.replace(/"/g,'&quot;') : "")+'" /></span></div>';
+  		//info_html +='<div><span>景点5详情：<textarea style="margin-left:10px;width:95%;height:'+(h-150)+'px;" placeholder="景点5详情" class="jingdian5_xq">'+(json.jingdian5_xq ? json.jingdian5_xq : "")+'</textarea></span></div>';
+  		//info_html +='<div>详情：<div style="margin-left:13px;">';
+  		//info_html +='<div>活动时间：<textarea style="margin-left:10px;width:95%;height:'+((h-190)>100 ?(h-190):100)+'px;" placeholder="活动时间" class="jingdian5_xq_hdsj">'+(json.jingdian5_xq_hdsj ? json.jingdian5_xq_hdsj : "")+'</textarea></div>';
+  		info_html +='<div>活动时间：<div style="margin-left:8px;">';
+  		info_html +='<div>开始时间：<input style="margin-left:10px;width:95%;height:30px;" placeholder="开始时间" class="jingdian5_xq_hdsj_end" value="'+(json.jingdian5_xq_hdsj_start ? json.jingdian5_xq_hdsj_start : "")+'" /></div>';
+  		info_html +='<div>结束时间：<input style="margin-left:10px;width:95%;height:30px;" placeholder="结束时间" class="jingdian5_xq_hdsj_end" value="'+(json.jingdian5_xq_hdsj_end ? json.jingdian5_xq_hdsj_end : "")+'" /></div></div></div>';
+  		info_html +='<div>最晚付款时间:<input style="margin-left:10px;width:95%;height:30px;" placeholder="最晚付款时间" class="jingdian5_xq_zwfksj" value="'+(json.jingdian5_xq_zwfksj ? json.jingdian5_xq_zwfksj : "")+'" /></div>';
+  		info_html +='<div>价格：<input style="margin-left:2px;width:68%;height:30px;" placeholder="价格" onblur="window.computeJingDianAndAirPortResult(this)" class="jingdian5_xq_price" value="'+(json.jingdian5_xq_price ? json.jingdian5_xq_price.replace(/"/g,'&quot;') : "")+'" />';
+  		r = '';
+  		if(json.jingdian5_xq_price)
+  		{
+  			var expression = getExpression(json.jingdian5_xq_price);
+  			r = eval(expression);
+  			if(isNaN(r))
+  			{
+  				r = '';
+  			}
+  		}
+  		info_html +='<span style="width:15%">='+r+'</span></div>';
+  		info_html +='<div>预订号：<input style="margin-left:10px;width:95%;height:30px;" placeholder="预订号" class="jingdian5_xq_ydh" value="'+(json.jingdian5_xq_ydh ? json.jingdian5_xq_ydh.replace(/"/g,'&quot;') : "")+'" /></div>';
+  		info_html +='<div>结算情况：<input style="margin-left:10px;width:95%;height:30px;" placeholder="结算情况" class="jingdian5_xq_jsqk" value="'+(json.jingdian5_xq_jsqk ? json.jingdian5_xq_jsqk.replace(/"/g,'&quot;') : "")+'" /></div>';
+  		info_html +='<div>其他：<textarea style="margin-left:10px;width:95%;height:'+((h-150)>120 ?(h-150):120)+'px;" placeholder="其他信息" class="jingdian5_xq_other">'+(json.jingdian5_xq_other ? json.jingdian5_xq_other : "")+'</textarea></div>';
+  		//info_html +='</div></div>';
+  		info_html +='</div></div>';
+				}
+				tr_html+='<td>'+valueHTML+'</td>';
+			}
+			else if(j==13)
+			{
+				if(json[dayClassName[j]]&&(json[dayClassName[j]].hb_arrive1_base_hbh||json[dayClassName[j]].hb_arrive2_base_hbh||json[dayClassName[j]].hb_arrive3_base_hbh||json[dayClassName[j]].hb_arrive4_base_hbh||json[dayClassName[j]].hb_arrive5_base_hbh))
+				{
+					var hb_index = 0;
+					if(json[dayClassName[j]].hb_arrive1_base_hbh) hb_index = 1;
+					else if(json[dayClassName[j]].hb_arrive2_base_hbh) hb_index = 2;
+					else if(json[dayClassName[j]].hb_arrive3_base_hbh) hb_index = 3;
+					else if(json[dayClassName[j]].hb_arrive4_base_hbh) hb_index = 4;
+					else if(json[dayClassName[j]].hb_arrive5_base_hbh) hb_index = 5;
+					value = '抵达：'+json[dayClassName[j]]['hb_arrive'+hb_index+'_base_hbh'];
+					if(json[dayClassName[j]]['hb_arrive'+hb_index+'_base_date']) value += ' '+json[dayClassName[j]]['hb_arrive'+hb_index+'_base_date'];
+					if(json[dayClassName[j]]['hb_arrive'+hb_index+'_base_code']) value += ' '+json[dayClassName[j]]['hb_arrive'+hb_index+'_base_code'];
+					if(json[dayClassName[j]]['hb_arrive'+hb_index+'_base_qfsj']) value += ' '+json[dayClassName[j]]['hb_arrive'+hb_index+'_base_qfsj'];
+					if(json[dayClassName[j]]['hb_arrive'+hb_index+'_base_ddsj']) value += '/'+json[dayClassName[j]]['hb_arrive'+hb_index+'_base_ddsj'];
+					for(var k=1;k<=5;k++)
+					{
+						if(k==hb_index) continue;
+						var key = 'hb_arrive'+k+'_base';
+						var v ='';
+						if(json[dayClassName[j]][key+'_hbh'])
+						{
+							v = json[dayClassName[j]][key+'_hbh'];
+							if(json[dayClassName[j]][key+'_date']) v += ' '+json[dayClassName[j]][key+'_date'];
+							if(json[dayClassName[j]][key+'_code']) v += ' '+json[dayClassName[j]][key+'_code'];
+							if(json[dayClassName[j]][key+'_qfsj']) v += ' '+json[dayClassName[j]][key+'_qfsj'];
+							if(json[dayClassName[j]][key+'_ddsj']) v += '/'+json[dayClassName[j]][key+'_ddsj'];
+						}
+						if(v.length>0) value += '、'+v;
+
+					}
+				}
+				if(json[dayClassName[j]]&&(json[dayClassName[j]].hb_leave1_base_hbh||json[dayClassName[j]].hb_leave2_base_hbh||json[dayClassName[j]].hb_leave3_base_hbh||json[dayClassName[j]].hb_leave4_base_hbh||json[dayClassName[j]].hb_leave5_base_hbh))
+				{
+					var hb_index = 0;
+					if(json[dayClassName[j]].hb_leave1_base_hbh) hb_index = 1;
+					else if(json[dayClassName[j]].hb_leave2_base_hbh) hb_index = 2;
+					else if(json[dayClassName[j]].hb_leave3_base_hbh) hb_index = 3;
+					else if(json[dayClassName[j]].hb_leave4_base_hbh) hb_index = 4;
+					else if(json[dayClassName[j]].hb_leave5_base_hbh) hb_index = 5;
+					if(value.length>0) value += '；离开：'+json[dayClassName[j]]['hb_leave'+hb_index+'_base_hbh'];
+					else value = '离开：'+json[dayClassName[j]]['hb_leave'+hb_index+'_base_hbh'];
+					if(json[dayClassName[j]]['hb_leave'+hb_index+'_base_date']) value += ' '+json[dayClassName[j]]['hb_leave'+hb_index+'_base_date'];
+					if(json[dayClassName[j]]['hb_leave'+hb_index+'_base_code']) value += ' '+json[dayClassName[j]]['hb_leave'+hb_index+'_base_code'];
+					if(json[dayClassName[j]]['hb_leave'+hb_index+'_base_qfsj']) value += ' '+json[dayClassName[j]]['hb_leave'+hb_index+'_base_qfsj'];
+					if(json[dayClassName[j]]['hb_leave'+hb_index+'_base_ddsj']) value += '/'+json[dayClassName[j]]['hb_leave'+hb_index+'_base_ddsj'];
+					for(var k=1;k<=5;k++)
+					{
+						if(k==hb_index) continue;
+						var key = 'hb_leave'+k+'_base';
+						var v ='';
+						if(json[dayClassName[j]][key+'_hbh'])
+						{
+							v = json[dayClassName[j]][key+'_hbh'];
+							if(json[dayClassName[j]][key+'_date']) v += ' '+json[dayClassName[j]][key+'_date'];
+							if(json[dayClassName[j]][key+'_code']) v += ' '+json[dayClassName[j]][key+'_code'];
+							if(json[dayClassName[j]][key+'_qfsj']) v += ' '+json[dayClassName[j]][key+'_qfsj'];
+							if(json[dayClassName[j]][key+'_ddsj']) v += '/'+json[dayClassName[j]][key+'_ddsj'];
+						}
+						if(v.length>0) value += '、'+v;
+					}
+				}
+				if(value.length>0) value = value.replace(/"/g,'&quot;');
+				tr_html+='<td><input class="'+dayClassName[j]+'" onclick="window.showAirPortDiv(this)" value="'+value+'" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
+			}
+			else
+			{
+				if(j==1) continue;
+				tr_html+='<td style="width:';
+				if(j==1) tr_html+='60px;">';
+				else tr_html+='36px;">';
+				tr_html+='<span style="width:100%;border:0px;height:25px;">'+(json[dayClassName[j]] ? json[dayClassName[j]] : "")+'</span></td>';
+			}
+		}
+		tr_html += '</tr>';
+	return tr_html;
+  }
+  function printTable(content)
+  {
+  	var printHTML = '<div class="fixed-table-container-inner" style="height:auto;">';
+	printHTML+='<table cellspacing="0"><thead><tr class="complex-top"><th class="third" rowspan="2"><div class="th-inner" style="width:20px;">星期</div></th><th class="third" rowspan="2"><div class="th-inner">日期</div></th><th class="third" rowspan="2"><div class="th-inner">导游</div>';
+	printHTML+='</th><th class="second" colspan="5"><div class="th-inner" >酒店</div></th><th class="third" rowspan="2"><div class="th-inner">预定号</div>';
+	printHTML+='</th><th class="third" rowspan="2"><div class="th-inner">车公司</div></th><th class="third" rowspan="2"><div class="th-inner">用车时间</div></th><th class="third" rowspan="2"><div class="th-inner">司机</div>';
+	printHTML+='</th><th class="third" rowspan="2"><div class="th-inner">用餐</div></th><th class="third" rowspan="2"><div class="th-inner">景点门票</div></th><th class="third" rowspan="2"><div class="th-inner">抵达／离开时间</div>';
+	printHTML+='</th></tr><tr class="complex-bottom"><th class="second"><div class="th-inner">酒店名</div></th><th class="second"><div class="th-inner">付款</div></th><th class="second"><div class="th-inner">双</div>';
+	printHTML+='</th><th class="second"><div class="th-inner">单</div></th><th class="second"><div class="th-inner">司导</div></th></tr></thead><tbody class="print_content">';
+
+	var tbody_html ='';
+  	for(var index in content)
+    {
+        var single = contents[index];
+        //if(single.ext.name)
+        {
+        	var info = single.ext;
+        	tbody_html +='<tr>';
+        	tbody_html +='<td colspan="15"><span style="width:100%;">项目名称：'+(info.name ? info.name : "")+'</span></td>';
+        	tbody_html +='</tr>';
+        	tbody_html +='<tr><td colspan="15"><span style="width:100%;">组团单位：'+(info.ztdanwei ? info.ztdanwei : "")+'</span></td></tr>';
+        	tbody_html +='<tr><td colspan="15"><span style="width:100%;">团号：'+(info.zttuanhao ? info.zttuanhao : "")+'</span></td></tr>';
+        	tbody_html +='<tr><td colspan="15"><span style="width:40%;">大人人数：'+(info.adult_number ? info.adult_number : "")+'</span>';
+        	tbody_html +='<span style="width:40%;">儿童人数：'+(info.children_number ? info.children_number : "")+'</span></td></tr>';
+        	tbody_html +='<tr><td colspan="15"><span style="width:40%;">开始日期：'+(info.startdate ? info.startdate : "")+'</span>';
+        	tbody_html +='<span style="width:40%;">结束日期：'+(info.enddate ? info.enddate : "")+'</span></td></tr>';
+
+        	if(info.days)
+        	{
+        		var days = info.days;
+        		var qstartdate = new Date(info.startdate);
+  				var qenddate = new Date(info.enddate);
+  				var time = qenddate.getTime() - qstartdate.getTime();
+  				length = time/1000/3600/24;
+  				var firstDate = new Date(info.startdate);
+        		//if(days['1'])
+        		{
+        			var day_length = 0;
+        			for(var key in days)
+        			{
+        				var td = days[key];
+        				var tdDate = new Date(dateformat(td.date));
+        				if(tdDate.getTime() > firstDate.getTime())
+        				{
+        					var tdDay = (tdDate.getTime() - firstDate.getTime())/1000/3600/24;
+        					var tr_html = printTrHtml(firstDate,day_length,day_length+tdDay-1,single._id);
+  							tbody_html += tr_html;
+  							day_length += tdDay;
+
+  							tr_html = printTrHTMLByJSON(td,single._id,key);
+        					tbody_html += tr_html;
+        					day_length += 1;
+        					firstDate.setDate(firstDate.getDate()+1);
+        				}
+        				else
+        				{
+        					var tr_html = trHTMLByJSON(td,single._id,key);
+        					tbody_html += tr_html;
+        					day_length += 1;
+        					firstDate.setDate(firstDate.getDate()+1);
+        				}
+        				if(day_length > length)
+        				{
+        					break;
+        				}
+        			}
+        			if(day_length < (length+1))
+        			{
+        				qstartdate.setDate(qstartdate.getDate()+day_length);
+        				var tr_html = printTrHtml(qstartdate,day_length,length,single._id);
+  						tbody_html += tr_html;
+        			}
+        		}
+        	}
+        }
+    }
+	printHTML+="</tbody></table></div>";
+  }
+  window.printTable = printTable;//*/
   $("#end-date").on('change',function(e){
   	var endValue = $(e.target).val();
   	var startValue = $("#start-date").val();
