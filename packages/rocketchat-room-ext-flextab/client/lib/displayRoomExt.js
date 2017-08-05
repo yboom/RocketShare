@@ -1496,7 +1496,7 @@ window.displayRoomExt=function(ext,showTitle)
 							{
 								if(show)
 								{
-									if(showValue.length>0)
+									//luwei should display empty string:if(showValue.length>0)
 									{
 										$(show).val(showValue);
 									}
