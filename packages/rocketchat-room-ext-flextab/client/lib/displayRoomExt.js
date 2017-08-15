@@ -229,7 +229,7 @@ window.displayRoomExt=function(ext,showTitle)
   	if(left + w > width) left = left - w;
   	else if(left + w > cw) left = left - w;
   	if(left < 0) left = 0;
-  	
+
   	{
   		div = document.createElement("div");
   		div.setAttribute("class","mouse_show_div");
@@ -311,7 +311,7 @@ window.displayRoomExt=function(ext,showTitle)
   			info_html += '<div><span>1：'+(json.hotel_cancelzc1_day ? json.hotel_cancelzc1_day : "")+'天内，退款';
   			info_html += ''+(json.hotel_cancelzc1_bfb ? json.hotel_cancelzc1_bfb : "")+'％，说明：';
   			info_html += ''+(json.hotel_cancelzc1_info ? json.hotel_cancelzc1_info : "")+'</span></div>';
-	
+
   			info_html += '<div><span>2：'+(json.hotel_cancelzc2_day ? json.hotel_cancelzc2_day : "")+'天内，退款';
   			info_html += ''+(json.hotel_cancelzc2_bfb ? json.hotel_cancelzc2_bfb : "")+'％，说明：';
   			info_html += ''+(json.hotel_cancelzc2_info ? json.hotel_cancelzc2_info : "")+'</span></div>';
@@ -455,7 +455,7 @@ window.displayRoomExt=function(ext,showTitle)
   					info_html += '<div>结算情况：'+(json['hb_leave'+i+'_info_jsqk'] ? json['hb_leave'+i+'_info_jsqk'] : "")+'</div>';
   				}
   			}
-  		
+
   			info_html += '</div></div>';
 		}
 		if(info_html.length>0)
@@ -2357,7 +2357,7 @@ window.displayRoomExt=function(ext,showTitle)
 					value = json[dayClassName[j]].textarea_base;
 				if(value.length>0) value = value.replace(/"/g,'&quot;');
 				tr_html+='<td';
-				if(j==7) 
+				if(j==7)
 				{
 					tr_html+=' style="width:120px;">';
 					var now_date = new Date();
@@ -2435,7 +2435,7 @@ window.displayRoomExt=function(ext,showTitle)
 					}
 					if(value.length>0) value = value.replace(/"/g,'&quot;');
 				}
-				tr_html+='<td style="width:110px"><input class="'+dayClassName[j]+'" onclick="window.showDinnerDiv(this)" value="'+value+'" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
+				tr_html+='<td style="width:110px"><input class="'+dayClassName[j]+'" onclick="window.showDinnerDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)" value="'+value+'" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			}
 			else if(j==12)
 			{
@@ -2641,14 +2641,14 @@ window.displayRoomExt=function(ext,showTitle)
   			var show_info = localStorage.getItem(key+day_key+value[0]);
   			if(!show_info)
   			{
-  				if(rooms.length>1) 
+  				if(rooms.length>1)
   				{
   					if(!confirm('项目（组）的名称：'+mc+'\n酒店名：'+value[3]+'\n预订号：'+value[2]+' \n\n'+value[1]))
   					{
   						localStorage.setItem(key+day_key+value[0],'1');
   					}
   				}
-  				else 
+  				else
   				{
   					if(!confirm('项目（组）的名称：'+mc+'\n酒店名：'+value[3]+'\n预订号：'+value[2]+' \n\n'+value[1]))
   					{
