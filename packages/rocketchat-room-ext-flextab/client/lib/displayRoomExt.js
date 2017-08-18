@@ -101,13 +101,13 @@ window.displayRoomExt=function(ext,showTitle)
   			msg = '';
   			if(!r.ext.hotels || !exists)
   			{
-  				msg = ':=[{"$push":{"ext.hotels":'+value+'}}]';
+  				if(jsonv.hotel_base_dm) msg = ':=[{"$push":{"ext.hotels":'+value+'}}]';
   			}
   			else
   			{
-  				msg = ':=[{"ext.hotels.hotel_base_dm":"'+hotel_name+'"},{"$set":{"ext.hotels.$":'+value+'}}]';
+  				if(hotel_name) msg = ':=[{"ext.hotels.hotel_base_dm":"'+hotel_name+'"},{"$set":{"ext.hotels.$":'+value+'}}]';
   			}
-  			sendHotelMessage(rid,msg);
+  			if(msg.length>0) sendHotelMessage(rid,msg);
   		}
   	}
   }
@@ -2612,6 +2612,28 @@ window.displayRoomExt=function(ext,showTitle)
 										//hotelAlert.push({rid:[i+1,hotel_info[cancel_key]+'天内,可退'+hotel_info[cancel_bfb]+'%']});
 										hotelAlert[rid] = alert_info;
 										break;
+									}
+									else
+									{
+										if(days.length >1)
+										{
+											cancel_day = parseInt(days[1]);
+											if(!isNaN(cancel_day))
+											{
+												var cancel_date = new Date(dateformat(json.date));
+												cancel_date.setDate(cancel_date.getDate()-cancel_day);
+												var time = cancel_date.getTime()-now_date.getTime();
+												var time_day = parseInt(time/1000/3600/24);
+												if(time_day>0&&time_day<=5)
+												{
+													var alert_info = {};
+													if(hotelAlert[rid]) alert_info = hotelAlert[rid];
+													alert_info[i+1] = [hotel_info[cancel_key],'第'+(i+1)+'天的酒店，在'+(startDate.getMonth()+1)+'.'+day+'前'+hotel_info[cancel_key]+'天，可退'+hotel_info[cancel_bfb]+'%，现在还剩下'+time_day+'天退改期限。',value,hotel_info.hotel_base_dm];
+													hotelAlert[rid] = alert_info;
+													break;
+												}
+											}
+										}
 									}
 								}
 							}

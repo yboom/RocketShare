@@ -1,11 +1,12 @@
 Meteor.methods
 	findHotel: (value, options) ->
 		#console.log value
+		v = '^'+value;
 		query =
 			ext:
 				$exists:true
 			"ext.hotels.hotel_base_dm":
-				$regex:value			
+				{$regex:v,$options : 'i'}
 			_hidden:
 				$ne: true
 		options =
@@ -31,6 +32,7 @@ Meteor.methods
 			hotel = r.ext.hotels
 			for h in hotel
 				if not findHotelExists result, h.hotel_base_dm
-					result.push h
+					if(h.hotel_base_dm.indexOf(value) == 0)
+						result.push h
 		#console.log result
 		return result
