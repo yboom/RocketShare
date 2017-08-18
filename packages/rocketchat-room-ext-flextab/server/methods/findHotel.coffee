@@ -27,12 +27,13 @@ Meteor.methods
 					break
 			return exists
 		result = []
+		re = new RegExp(v, 'i');
 		room = RocketChat.models.Rooms.find(query, options).fetch()
 		for r in room
 			hotel = r.ext.hotels
 			for h in hotel
 				if not findHotelExists result, h.hotel_base_dm
-					if(h.hotel_base_dm.indexOf(value) == 0)
+					if(re.test(h.hotel_base_dm))
 						result.push h
 		#console.log result
 		return result
