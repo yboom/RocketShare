@@ -39,7 +39,8 @@ Package.onUse(function(api) {
 	],'client');
 
 	api.addFiles([
-		'server/publications/extInRooms.coffee'
+		'server/publications/extInRooms.coffee',
+		'server/methods/findHotel.coffee',
 	], 'server');
 
 	// TAPi18n
