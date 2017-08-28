@@ -873,7 +873,7 @@ window.displayRoomExt=function(ext,showTitle)
   		$("body").append(div);
   	}
   	$(div).scrollTop(0);
-  	$($(div).find('.hotel_base_xc')[0]).focus();
+  	$($(div).find('.hotel_base_dm')[0]).focus();
   	$(e).css('background-color','yellow');
   	show = e;
   	currentShowDiv = div;
