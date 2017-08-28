@@ -3,7 +3,7 @@ window.displayRoomExt=function(ext,showTitle)
 	var rooms = ext;
 	var isTitle = showTitle;
   	var weekDays = ["日","一","二","三","四","五","六"];
-  	var dayClassName = ["tuanhao","people","hotel_name","hotel_fukuan","hotel_double","hotel_single","hotel_sidao","book_number","bus_company","bus_use_time","driver","dinner","jingdian","airport"];
+  	var dayClassName = ["tuanhao","xingcheng","hotel_name","hotel_fukuan","hotel_double","hotel_single","hotel_sidao","book_number","bus_company","bus_use_time","driver","dinner","jingdian","airport"];
 	var cal = "+-*/().%＋－＊／（）％";
 	var th_cal = ["th_gongzi","th_fee","th_cfbz","th_df"];
 	var hb_arrive = true;
@@ -241,6 +241,28 @@ window.displayRoomExt=function(ext,showTitle)
   	{
   		json = r.ext.days[day][className];
   	}
+  	if(!json.simple_base && className == "xingcheng")
+  	{
+  		//console.log('xc');
+  		if(r.ext.days[day]['hotel_name'])
+  		{
+  			//console.log(r.ext.days[day]['hotel_name'].hotel_base_xc);
+  			json.simple_base = r.ext.days[day]['hotel_name'].hotel_base_xc;
+  		}
+  	}
+  	else if(className == "bus_company")
+  	{
+  		if(!json.bus_base && json.simple_base)
+		{
+			json.bus_base = json.simple_base;
+			delete json.simple_base;
+		}
+  		if(!json.bus_driver && r.ext.days[day]['driver'])
+  		{
+  			json.bus_driver = r.ext.days[day]['driver'].simple_base;
+  		}
+  	}
+  	//console.log(json);
   	var s=false;
   	var first = '';
   	for(var key in json)
@@ -262,7 +284,7 @@ window.displayRoomExt=function(ext,showTitle)
   	if(left + w > width) left = left - w;
   	else if(left + w > cw) left = left - w;
   	if(left < 0) left = 0;
-  	
+
   	{
   		div = document.createElement("div");
   		div.setAttribute("class","mouse_show_div");
@@ -335,31 +357,20 @@ window.displayRoomExt=function(ext,showTitle)
 		}
 		else if(first.indexOf('hotel_')==0)
 		{
-			info_html += '<div style="margin-left:6px;margin-top:2px;"><div><span>行程：'+(json.hotel_base_xc ? json.hotel_base_xc : "")+'</span></div>';
+			if(!json.hotel_base_dm) return;
+			info_html += '<div style="margin-left:6px;margin-top:2px;">';
+			//info_html += '<div><span>行程：'+(json.hotel_base_xc ? json.hotel_base_xc : "")+'</span></div>';
   			info_html += '<div><span>酒店名：'+(json.hotel_base_dm ? json.hotel_base_dm : "")+'</span></div>';
   			info_html += '<div><span>星级：'+(json.hotel_xingji ? json.hotel_xingji : "")+'</span></div>';
   			info_html += '<div><span>地址：'+(json.hotel_address ? json.hotel_address : "")+'</span></div>';
   			info_html += '<div><span>报价：'+(json.hotel_baojie ? json.hotel_baojie : "")+'</span></div>';
   			info_html += '<div>取消政策：<div style="margin-left:15px;">';
-  			info_html += '<div><span>1：'+(json.hotel_cancelzc1_day ? json.hotel_cancelzc1_day : "")+'天内，退款';
-  			info_html += ''+(json.hotel_cancelzc1_bfb ? json.hotel_cancelzc1_bfb : "")+'％，说明：';
-  			info_html += ''+(json.hotel_cancelzc1_info ? json.hotel_cancelzc1_info : "")+'</span></div>';
-	
-  			info_html += '<div><span>2：'+(json.hotel_cancelzc2_day ? json.hotel_cancelzc2_day : "")+'天内，退款';
-  			info_html += ''+(json.hotel_cancelzc2_bfb ? json.hotel_cancelzc2_bfb : "")+'％，说明：';
-  			info_html += ''+(json.hotel_cancelzc2_info ? json.hotel_cancelzc2_info : "")+'</span></div>';
-
-  			info_html += '<div><span>3：'+(json.hotel_cancelzc3_day ? json.hotel_cancelzc3_day : "")+'天内，退款';
-  			info_html += ''+(json.hotel_cancelzc3_bfb ? json.hotel_cancelzc3_bfb : "")+'％，说明：';
-  			info_html += ''+(json.hotel_cancelzc3_info ? json.hotel_cancelzc3_info : "")+'</span></div>';
-
-  			info_html += '<div><span>4：'+(json.hotel_cancelzc4_day ? json.hotel_cancelzc4_day : "")+'天内，退款';
-  			info_html += ''+(json.hotel_cancelzc4_bfb ? json.hotel_cancelzc4_bfb : "")+'％，说明：';
-  			info_html += ''+(json.hotel_cancelzc4_info ? json.hotel_cancelzc4_info : "")+'</span></div>';
-
-  			info_html += '<div><span>5：'+(json.hotel_cancelzc5_day ? json.hotel_cancelzc5_day : "")+'天内，退款';
-  			info_html += ''+(json.hotel_cancelzc5_bfb ? json.hotel_cancelzc5_bfb : "")+'％，说明：';
-  			info_html += ''+(json.hotel_cancelzc5_info ? json.hotel_cancelzc5_info : "")+'</span></div>';
+  			for(var i=1;i<=5;i++)
+  			{
+  				info_html += '<div><span>'+i+'：'+(json['hotel_cancelzc'+i+'_day'] ? json['hotel_cancelzc'+i+'_day'] : "")+'天内，退款';
+  				info_html += ''+(json['hotel_cancelzc'+i+'_bfb'] ? json['hotel_cancelzc'+i+'_bfb'] : "")+'％，说明：';
+  				info_html += ''+(json['hotel_cancelzc'+i+'_info'] ? json['hotel_cancelzc'+i+'_info'] : "")+'</span></div>';
+  			}
   			info_html += '</div></div>';
   			info_html += '</div>';
 		}
@@ -376,9 +387,15 @@ window.displayRoomExt=function(ext,showTitle)
 			var name = "预订号";
   			if(className == "bus_company") name = "车公司";
   			else if(className == "bus_use_time") name = "用车时间";
-  			else if(className == "driver") name = "司机"
+  			else if(className == "xingcheng") name = "行程"
   			else if(className == "hotel_sidao") name = "其他";
 			info_html += '<div style="margin-left:6px;margin-top:2px;"><div><span><span class="class_name">'+name+'：</span>'+(json.simple_base ? json.simple_base : "")+'</span></div>';
+  			info_html += '</div>';
+		}
+		else if(first.indexOf('bus_')==0)
+		{
+			info_html += '<div style="margin-left:6px;margin-top:2px;"><div><span>车公司：'+(json.bus_base ? json.bus_base : "")+'</span></div>';
+			info_html += '<div><span>司机：'+(json.bus_driver ? json.bus_driver : "")+'</span></div>';
   			info_html += '</div>';
 		}
 		else if(first.indexOf('lunch_') == 0 || first.indexOf('dinner_')==0 || first.indexOf('breakfast_')==0)
@@ -488,7 +505,7 @@ window.displayRoomExt=function(ext,showTitle)
   					info_html += '<div>结算情况：'+(json['hb_leave'+i+'_info_jsqk'] ? json['hb_leave'+i+'_info_jsqk'] : "")+'</div>';
   				}
   			}
-  		
+
   			info_html += '</div></div>';
 		}
 		if(info_html.length>0)
@@ -519,6 +536,7 @@ window.displayRoomExt=function(ext,showTitle)
   	$(".tableairport").hide();
   	$(".tablejingdian").hide();
   	$(".tableTextAreaDiv").hide();
+  	$(".tablebus").hide();
   	var rid = $(e).attr("id");
   	var day = $(e).attr("data-day");
   	var className = $(e).attr("class");
@@ -542,7 +560,7 @@ window.displayRoomExt=function(ext,showTitle)
   	if(left + w > width) left = left - w;
   	else if(left + w > cw) left = left - w;
   	if(left < 0) left = 0;
-  	if(top + h >height) 
+  	if(top + h >height)
   	{
   		top = $(e).position().top - h+20;
   		if(isTitle && $('#'+id).scrollTop()>10) top = top + $('#'+id).scrollTop()/2-10;
@@ -689,7 +707,7 @@ window.displayRoomExt=function(ext,showTitle)
   	  		if(key == "hotel_base_xc") continue;
   	  		$("."+key).val(hotel_info[key]);
   	  	}
-    	
+
     	//$(e).parent().parent().parent().parent().remove();
     }
     else
@@ -761,6 +779,7 @@ window.displayRoomExt=function(ext,showTitle)
   	$(".tableairport").hide();
   	$(".tablejingdian").hide();
   	$(".tableTextAreaDiv").hide();
+  	$(".tablebus").hide();
   	var rid = $(e).attr("id");
   	var day = $(e).attr("data-day");
   	var className = $(e).attr("class");
@@ -782,7 +801,7 @@ window.displayRoomExt=function(ext,showTitle)
   	if(left + w > width) left = left - w;
   	else if(left + w > cw) left = left - w;
   	if(left < 0) left = 0;
-  	if(top + h >height) 
+  	if(top + h >height)
   	{
   		top = $(e).position().top - h+20;
   		if(isTitle && $('#'+id).scrollTop()>10) top = top + $('#'+id).scrollTop()/2-10;
@@ -830,7 +849,8 @@ window.displayRoomExt=function(ext,showTitle)
   					'background-color':'rgba(238, 238, 238, 0.8)','width':w,'height':h,'border':'1px solid rgba(163, 163, 163, 0.9)','-webkit-border-radius':'8px','border-radius':'8px'});
   		var info_html = '';
   		info_html += '<div class="showdiv_fixed" style=" text-align:center;position: fixed;height:25px;background-color: rgba(238, 238, 238, 0.9);width: '+(w-10)+'px;z-index:5;margin-top:'+(h-26)+'px;"><button class="btn_cancel" onclick="window.cancelDiv(this)">取消</button><button class="btn_submit" onclick="window.submitDayInfo(this)">提交</button></div>';
-  		info_html += '<div style="margin-left:6px;margin-top:2px;"><div><span>行程：<input style="width:96.5%;" placeholder="行程" class="hotel_base_xc" value="'+(json.hotel_base_xc ? json.hotel_base_xc.replace(/"/g,'&quot;') : "")+'" /></span></div>';
+  		info_html += '<div style="margin-left:6px;margin-top:2px;">';
+  		//info_html += '<div><span>行程：<input style="width:96.5%;" placeholder="行程" class="hotel_base_xc" value="'+(json.hotel_base_xc ? json.hotel_base_xc.replace(/"/g,'&quot;') : "")+'" /></span></div>';
   		info_html += '<div><span>酒店名：<button style="margin-left:15px;" onclick="window.searchHotel(this)">查找</button><input style="width:96.5%;" placeholder="酒店名" onkeyup="window.inputSearch(this)" class="hotel_base_dm" value="'+(json.hotel_base_dm ? json.hotel_base_dm.replace(/"/g,'&quot;') : "")+'" /></span></div>';
   		info_html += '<div><span>星级：<input style="width:96.5%;" placeholder="星级" class="hotel_xingji" value="'+(json.hotel_xingji ? json.hotel_xingji.replace(/"/g,'&quot;') : "")+'" /></span></div>';
   		info_html += '<div><span>地址：<input style="width:96.5%;" placeholder="地址" class="hotel_address" value="'+(json.hotel_address ? json.hotel_address.replace(/"/g,'&quot;') : "")+'" /></span></div>';
@@ -871,6 +891,7 @@ window.displayRoomExt=function(ext,showTitle)
   	$(".tableairport").hide();
   	$(".tablejingdian").hide();
   	$(".tabledinner").hide();
+  	$(".tablebus").hide();
   	var rid = $(e).attr("id");
   	var day = $(e).attr("data-day");
   	var className = $(e).attr("class");
@@ -890,12 +911,12 @@ window.displayRoomExt=function(ext,showTitle)
   	if(isTitle && $('#'+id).scrollTop()>10) top = top + $('#'+id).scrollTop()/2-10;
   	var left = $(e).position().left;
   	var w = width/5;
-  	var h = height/3+5;
+  	var h = height/4+5;
   	var cw = document.body.clientWidth || 0;
   	if(left + w > width) left = left - w;
   	else if(left + w > cw) left = left - w;
   	if(left < 0) left = 0;
-  	if(top + h >height) 
+  	if(top + h >height)
   	{
   		top = $(e).position().top - h+20;
   		if(isTitle && $('#'+id).scrollTop()>10) top = top + $('#'+id).scrollTop()/2-10;
@@ -959,6 +980,7 @@ window.displayRoomExt=function(ext,showTitle)
   	$(".tableairport").hide();
   	$(".tablejingdian").hide();
   	$(".tableTextAreaDiv").hide();
+  	$(".tablebus").hide();
   	var rid = $(e).attr("id");
   	var day = $(e).attr("data-day");
   	var className = $(e).attr("class");
@@ -969,11 +991,18 @@ window.displayRoomExt=function(ext,showTitle)
   	{
   		json = r.ext.days[day][className];
   	}
+  	if(!json.simple_base && className == "xingcheng")
+  	{
+  		if(r && r.ext && r.ext.days && r.ext.days[day] && r.ext.days[day]['hotel_name'])
+  		{
+  			json.simple_base = r.ext.days[day]['hotel_name'].hotel_base_xc;
+  		}
+  	}
   	var div = $(".tablesimple");
   	var name = "预订号";
   	if($(e).attr("class") == "bus_company") name = "车公司";
   	else if($(e).attr("class") == "bus_use_time") name = "用车时间";
-  	else if($(e).attr("class") == "driver") name = "司机"
+  	else if($(e).attr("class") == "xingcheng") name = "行程"
   	else if($(e).attr("class") == "hotel_sidao") name = "其他";
 
   	var top = $(e).position().top+$(e).height()+23;
@@ -985,7 +1014,7 @@ window.displayRoomExt=function(ext,showTitle)
   	if(left + w > width) left = left - w;
   	else if(left + w > cw) left = left - w;
   	if(left < 0) left = 0;
-  	if(top + h >height) 
+  	if(top + h >height)
   	{
   		top = $(e).position().top - h+20;
   		if(isTitle && $('#'+id).scrollTop()>10) top = top + $('#'+id).scrollTop()/2-10;
@@ -1042,6 +1071,108 @@ window.displayRoomExt=function(ext,showTitle)
   	currentShowDiv = div;
   }
   window.showSimpleDiv = showSimpleDiv;
+  function showBusDiv(e)
+  {
+  	clickShow = true;
+  	if(timeOutShow) clearTimeout(timeOutShow),timeOutShow = null;
+  	if(show) $(show).css('background','white');
+  	$(".mouse_show_div").remove();
+  	$(".tablecontainer").hide();
+  	$(".tablehotel").hide();
+  	$(".tabledinner").hide();
+  	$(".tableairport").hide();
+  	$(".tablejingdian").hide();
+  	$(".tableTextAreaDiv").hide();
+  	$(".tablesimple").hide();
+  	var rid = $(e).attr("id");
+  	var day = $(e).attr("data-day");
+  	var className = $(e).attr("class");
+  	//var value = $(e).val();
+  	var r = findRoomByRid(rid);
+  	var json = {};
+  	if(r && r.ext && r.ext.days && r.ext.days[day] && r.ext.days[day][className])
+  	{
+  		json = r.ext.days[day][className];
+  		if(!json.bus_base && json.simple_base)
+		{
+			json.bus_base = json.simple_base;
+			delete json.simple_base;
+		}
+  	}
+  	if(!json.bus_driver && r && r.ext && r.ext.days && r.ext.days[day] && r.ext.days[day]['driver'])
+  	{
+  		if(!json.bus_base) json.bus_base = "";
+  		json.bus_driver = r.ext.days[day]['driver'].simple_base?r.ext.days[day]['driver'].simple_base:"";
+  	}
+  	else if(!json.bus_driver) json.bus_driver = "";
+  	//console.log(json);
+  	var div = $(".tablebus");
+
+  	var top = $(e).position().top+$(e).height()+23;
+  	if(isTitle && $('#'+id).scrollTop()>10) top = top + $('#'+id).scrollTop()/2-10;
+  	var left = $(e).position().left;
+  	var w = width/5;
+  	var h = 125;//height/3+5;
+
+  	var cw = document.body.clientWidth || 0;
+  	if(left + w > width) left = left - w;
+  	else if(left + w > cw) left = left - w;
+  	if(left < 0) left = 0;
+  	if(top + h >height)
+  	{
+  		top = $(e).position().top - h+20;
+  		if(isTitle && $('#'+id).scrollTop()>10) top = top + $('#'+id).scrollTop()/2-10;
+  	}
+  	if(div && div.length>0)
+  	{
+  	  	$(div).css({'top':top+'px','left':left+'px'});
+  	  	$(div).attr("id",$(e).attr("id"));
+  	  	$(div).attr("data-day",$(e).attr("data-day"));
+  	  	if(json.bus_base || json.bus_driver)
+  	  	{
+  	  		for(var key in json)
+  	  		{
+  	  			if(json[key].length>0)
+  	  			{
+  	  				$("."+key).val(json[key]);
+  	  				//if($("."+key).is('input')) $("."+key).val(json[key].replace(/"/g,'&quot;'));
+  	  			}
+  	  			else $("."+key).val('');
+  	  		}
+  	  	}
+  	  	else
+  	  	{
+  	  		$(div).find('input').each(function(){
+  	  			$(this).val('');
+  	  		});
+  	  		$(div).find('textarea').each(function(){
+  	  			$(this).val('');
+  	  		});
+  	  	}
+  	  	$(div).show();
+  	}
+  	else
+  	{
+  		div = document.createElement("div");
+  		div.setAttribute("class","tablebus");
+  		$(div).attr("id",$(e).attr("id"));
+  	  	$(div).attr("data-day",$(e).attr("data-day"));
+  		$(div).css({'position':'absolute','z-index': 199999,'display':'block','top':top+'px','left':left+'px',
+  					'background-color':'rgba(238, 238, 238, 0.8)','width':w,'height':h,'border':'1px solid rgba(163, 163, 163, 0.9)','-webkit-border-radius':'8px','border-radius':'8px'});
+  		var info_html = '<div style="margin-left:6px;margin-top:2px;"><div><span><span class="class_name">车公司：</span><input style="margin-left:10px;width:95%;" placeholder="车公司" class="bus_base" value="'+(json.bus_base ? json.bus_base.replace(/"/g,'&quot;') : "")+'" /></span></div>';
+  		info_html += '<div><span><span class="class_name">司机：</span><input style="margin-left:10px;width:95%;" placeholder="司机" class="bus_driver" value="'+(json.bus_driver ? json.bus_driver.replace(/"/g,'&quot;') : "")+'" /></span></div>'
+  		info_html += '</div>';
+
+  		info_html += '<div style="text-align: center;margin-top:10px;"><button class="btn_cancel" onclick="window.cancelDiv(this)">取消</button><button class="btn_submit" onclick="window.submitDayInfo(this)">提交</button></div>';
+  		$(div).append(info_html);
+  		$("body").append(div);
+  	}
+  	$($(div).find('.bus_base')[0]).focus();
+  	$(e).css('background-color','yellow');
+  	show = e;
+  	currentShowDiv = div;
+  }
+  window.showBusDiv = showBusDiv;
   function showDinnerDiv(e)//用餐
   {
   	clickShow = true;
@@ -1054,6 +1185,7 @@ window.displayRoomExt=function(ext,showTitle)
   	$(".tableairport").hide();
   	$(".tablejingdian").hide();
   	$(".tableTextAreaDiv").hide();
+  	$(".tablebus").hide();
   	var rid = $(e).attr("id");
   	var day = $(e).attr("data-day");
   	var className = $(e).attr("class");
@@ -1075,7 +1207,7 @@ window.displayRoomExt=function(ext,showTitle)
   	if(left + w > width) left = left - w;
   	else if(left + w > cw) left = left - w;
   	if(left < 0) left = 0;
-  	if(top + h >height) 
+  	if(top + h >height)
   	{
   		top = $(e).position().top - h+20;
   		if(isTitle && $('#'+id).scrollTop()>10) top = top + $('#'+id).scrollTop()/2-10;
@@ -1186,6 +1318,7 @@ window.displayRoomExt=function(ext,showTitle)
   	$(".tablehotel").hide();
   	$(".tableairport").hide();
   	$(".tableTextAreaDiv").hide();
+  	$(".tablebus").hide();
   	var rid = $(e).attr("id");
   	var day = $(e).attr("data-day");
   	var className = $(e).attr("class");
@@ -1207,7 +1340,7 @@ window.displayRoomExt=function(ext,showTitle)
   	if(left + w > width) left = left - w;
   	else if(left + w > cw) left = left - w;
   	if(left < 0) left = 0;
-  	if(top + h >height) 
+  	if(top + h >height)
   	{
   		top = $(e).position().top - h+20;
   		if(isTitle && $('#'+id).scrollTop()>10) top = top + $('#'+id).scrollTop()/2-10;
@@ -1266,7 +1399,7 @@ window.displayRoomExt=function(ext,showTitle)
   		var info_html = '<div class="jingdian_fixed" style="background-color:rgba(238, 238, 238, 0.8);width:'+(w-18)+'px;position:fixed;z-index:3;margin-bottom:5px;line-height: 22px;"><label style="margin-left:6px;font-size:18px;">景点门票信息</label></div>';
   		info_html += '<div class="showdiv_fixed" style=" text-align:center;position: fixed;height:25px;background-color: rgba(238, 238, 238, 0.9);width: '+(w-10)+'px;z-index:5;margin-top: '+(h-26)+'px;"><button class="btn_cancel" onclick="window.cancelDiv(this)">取消</button><button class="btn_submit" onclick="window.submitDayInfo(this)">提交</button></div>';
   		info_html += '<div style="margin-left:6px;margin-top:25px;"><div style="margin-left:6px;">';
-  		
+
   		for(var i=1;i<=5;i++)
   		{
   			info_html +='<div><span>'+i+'、名称：<input style="margin-left:10px;width:95%;height:30px;" placeholder="名称" class="jingdian'+i+'_base" value="'+(json['jingdian'+i+'_base'] ? json['jingdian'+i+'_base'].replace(/"/g,'&quot;') : "")+'" /></span></div>';
@@ -1449,6 +1582,7 @@ window.displayRoomExt=function(ext,showTitle)
   	$(".tablehotel").hide();
   	$(".tablejingdian").hide();
   	$(".tableTextAreaDiv").hide();
+  	$(".tablebus").hide();
   	var rid = $(e).attr("id");
   	var day = $(e).attr("data-day");
   	var className = $(e).attr("class");
@@ -1471,7 +1605,7 @@ window.displayRoomExt=function(ext,showTitle)
   	if(left + w > width) left = left - w;
   	else if(left + w > cw) left = left - w;
   	if(left < 0) left = 0;
-  	if(top + h >height) 
+  	if(top + h >height)
   	{
   		top = $(e).position().top - h+20;
   		if(isTitle && $('#'+id).scrollTop()>10) top = top + $('#'+id).scrollTop()/2-10;
@@ -1776,7 +1910,8 @@ window.displayRoomExt=function(ext,showTitle)
   		//info_html += '</div></div>';//*/
   		info_html += '</div></div>';
 
-  		info_html += '<div style="text-align: center;"><button class="btn_cancel" onclick="window.cancelDiv(this)">取消</button><button class="btn_submit" onclick="window.submitDayInfo(this)">提交</button></div>';
+  		//info_html += '<div style="text-align: center;"><button class="btn_cancel" onclick="window.cancelDiv(this)">取消</button><button class="btn_submit" onclick="window.submitDayInfo(this)">提交</button></div>';
+  		info_html += '<div style="text-align: center;height:26px;"></div>';
   		$(div).append(info_html);
   		$("body").append(div);
   		for(var i=1;i<=5;i++)
@@ -1860,13 +1995,15 @@ window.displayRoomExt=function(ext,showTitle)
 				else tr_html+= '>';
 				tr_html+='<input class="'+dayClassName[j]+'" onclick="window.showTextAreaDiv(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			}
-			else if(j==6 || j==8 || j==9 || j==10)
+			else if(j==8)
+				tr_html+='<td><input class="'+dayClassName[j]+'" onclick="window.showBusDiv(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
+			else if(j==1 || j==6 || j==9)
 			{
 				tr_html+='<td';
 				if(j==7) tr_html+=' style="width:110px;">';
-				else if(j==9) tr_html+=' style="width:80px;">';
-				else if(j==10) tr_html+=' style="max-width:70px;">';
+				else if(j==9) tr_html+=' style="width:80px;">';//else if(j==10) tr_html+=' style="max-width:70px;">';
 				else if(j==6) tr_html+=' style="width:60px;">';
+				else if(j==1) tr_html+=' style="width:186px;">';
 				else tr_html+= '>';
 				tr_html+='<input class="'+dayClassName[j]+'" onclick="window.showSimpleDiv(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			}
@@ -1878,7 +2015,7 @@ window.displayRoomExt=function(ext,showTitle)
 				tr_html+='<td><input class="'+dayClassName[j]+'" onclick="window.showAirPortDiv(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			else
 			{
-				if(j==1) continue;
+				if(j==10) continue;
 				tr_html+='<td style="width:';
 				if(j==1) tr_html+='60px;">';
 				else tr_html+='36px;">';
@@ -1892,6 +2029,7 @@ window.displayRoomExt=function(ext,showTitle)
   }
   function dateformat(date_string)
   {
+  	if(!date_string) return null;
   	date = date_string.split('/');
   	month = date[0];
   	if(parseInt(month)<10) month = '0'+month;
@@ -2488,6 +2626,7 @@ window.displayRoomExt=function(ext,showTitle)
   	$(".tablejingdian").hide();
   	$(".tableairport").hide();
   	$(".tableTextAreaDiv").hide();
+  	$(".tablebus").hide();
   	show = null;
   	currentShowDiv = null;
   }
@@ -2564,11 +2703,11 @@ window.displayRoomExt=function(ext,showTitle)
 			}
 			else if(j==2)
 			{
-				if(json[dayClassName[j]] && json[dayClassName[j]].hotel_base_xc)
+				if(json[dayClassName[j]] && json[dayClassName[j]].hotel_base_dm)
 				{
-					value = json[dayClassName[j]].hotel_base_xc;
+					//value = json[dayClassName[j]].hotel_base_xc;
 					if(json[dayClassName[j]].hotel_base_dm)
-						value += " / "+json[dayClassName[j]].hotel_base_dm;
+						value += json[dayClassName[j]].hotel_base_dm;
 					//console.log(value);
 					if(value.length>0) value = value.replace(/"/g,'&quot;');
 					//console.log(value);
@@ -2581,7 +2720,7 @@ window.displayRoomExt=function(ext,showTitle)
 					value = json[dayClassName[j]].textarea_base;
 				if(value.length>0) value = value.replace(/"/g,'&quot;');
 				tr_html+='<td';
-				if(j==7) 
+				if(j==7)
 				{
 					tr_html+=' style="width:120px;">';
 					var now_date = new Date();
@@ -2644,16 +2783,35 @@ window.displayRoomExt=function(ext,showTitle)
 				else tr_html+= '>';
 				tr_html+='<input class="'+dayClassName[j]+'" onclick="window.showTextAreaDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)" value="'+value+'" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			}
-			else if(j==6 || j==8 || j==9 || j==10)
+			else if(j==8)
+			{
+				if(json[dayClassName[j]] && json[dayClassName[j]].bus_base)
+					value = json[dayClassName[j]].bus_base;
+				if(value.length==0)
+				{
+					if(json[dayClassName[j]] && json[dayClassName[j]].simple_base)
+						value = json[dayClassName[j]].simple_base;
+				}
+				if(value.length>0) value = value.replace(/"/g,'&quot;');
+				tr_html+='<td><input class="'+dayClassName[j]+'" onclick="window.showBusDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)"  value="'+value+'" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
+			}
+			else if(j==1 || j==6 || j==9)
 			{
 				if(json[dayClassName[j]] && json[dayClassName[j]].simple_base)
 					value = json[dayClassName[j]].simple_base;
+				if(value.length==0 && j==1)
+				{
+					if(json['hotel_name'] && json['hotel_name'].hotel_base_xc)
+					{
+						value = json['hotel_name'].hotel_base_xc;
+					}
+				}
 				if(value.length>0) value = value.replace(/"/g,'&quot;');
-				tr_html+='<td';
+				tr_html+='<td';				//else if(j==10) tr_html+=' style="max-width:70px;">';
 				if(j==7) tr_html+=' style="width:110px;">';
 				else if(j==9) tr_html+=' style="width:80px;">';
-				else if(j==10) tr_html+=' style="max-width:70px;">';
 				else if(j==6) tr_html+=' style="width:60px;">';
+				else if(j==1) tr_html+=' style="width:186px;">';
 				else tr_html+= '>';
 				tr_html+='<input class="'+dayClassName[j]+'" onclick="window.showSimpleDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)" value="'+value+'" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			}
@@ -2767,7 +2925,7 @@ window.displayRoomExt=function(ext,showTitle)
 			}
 			else
 			{
-				if(j==1) continue;
+				if(j==10) continue;
 				tr_html+='<td style="width:';
 				if(j==1) tr_html+='60px;">';
 				else tr_html+='36px;">';
@@ -2800,11 +2958,12 @@ window.displayRoomExt=function(ext,showTitle)
         {
         	var info = single.ext;
         	tbody_html +='<tr>';
-        	tbody_html +='<td colspan="15"><span>项目名称：<input id="'+single._id+'" style="width:340px;border:0px;height:25px;" class="name" placeholder="项目名称" onclick="window.daysInputClick(this)" value="'+(info.name ? info.name : "")+'" onchange="window.inputChange(this,\''+single._id+'\')" /></span>';
+        	tbody_html +='<td style="border-bottom: 1px dashed #ddd;" colspan="15"><span>项目名称：<input id="'+single._id+'" style="width:340px;border:0px;height:25px;" class="name" placeholder="项目名称" onclick="window.daysInputClick(this)" value="'+(info.name ? info.name : "")+'" onchange="window.inputChange(this,\''+single._id+'\')" /></span>';
         	tbody_html +='<span>组团单位：<input id="'+single._id+'" style="width:300px;border:0px;height:25px;" class="ztdanwei" placeholder="组团单位" onclick="window.daysInputClick(this)" value="'+(info.ztdanwei ? info.ztdanwei : "")+'"  onchange="window.inputChange(this,\''+single._id+'\')" /></span>';
         	tbody_html +='<span>团号：<input id="'+single._id+'" style="width:200px;border:0px;height:25px;" class="zttuanhao" placeholder="团号" onclick="window.daysInputClick(this)" value="'+(info.zttuanhao ? info.zttuanhao : "")+'"  onchange="window.inputChange(this,\''+single._id+'\')" /></span></td></tr>';
         	tbody_html +='<tr><td colspan="15"><span>大人人数：<input id="'+single._id+'" style="width:50px;border:0px;height:25px;" value="'+(info.adult_number ? info.adult_number : "")+'" class="adult_number" onclick="window.daysInputClick(this)" onchange="window.inputChange(this,\''+single._id+'\')" /></span>';
         	tbody_html +='<span>儿童人数：<input id="'+single._id+'" style="width:50px;border:0px;height:25px;" value="'+(info.children_number ? info.children_number : "")+'" class="children_number"  onclick="window.daysInputClick(this)" onchange="window.inputChange(this,\''+single._id+'\')" /></span>';
+        	tbody_html +='<span>人员组成：<input id="'+single._id+'" style="width:272px;border:0px;height:25px;" value="'+(info.personnel_number ? info.personnel_number : "")+'" class="personnel_number"  onclick="window.daysInputClick(this)" onchange="window.inputChange(this,\''+single._id+'\')" /></span>';
         	tbody_html +='<span>开始日期：<input id="start-date'+single._id+'" style="width:100px;border:0px;height:25px;" value="'+(info.startdate ? info.startdate : "")+'" class="startdate" onclick="window.daysInputClick(this)" /></span>';
         	tbody_html +='<span>结束日期：<input id="end-date'+single._id+'" style="width:100px;border:0px;height:25px;" value="'+(info.enddate ? info.enddate : "")+'" class="enddate"  onclick="window.daysInputClick(this)" onchange="window.dateChange(this,\''+single._id+'\')" /></span></td></tr>';
 
@@ -2823,7 +2982,7 @@ window.displayRoomExt=function(ext,showTitle)
         			{
         				var td = days[key];
         				var tdDate = new Date(dateformat(td.date));
-        				if(tdDate.getTime() > firstDate.getTime())
+        				if(tdDate && tdDate.getTime() > firstDate.getTime())
         				{
         					var tdDay = (tdDate.getTime() - firstDate.getTime())/1000/3600/24;
         					var tr_html = trHtml(firstDate,day_length,day_length+tdDay-1,single._id);
@@ -2887,14 +3046,14 @@ window.displayRoomExt=function(ext,showTitle)
   			var show_info = localStorage.getItem(key+day_key+value[0]);
   			if(!show_info)
   			{
-  				if(rooms.length>1) 
+  				if(rooms.length>1)
   				{
   					if(!confirm('项目（组）的名称：'+mc+'\n酒店名：'+value[3]+'\n预订号：'+value[2]+' \n\n'+value[1]))
   					{
   						localStorage.setItem(key+day_key+value[0],'1');
   					}
   				}
-  				else 
+  				else
   				{
   					if(!confirm('项目（组）的名称：'+mc+'\n酒店名：'+value[3]+'\n预订号：'+value[2]+' \n\n'+value[1]))
   					{
@@ -2999,12 +3158,15 @@ window.displayRoomExt=function(ext,showTitle)
 		html+=tabPageHTML();
 	}//<th class="third" rowspan="2"><div class="th-inner" style="width:50px;">人数</div></th>
 	html+='<div class="fixed-table-container complex"><div class="header-background"> </div><div class="fixed-table-container-inner" style="height:'+(height-108)+'px;">';
-	html+='<table cellspacing="0"><thead><tr class="complex-top"><th class="third" rowspan="2"><div class="th-inner" style="width:20px;">星期</div></th><th class="third" rowspan="2"><div class="th-inner">日期</div></th><th class="third" rowspan="2"><div class="th-inner">导游</div>';
-	html+='</th><th class="second" colspan="5"><div class="th-inner" >酒店</div></th><th class="third" rowspan="2"><div class="th-inner">预定号</div>';
-	html+='</th><th class="third" rowspan="2"><div class="th-inner">车公司</div></th><th class="third" rowspan="2"><div class="th-inner">用车时间</div></th><th class="third" rowspan="2"><div class="th-inner">司机</div>';
-	html+='</th><th class="third" rowspan="2"><div class="th-inner">用餐</div></th><th class="third" rowspan="2"><div class="th-inner">景点门票</div></th><th class="third" rowspan="2"><div class="th-inner">抵达／离开时间</div>';
-	html+='</th></tr><tr class="complex-bottom"><th class="second"><div class="th-inner">酒店名</div></th><th class="second"><div class="th-inner">付款</div></th><th class="second"><div class="th-inner">双</div>';
-	html+='</th><th class="second"><div class="th-inner">单</div></th><th class="second"><div class="th-inner">其他</div></th></tr></thead><tbody class="tbody_content">';
+	html+='<table cellspacing="0"><thead><tr class="complex-top">';
+	html+='<th class="third" rowspan="2"><div class="th-inner" style="width:20px;">星期</div></th><th class="third" rowspan="2"><div class="th-inner">日期</div></th>';
+	html+='<th class="third" rowspan="2"><div class="th-inner">导游</div></th>';
+	html+='<th class="second" colspan="7"><div class="th-inner">酒店</div></th>';
+	html+='<th class="third" rowspan="2"><div class="th-inner">车公司</div></th><th class="third" rowspan="2"><div class="th-inner">用车时间</div></th>';
+	html+='<th class="third" rowspan="2"><div class="th-inner">用餐</div></th><th class="third" rowspan="2"><div class="th-inner">景点门票</div></th><th class="third" rowspan="2"><div class="th-inner">抵达／离开时间</div></th></tr>';
+	html+='<tr class="complex-bottom"><th class="second"><div class="th-inner">行程</div></th><th class="second"><div class="th-inner">酒店名</div></th>';
+	html+='<th class="second"><div class="th-inner">付款</div></th><th class="second"><div class="th-inner">双</div></th>';
+	html+='<th class="second"><div class="th-inner">单</div></th><th class="second"><div class="th-inner">其他</div></th><th class="third" rowspan="2"><div class="th-inner">预定号</div></th></tr></thead><tbody class="tbody_content">';
 
     html+= tbodyHTML(ext);
 
@@ -3091,6 +3253,7 @@ window.displayRoomExt=function(ext,showTitle)
   		$(".tablejingdian").hide();
   		$(".tableairport").hide();
   		$(".tableTextAreaDiv").hide();
+  		$(".tablebus").hide();
   		$('.hotelsearch').remove();
   	}
   });
