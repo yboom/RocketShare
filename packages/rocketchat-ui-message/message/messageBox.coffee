@@ -60,7 +60,7 @@ Template.messageBox.events
 		event.preventDefault()
 		Meteor.call 'joinRoom', @_id
 
-	'click .clear_tab_space':(e) ->
+	'click .clear-tab-space':(e) ->
 		form = $(e.target).closest(".message-form")
 		input = $(form).find(".input-message").get(0)
 		if(input)
@@ -71,6 +71,15 @@ Template.messageBox.events
 			for k in ks
 				value += k.replace(regex,' ') + "\n"
 			$(input).val(value.replace(/\s+$/g,""))
+
+	'click .clear-tab':(e) ->
+		form = $(e.target).closest(".message-form")
+		input = $(form).find(".input-message").get(0)
+		if(input)
+			value = $(input).val()
+			regex = /\t/g
+			value = value.replace(regex,'    ')
+			$(input).val(value)
 
 	'focus .input-message': (event) ->
 		KonchatNotification.removeRoomNotification @_id
