@@ -244,7 +244,7 @@ window.displayRoomExt=function(ext,showTitle)
   	if(!json.simple_base && className == "xingcheng")
   	{
   		//console.log('xc');
-  		if(r.ext.days[day]['hotel_name'])
+  		if(r && r.ext && r.ext.days && r.ext.days[day] && r.ext.days[day]['hotel_name'])
   		{
   			//console.log(r.ext.days[day]['hotel_name'].hotel_base_xc);
   			json.simple_base = r.ext.days[day]['hotel_name'].hotel_base_xc;
@@ -257,7 +257,7 @@ window.displayRoomExt=function(ext,showTitle)
 			json.bus_base = json.simple_base;
 			delete json.simple_base;
 		}
-  		if(!json.bus_driver && r.ext.days[day]['driver'])
+  		if(!json.bus_driver && r && r.ext && r.ext.days && r.ext.days[day] && r.ext.days[day]['driver'])
   		{
   			json.bus_driver = r.ext.days[day]['driver'].simple_base;
   		}
@@ -911,7 +911,7 @@ window.displayRoomExt=function(ext,showTitle)
   	if(isTitle && $('#'+id).scrollTop()>10) top = top + $('#'+id).scrollTop()/2-10;
   	var left = $(e).position().left;
   	var w = width/5;
-  	var h = height/4+5;
+  	var h = height/3+5;
   	var cw = document.body.clientWidth || 0;
   	if(left + w > width) left = left - w;
   	else if(left + w > cw) left = left - w;
@@ -1099,12 +1099,13 @@ window.displayRoomExt=function(ext,showTitle)
 			delete json.simple_base;
 		}
   	}
+  	else json.bus_base = '';
   	if(!json.bus_driver && r && r.ext && r.ext.days && r.ext.days[day] && r.ext.days[day]['driver'])
   	{
-  		if(!json.bus_base) json.bus_base = "";
+  		if(!json.bus_base) json.bus_base = '';
   		json.bus_driver = r.ext.days[day]['driver'].simple_base?r.ext.days[day]['driver'].simple_base:"";
   	}
-  	else if(!json.bus_driver) json.bus_driver = "";
+  	else if(!json.bus_driver) json.bus_driver = '';
   	//console.log(json);
   	var div = $(".tablebus");
 
@@ -1957,6 +1958,7 @@ window.displayRoomExt=function(ext,showTitle)
   window.mouseOutHide = mouseOutHide;
   function trHtml(date,begin,length,rid)
   {
+  	//console.log('trHtml');
   	var tr_html = '';
   	var startDate = date;
   	for(var i=begin;i<=length;i++)
@@ -1983,20 +1985,20 @@ window.displayRoomExt=function(ext,showTitle)
 				//if(i==0)
 				//	tr_html+='<td><input class="'+dayClassName[j]+'" onclick="window.daysInputClick(this)" onchange="window.daysInputChange(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 				//else
-					tr_html+='<td style="width:140px;"><input class="'+dayClassName[j]+'" onclick="window.showDiv(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'"/></td>';
+					tr_html+='<td style="width:140px;"><input class="'+dayClassName[j]+'" onclick="window.showDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'"/></td>';
 			}
 			else if(j==2)
-				tr_html+='<td style="width:280px;"><input class="'+dayClassName[j]+'" onclick="window.showHotelDiv(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
+				tr_html+='<td style="width:280px;"><input class="'+dayClassName[j]+'" onclick="window.showHotelDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			else if(j==3 || j==7)
 			{
 				tr_html+='<td';
 				if(j==7) tr_html+=' style="width:120px;">';
 				else if(j==3) tr_html+=' style="width:182px;">';
 				else tr_html+= '>';
-				tr_html+='<input class="'+dayClassName[j]+'" onclick="window.showTextAreaDiv(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
+				tr_html+='<input class="'+dayClassName[j]+'" onclick="window.showTextAreaDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			}
 			else if(j==8)
-				tr_html+='<td><input class="'+dayClassName[j]+'" onclick="window.showBusDiv(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
+				tr_html+='<td><input class="'+dayClassName[j]+'" onclick="window.showBusDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			else if(j==1 || j==6 || j==9)
 			{
 				tr_html+='<td';
@@ -2005,21 +2007,21 @@ window.displayRoomExt=function(ext,showTitle)
 				else if(j==6) tr_html+=' style="width:60px;">';
 				else if(j==1) tr_html+=' style="width:186px;">';
 				else tr_html+= '>';
-				tr_html+='<input class="'+dayClassName[j]+'" onclick="window.showSimpleDiv(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
+				tr_html+='<input class="'+dayClassName[j]+'" onclick="window.showSimpleDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			}
 			else if(j==11)
-				tr_html+='<td style="width:110px"><input class="'+dayClassName[j]+'" onclick="window.showDinnerDiv(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
+				tr_html+='<td style="width:110px"><input class="'+dayClassName[j]+'" onclick="window.showDinnerDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			else if(j==12)
-				tr_html+='<td><input class="'+dayClassName[j]+'" onclick="window.showJingDianDiv(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
+				tr_html+='<td><input class="'+dayClassName[j]+'" onclick="window.showJingDianDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			else if(j==13)
-				tr_html+='<td><input class="'+dayClassName[j]+'" onclick="window.showAirPortDiv(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
+				tr_html+='<td><input class="'+dayClassName[j]+'" onclick="window.showAirPortDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			else
 			{
 				if(j==10) continue;
 				tr_html+='<td style="width:';
 				if(j==1) tr_html+='60px;">';
 				else tr_html+='36px;">';
-				tr_html +='<input class="'+dayClassName[j]+'" onclick="window.daysInputClick(this)" onchange="window.daysInputChange(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
+				tr_html +='<input class="'+dayClassName[j]+'" onclick="window.daysInputClick(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)" onchange="window.daysInputChange(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			}
 		}
 		tr_html += '</tr>';
@@ -2185,6 +2187,8 @@ window.displayRoomExt=function(ext,showTitle)
   										jsValue = {};
   										if(day&&r.ext.days)
   										{
+  											//console.log('prev');
+  											//console.log(r.ext.days);
   											if(r.ext.days[day])
   												jsValue = r.ext.days[day];
   											//else jsValue[day] = {};
@@ -2194,6 +2198,8 @@ window.displayRoomExt=function(ext,showTitle)
   											//console.log(jsValue);
   											r.ext.days[day] = jsValue;
   											//console.log(r);
+  											//console.log('prev');
+  											//console.log(r.ext.days);
   										}
   										else
   										{
@@ -2218,12 +2224,16 @@ window.displayRoomExt=function(ext,showTitle)
   										jsValue = {};
   										if(day&&r.ext.days)
   										{
+  											//console.log('prev');
+  											//console.log(r.ext.days);
   											if(r.ext.days[day])
   												jsValue = r.ext.days[day];
   											//else jsValue[day] = {};
   											jsValue[className] = value;
   											r.ext.days[day] = jsValue;
   											//r.ext.days[day][className] = value;
+  											//console.log('after');
+  											//console.log(r.ext.days);
   										}
   										else
   										{
