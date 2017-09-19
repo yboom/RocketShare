@@ -14,6 +14,7 @@ window.displayRoomExt=function(ext,showTitle)
 	var timeOutShow = null;
 	var findHotels = [];
 	var timeOutSearch = null;
+	var td_switch = false;
 	var width = window.innerWidth || document.documentElement.clientWidth ||
     document.body.clientWidth;
   	var height = window.innerHeight || document.documentElement.clientHeight ||
@@ -548,8 +549,34 @@ window.displayRoomExt=function(ext,showTitle)
   			//info_html += '<div><span>早餐注释：'+(json.breakfast_info ? json.breakfast_info : "")+'</span></div>';
   			info_html += '<div><span>L午餐：'+(json.lunch_base ? json.lunch_base : "")+'</span></div>';
   			info_html += '<div><span>午餐注释：'+(json.lunch_info ? json.lunch_info : "")+'</span></div>';
+  			info_html += '<div><span>价格：'+(json.lunch_price ? json.lunch_price : "")+'</span>';
+  			var r='';
+  			if(json.lunch_price)
+  			{
+  				var expression = getExpression(json.lunch_price);
+  				r = eval(expression);
+  				if(isNaN(r))
+  				{
+  					r = '';
+  				}
+  			}
+  			if(r) info_html += '<span style="width:15%">='+r+'</span>';
+  			info_html += '</div>';
   			info_html += '<div><span>D晚餐：'+(json.dinner_base ? json.dinner_base : "")+'</span></div>';
   			info_html += '<div><span>晚餐注释：'+(json.dinner_info ? json.dinner_info : "")+'</span></div>';
+  			info_html += '<div><span>价格：'+(json.dinner_price ? json.dinner_price : "")+'</span>';
+  			r='';
+  			if(json.dinner_price)
+  			{
+  				var expression = getExpression(json.dinner_price);
+  				r = eval(expression);
+  				if(isNaN(r))
+  				{
+  					r = '';
+  				}
+  			}
+  			if(r) info_html += '<span style="width:15%">='+r+'</span>';
+  			info_html += '</div>';
   			info_html += '</div>';
 		}
 		else if(first.indexOf('jingdian')==0)
@@ -1685,6 +1712,8 @@ window.displayRoomExt=function(ext,showTitle)
   	if(r && r.ext && r.ext.days && r.ext.days[day] && r.ext.days[day][className])
   	{
   		json = r.ext.days[day][className];
+  		if(!json.lunch_price) json.lunch_price = '';
+  		if(!json.dinner_price) json.dinner_price = '';
   	}
   	var div = $(".tabledinner");
 
@@ -1722,6 +1751,14 @@ window.displayRoomExt=function(ext,showTitle)
   	  					//if($("."+key).is('input')) $("."+key).val(json[key].replace(/"/g,'&quot;'));
   	  				}
   	  				else $("."+key).val('');
+  	  				if(key.indexOf('_price')>0)
+  	  				{
+  	  					var input = $(div).find("."+key).get(0);
+  	  					if(input)
+  	  					{
+  	  						computeJingDianAndAirPortResult($(input));
+  	  					}
+  	  				}
   	  			}
   	  		}
   	  	}
@@ -1729,6 +1766,10 @@ window.displayRoomExt=function(ext,showTitle)
   	  	{
   	  		$(div).find('input').each(function(){
   	  			$(this).val('');
+  	  			if($(this).attr('class').indexOf('_price')>0)
+  	  			{
+  	  				computeJingDianAndAirPortResult($(this));
+  	  			}
   	  		});
   	  		$(div).find('textarea').each(function(){
   	  			$(this).val('');
@@ -1751,8 +1792,32 @@ window.displayRoomExt=function(ext,showTitle)
   		//info_html += '<div><span>早餐详情：<textarea style="margin-left:10px;width:95%;height:'+((h-150)>120 ?(h-150):120)+'px;" placeholder="早餐注释" class="breakfast_info">'+(json.breakfast_info ? json.breakfast_info : "")+'</textarea></span></div>';
   		info_html += '<div><span>L午餐：<input style="margin-left:10px;width:95%;height:30px;" placeholder="午餐" value="'+(json.lunch_base ? json.lunch_base.replace(/"/g,'&quot;') : "")+'" class="lunch_base" /></span></div>';
   		info_html += '<div><span>午餐注释：<textarea style="margin-left:10px;width:95%;height:'+((h-200)>60 ?(h-200):60)+'px;" placeholder="午餐注释" class="lunch_info">'+(json.lunch_info ? json.lunch_info : "")+'</textarea></span></div>';
+  		info_html +='<div>价格：<input style="margin-left:2px;width:68%;height:30px;" placeholder="价格" onblur="window.computeJingDianAndAirPortResult(this)" class="lunch_price" value="'+(json.lunch_price ? json.lunch_price.replace(/"/g,'&quot;') : "")+'" />';
+  		var r = '';
+  		if(json.lunch_price)
+  		{
+  			var expression = getExpression(json.lunch_price);
+  			r = eval(expression);
+  			if(isNaN(r))
+  			{
+  				r = '';
+  			}
+  		}
+  		info_html +='<span style="width:15%">='+r+'</span></div>';
   		info_html += '<div><span>D晚餐：<input style="margin-left:10px;width:95%;height:30px;" placeholder="晚餐" value="'+(json.dinner_base ? json.dinner_base.replace(/"/g,'&quot;') : "")+'" class="dinner_base"/></span></div>';
   		info_html += '<div><span>晚餐注释：<textarea style="margin-left:10px;width:95%;height:'+((h-200)>60 ?(h-200):60)+'px;" placeholder="晚餐注释" class="dinner_info">'+(json.dinner_info ? json.dinner_info : "")+'</textarea></span></div>';
+  		info_html +='<div>价格：<input style="margin-left:2px;width:68%;height:30px;" placeholder="价格" onblur="window.computeJingDianAndAirPortResult(this)" class="dinner_price" value="'+(json.dinner_price ? json.dinner_price.replace(/"/g,'&quot;') : "")+'" />';
+  		r = '';
+  		if(json.dinner_price)
+  		{
+  			var expression = getExpression(json.dinner_price);
+  			r = eval(expression);
+  			if(isNaN(r))
+  			{
+  				r = '';
+  			}
+  		}
+  		info_html +='<span style="width:15%">='+r+'</span></div>';
   		//info_html += '<div><span>注释：<input style="margin-left:10px;width:95%;height:30px;" placeholder="注释" value="'+(json.lunchdinner_zhushi ? json.lunchdinner_zhushi : "")+'" class="lunchdinner_zhushi"/></span></div>';
   		info_html += '</div>';
 
@@ -2249,7 +2314,7 @@ window.displayRoomExt=function(ext,showTitle)
 			else if(j==11)
 				tr_html+='<td style="width:110px"><input class="'+dayClassName[j]+'" onclick="window.showDinnerDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			else if(j==12)
-				tr_html+='<td><input class="'+dayClassName[j]+'" onclick="window.showJingDianDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
+				tr_html+='<td class="jingdian_td" style="width:70px;"><input class="'+dayClassName[j]+'" onclick="window.showJingDianDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			else if(j==13)
 				tr_html+='<td><input class="'+dayClassName[j]+'" onclick="window.showAirPortDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			else
@@ -2258,7 +2323,7 @@ window.displayRoomExt=function(ext,showTitle)
 				tr_html+='<td style="width:';
 				if(j==1) tr_html+='60px;">';
 				else tr_html+='36px;">';
-				tr_html +='<input class="'+dayClassName[j]+'" onclick="window.daysInputClick(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)" onchange="window.daysInputChange(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
+				tr_html +='<input class="'+dayClassName[j]+'" onclick="window.daysInputClick(this)" onchange="window.daysInputChange(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			}
 		}
 		tr_html += '</tr>';
@@ -3142,7 +3207,7 @@ window.displayRoomExt=function(ext,showTitle)
 					}
 					if(value.length>0) value = value.replace(/"/g,'&quot;');
 				}
-				tr_html+='<td><input class="'+dayClassName[j]+'" onclick="window.showJingDianDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)" value="'+value+'" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
+				tr_html+='<td class="jingdian_td" style="width:70px;"><input class="'+dayClassName[j]+'" onclick="window.showJingDianDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)" value="'+value+'" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			}
 			else if(j==13)
 			{
@@ -3248,6 +3313,11 @@ window.displayRoomExt=function(ext,showTitle)
   			{
   				if(s_key_data.bus_price) s_result = eval(s_result+'+'+s_key_data.bus_price);
   			}
+  			else if(s_key == 'dinner')
+  			{
+  				if(s_key_data.lunch_price) s_result = eval(s_result+'+'+s_key_data.lunch_price);
+  				if(s_key_data.dinner_price) s_result = eval(s_result+'+'+s_key_data.dinner_price);
+  			}
   			else if(s_key == 'jingdian')
   			{
   				var r = 0;
@@ -3331,6 +3401,15 @@ window.displayRoomExt=function(ext,showTitle)
   				$(span).text(bus_r);
   			}
   		}
+  		var dinner_r = summaryData(update_room,'dinner');
+  		if(dinner_r>0)
+  		{
+  			var span = $(update_tr).find(".summary_dinner").get(0);
+  			if(span)
+  			{
+  				$(span).text(dinner_r);
+  			}
+  		}
   		var jingdian_r = summaryData(update_room,'jingdian');
   		if(jingdian_r>0)
   		{
@@ -3349,12 +3428,12 @@ window.displayRoomExt=function(ext,showTitle)
   				$(span).text(airport_r);
   			}
   		}
-  		if(th_r+hotel_t+bus_r+jingdian_r+airport_r>0)
+  		if(th_r+hotel_t+bus_r+dinner_r+jingdian_r+airport_r>0)
   		{
   			var span = $(update_tr).next().find(".summary_total").get(0);
   			if(span)
   			{
-  				$(span).text(th_r+'+'+hotel_t+'+'+bus_r+'+'+jingdian_r+'+'+airport_r+'='+(th_r+hotel_t+bus_r+jingdian_r+airport_r));
+  				$(span).text(th_r+'+'+hotel_t+'+'+bus_r+'+'+dinner_r+'+'+jingdian_r+'+'+airport_r+'='+(th_r+hotel_t+bus_r+dinner_r+jingdian_r+airport_r));
   			}
   		}
   	}
@@ -3380,11 +3459,18 @@ window.displayRoomExt=function(ext,showTitle)
   		s_html +='<span class="summary_hotel">'+hotel_t+'</span>';
   	}
   	s_html +='</td>';
-  	s_html +='<td colspan="3">';
+  	s_html +='<td colspan="2">';
   	var bus_r = summaryData(data,'bus_company');
   	//if(bus_r>0)
   	{
   		s_html +='<span class="summary_bus">'+bus_r+'</span>';
+  	}
+  	s_html +='</td>';
+  	s_html +='<td>';
+  	var dinner_r = summaryData(data,'dinner');
+  	//if(dinner_r>0)
+  	{
+  		s_html +='<span class="summary_dinner">'+dinner_r+'</span>';
   	}
   	s_html +='</td>';
   	s_html +='<td>';
@@ -3404,7 +3490,7 @@ window.displayRoomExt=function(ext,showTitle)
     s_html +='</tr>';
     s_html +='<tr><td colspan="2" style="text-align:center;"><span>总计</span></td>';
     s_html +='<td colspan="13">';
-    s_html +='<span class="summary_total">'+th_r+'+'+hotel_t+'+'+bus_r+'+'+jingdian_r+'+'+airport_r+'='+(th_r+hotel_t+bus_r+jingdian_r+airport_r)+'</span>';
+    s_html +='<span class="summary_total">'+th_r+'+'+hotel_t+'+'+bus_r+'+'+dinner_r+'+'+jingdian_r+'+'+airport_r+'='+(th_r+hotel_t+bus_r+dinner_r+jingdian_r+airport_r)+'</span>';
   	s_html +='</td></tr>';
   	return s_html;
   }
@@ -3594,6 +3680,7 @@ window.displayRoomExt=function(ext,showTitle)
   	if(tbody)
   	{
   		$(tbody).html(html);
+  		td_switch = false;
   		for(var index in room)
   		{
   			$("#start-date"+(room[index]._id)).datepicker();
@@ -3636,9 +3723,9 @@ window.displayRoomExt=function(ext,showTitle)
 	html+='<th class="third" rowspan="2"><div class="th-inner" style="width:20px;">星期</div></th><th class="third" rowspan="2"><div class="th-inner">日期</div></th>';
 	html+='<th class="third" rowspan="2"><div class="th-inner">导游</div></th>';
 	html+='<th class="third" rowspan="2"><div class="th-inner">行程</div></th>';
-	html+='<th class="second" colspan="6"><div class="th-inner" style="width:37%;text-align:center;">酒店</div></th>';
+	html+='<th class="second" colspan="6"><div class="th-inner" style="width:50%;text-align:center;">酒店</div></th>';
 	html+='<th class="third" rowspan="2"><div class="th-inner">车公司</div></th><th class="third" rowspan="2"><div class="th-inner">用车时间</div></th>';
-	html+='<th class="third" rowspan="2"><div class="th-inner">用餐</div></th><th class="third" rowspan="2"><div class="th-inner">景点门票</div></th><th class="third" rowspan="2"><div class="th-inner">抵达／离开时间</div></th></tr>';
+	html+='<th class="third" rowspan="2"><div class="th-inner">用餐</div></th><th class="third" rowspan="2"><div class="th-inner jingdian_div" style="cursor:pointer;">景点门票</div></th><th class="third" rowspan="2"><div class="th-inner">抵达／离开时间</div></th></tr>';
 	html+='<tr class="complex-bottom"><th class="second"><div class="th-inner">酒店名</div></th>';
 	html+='<th class="second"><div class="th-inner">付款</div></th><th class="second"><div class="th-inner">双</div></th>';
 	html+='<th class="second"><div class="th-inner">单</div></th><th class="second"><div class="th-inner">其他</div></th><th class="second"><div class="th-inner">预定号</div></th></tr></thead><tbody class="tbody_content">';
@@ -3719,6 +3806,25 @@ window.displayRoomExt=function(ext,showTitle)
   	if((className == $(".fixed-table-container-inner").attr('class')) || children.length == 0)
   	{
   		daysInputClick(t);
+  	}
+  });
+  $(".jingdian_div").on('click',function(e){
+  	e.preventDefault();
+  	if(!td_switch) 
+  	{
+  		td_switch = true;
+  		$("td.jingdian_td").css('width','auto');
+  		$(".complex-top .th-inner").css('top',1);
+  		$(".complex-bottom .th-inner").css('top',31);
+  		setTimeout(function(){$(".complex-top .th-inner").css('top',0),$(".complex-bottom .th-inner").css('top',30);},200);
+  	}
+  	else 
+  	{
+  		td_switch = false;
+  		$("td.jingdian_td").css('width','70px');
+  		$(".complex-top .th-inner").css('top',-1);
+  		$(".complex-bottom .th-inner").css('top',29);
+  		setTimeout(function(){$(".complex-top .th-inner").css('top',0),$(".complex-bottom .th-inner").css('top',30);},200);
   	}
   });
   /*function printTrHtml(date,begin,length,rid)
