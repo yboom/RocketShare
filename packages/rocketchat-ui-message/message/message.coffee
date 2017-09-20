@@ -7,8 +7,19 @@ Template.message.helpers
 		if Template.instance().isExtMsg
 			return 'extmessage'
 	isShow: ->
+		Own = this.u?._id is Meteor.userId()
+		r_own = Template.instance().room_owner_id is Meteor.userId()
 		if Template.instance().isExtMsg and not Template.instance().isOpen
-			return 'hideextmessage'
+			#console.log Own
+			#console.log r_own
+			#console.log this.rid
+			if Own or r_own
+				return 'hideextmessage'
+			else
+				return 'hidemessage'
+		else if Template.instance().isExtMsg and Template.instance().isOpen
+			if not Own and not r_own
+				return 'hidemessage'
 	isSequential: ->
 		return 'sequential' if this.groupable isnt false and (this.quoted ? false) is false
 	getEmoji: (emoji) ->
@@ -122,6 +133,10 @@ Template.message.onCreated ->
 			c_name = $(child[0]).attr('class')
 			if(c_name == 'icon-folder-open')
 				@isOpen = true
+	@room_owner_id = '0'
+	room = ChatRoom.findOne({"_id":msg.rid})
+	if room?
+		@room_owner_id = room.u._id
 	@wasEdited = msg.editedAt? and not RocketChat.MessageTypes.isSystemMessage(msg)
 
 	#luwei for marks

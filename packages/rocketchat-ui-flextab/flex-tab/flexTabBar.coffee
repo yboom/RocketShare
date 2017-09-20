@@ -37,7 +37,7 @@ Template.flexTabBar.events
 		messages = $('.extmessage')
 		for msg in messages
 			if hide
-				if(!$(msg).hasClass('hideextmessage'))
+				if(!$(msg).hasClass('hideextmessage')&&!$(msg).hasClass('hidemessage'))
 					$(msg).addClass('hideextmessage')
 			else
 				$(msg).removeClass('hideextmessage')
