@@ -3,6 +3,12 @@ Template.message.helpers
 		return 'bot' if this.bot?
 	isGroupable: ->
 		return 'false' if this.groupable is false
+	isExtMessage: ->
+		if Template.instance().isExtMsg
+			return 'extmessage'
+	isShow: ->
+		if Template.instance().isExtMsg and not Template.instance().isOpen
+			return 'hideextmessage'
 	isSequential: ->
 		return 'sequential' if this.groupable isnt false and (this.quoted ? false) is false
 	getEmoji: (emoji) ->
@@ -102,7 +108,20 @@ Template.message.helpers
 
 Template.message.onCreated ->
 	msg = Template.currentData()
-
+	msge = msg.msg.replace '：', ':'
+	msge = msg.msg.replace '＝', '='
+	if msge.indexOf(':=') == 0
+		@isExtMsg = true
+	else
+		@isExtMsg = false
+	@isOpen = false
+	ext_btn = $('.ext-messages')
+	if(ext_btn && ext_btn.length>0)
+		child = $(ext_btn).children()
+		if(child && child.length>0)
+			c_name = $(child[0]).attr('class')
+			if(c_name == 'icon-folder-open')
+				@isOpen = true
 	@wasEdited = msg.editedAt? and not RocketChat.MessageTypes.isSystemMessage(msg)
 
 	#luwei for marks

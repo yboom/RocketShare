@@ -8,11 +8,41 @@ Template.flexTabBar.helpers
 		if my_title == 'room-ext'
 			return ''
 		return my_title
+	extclass: ->
+		my_title = t(@i18nTitle) or @title
+		if my_title == 'room-ext'
+			return 'room-ext'
+		else if my_title == 'ext-messages'
+			return 'ext-messages'
+		return ''
 	visible: ->
 		if @groups.indexOf(RocketChat.TabBar.getVisibleGroup()) is -1
 			return 'hidden'
 
 Template.flexTabBar.events
+	'click .ext-messages':(e) ->
+		e.preventDefault()
+		#console.log e.target
+		if($(e.target).is('div')) 
+			RocketChat.TabBar.closeFlex()
+			$('.flex-tab').css('max-width', '')
+			return false
+		t_class = $(e.target).attr('class')
+		hide = true
+		if t_class == 'icon-folder'
+			$(e.target).removeClass('icon-folder').addClass('icon-folder-open')
+			hide = false
+		else
+			$(e.target).removeClass('icon-folder-open').addClass('icon-folder')
+		messages = $('.extmessage')
+		for msg in messages
+			if hide
+				if(!$(msg).hasClass('hideextmessage'))
+					$(msg).addClass('hideextmessage')
+			else
+				$(msg).removeClass('hideextmessage')
+		RocketChat.TabBar.closeFlex()
+		$('.flex-tab').css('max-width', '')
 	'click .room-ext':(e) ->
 		e.preventDefault()
 		#'[{"$set": {"ext":{}}}]'

@@ -58,6 +58,24 @@
 					{{/if}}
 				{{/if}}
 			</div>
+			<style>
+				.hideextmessage{
+					display:none;
+				}
+				.clear_tab_div{
+					float:right;
+					font-size:11px;
+				}
+				.message-form.editing .clear_tab_div{
+					margin-right:0px;
+					padding:3px;
+				}
+				.message-form .clear_tab_div{
+					margin-right:273px;
+					height:23px;
+					padding:4px;
+				}
+			</style>
 			<div class="messages-box {{#if selectable}}selectable{{/if}} {{compactView}}">
 				<div class="ticks-bar"></div>
 				<div class="wrapper {{#if hasMoreNext}}has-more-next{{/if}}">
