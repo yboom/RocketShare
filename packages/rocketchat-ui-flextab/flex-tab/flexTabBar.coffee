@@ -23,7 +23,7 @@ Template.flexTabBar.events
 	'click .ext-messages':(e) ->
 		e.preventDefault()
 		#console.log e.target
-		if($(e.target).is('div')) 
+		if($(e.target).is('div'))
 			RocketChat.TabBar.closeFlex()
 			$('.flex-tab').css('max-width', '')
 			return false
@@ -55,7 +55,7 @@ Template.flexTabBar.events
 				if sub._id == rid
 					room_ext.push sub
 		if room_ext.length > 0
-			displayRoomExt(room_ext,false)
+			eval(RocketChat.settings.get('ROOM_Ext_Function')+"(room_ext,false)")
 		else
 			swal {
 				title: t('提示')
@@ -83,12 +83,12 @@ Template.flexTabBar.events
 											room_ext.push sub
 								#console.log room_ext
 								if room_ext.length > 0
-									displayRoomExt(room_ext,false)
+									eval(RocketChat.settings.get('ROOM_Ext_Function')+"(room_ext,false)")
 							,500
-			
+
 		RocketChat.TabBar.closeFlex()
 		$('.flex-tab').css('max-width', '')
-	
+
 	'click .tab-button': (e, t) ->
 		e.preventDefault()
 		if RocketChat.TabBar.isFlexOpen() and RocketChat.TabBar.getTemplate() is @template
@@ -117,7 +117,7 @@ Template.flexTabBar.onCreated ->
 			#console.log ExtInRooms.find().count()
 			if ExtInRooms.find().count() < @limit.get()
 				@hasMore.set false
-				
+
 		visibleGroup = RocketChat.TabBar.getVisibleGroup()
 
 		Tracker.nonreactive =>

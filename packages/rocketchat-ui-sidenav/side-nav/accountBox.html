@@ -15,7 +15,9 @@
 				<div class="wrapper">
 					<a href="{{pathFor 'home'}}" id="account-go-home"><i class="icon-home"></i><span>{{_ "Home"}}</span></a>
 					<a href="" id="account-ext-tree"><i class="icon-sitemap"></i><span>{{_ "Room Tree"}}</span></a>
-					<a href="" id="account-ext-op"><i class="icon-list-alt"></i><span>{{_ "Operations"}}</span></a>
+					{{#if roomExtMenu }}
+						<a href="" id="account-room-ext"><i class="icon-list-alt"></i><span>{{roomExtMenu}}</span></a>
+					{{/if}}
 
 					<a href="" data-status="online" class="status online"><span>{{_ "Online"}}</span></a>
 					<a href="" data-status="away" class="status away"><span>{{_ "Away" context="male"}}</span></a>

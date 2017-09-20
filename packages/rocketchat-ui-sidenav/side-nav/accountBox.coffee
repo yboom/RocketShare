@@ -20,6 +20,12 @@ Template.accountBox.helpers
 	showAdminOption: ->
 		return RocketChat.authz.hasAtLeastOnePermission( ['view-statistics', 'view-room-administration', 'view-user-administration', 'view-privileged-setting'])
 
+	roomExtMenu: ->
+		if (RocketChat.settings.get('ROOM_Ext_Menu'))?.length>0 && (RocketChat.settings.get('ROOM_Ext_Function'))?.length>0
+			return RocketChat.settings.get('ROOM_Ext_Menu')
+		else
+			return false
+
 	registeredMenus: ->
 		return AccountBox.getItems()
 
@@ -112,7 +118,7 @@ Template.accountBox.events
 
 		displayTree(treeData, Math.max(favorites.depth, privateGroups.depth, channels.depth)+2, favorites.width+privateGroups.width+channels.width)
 
-	'click #account-ext-op': (event) ->
+	'click #account-room-ext': (event) ->
 		event.preventDefault()
 		#privateGroups = []
 		##query = { t: { $in: ['p']}, f: { $ne: true }, archived: { $ne: true } }
@@ -137,8 +143,8 @@ Template.accountBox.events
 				#console.log sub._id
 				exts.push sub
 		#console.log exts
-		displayRoomExt(exts,true)
-	
+		eval(RocketChat.settings.get('ROOM_Ext_Function')+"(exts,true)")
+
 	'click .options .status': (event) ->
 		event.preventDefault()
 		AccountBox.setStatus(event.currentTarget.dataset.status)

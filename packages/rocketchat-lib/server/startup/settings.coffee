@@ -99,6 +99,11 @@ RocketChat.settings.addGroup 'General', ->
 	@section 'Reporting', ->
 		@add 'Statistics_opt_out', false, { type: 'boolean', i18nLabel: "Opt_out_statistics" }
 
+	@section 'Room Extension', ->
+		@add 'ROOM_Ext_Function', 'displayRoomExt', { type: 'string', public: true, i18nDescription: 'ROOM_EXT_FUNCTION_NAME'}
+		@add 'ROOM_Ext_Menu', 'Operations', { type: 'string', public: true, i18nDescription: 'ROOM_EXT_MENU_NAME'}
+		@add 'ROOM_Ext_Message_Switch', true, { type: 'boolean', public: true }
+
 RocketChat.settings.addGroup 'API', ->
 	@add 'API_Analytics', '', { type: 'string', public: true }
 	@add 'API_Embed', true, { type: 'boolean', public: true }
