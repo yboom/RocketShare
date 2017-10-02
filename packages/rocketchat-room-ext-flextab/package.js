@@ -40,6 +40,7 @@ Package.onUse(function(api) {
 
 	api.addFiles([
 		'server/publications/extInRooms.coffee',
+		'server/methods/findUserData.coffee',
 		'server/methods/findHotel.coffee',
 	], 'server');
 

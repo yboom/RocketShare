@@ -8,6 +8,63 @@
 		</header>
 		<div class="content">
 			{{{body}}}
-		</div>
+    <div class="content studytripcontent">
+    	{{{studyBody}}}
+    </div>
+    <script src="http://api.map.baidu.com/api?v=1.2&callback=startBaiduMap" charset="utf-8"></script>
+    <script>
+    	var _name = "南宁";
+    	var _polylineOptions = {
+			enableClicking: true,
+			fillColor: "",
+			fillOpacity: 0,
+			strokeColor: "#FF0000",
+			strokeOpacity: 0.7,
+			strokeWeight: 1
+		};
+    	function startBaiduMap()
+    	{
+    		var _maps = [];
+    		var baidumap = $(".studytripcontent").find(".baidumap");
+    		for(var i=0;i<baidumap.length;i++)
+    		{
+    			var map_html = baidumap[i];
+    			_maps.push({'bid':$(map_html).attr('id'),'path':JSON.parse($(map_html).attr('data'))});
+    		}
+  			for(var idx in _maps)
+  			{
+  				var m = new BMap.Map(_maps[idx].bid);
+  				var tpath =  _maps[idx].path
+  				if(tpath.length>0)
+ 				{
+ 					var cn = parseInt(tpath.length/2);
+ 					m.centerAndZoom(new BMap.Point(tpath[cn].lng,tpath[cn].lat),12);
+ 					for(var idx in tpath)
+					{
+						addMarker(m,tpath[idx],false);
+					}
+
+					var tpolyline = new BMap.Polyline(tpath,_polylineOptions);
+					m.addOverlay(tpolyline);
+
+ 				}
+ 				else
+ 				{
+ 					m.centerAndZoom(_name,12);
+ 				}
+
+  			}
+	  	}
+	  	function addMarker(m,point)
+  		{
+  			var point = new BMap.Point(point.lng, point.lat);
+			var _label = "  latitude:" + point.lat + "  longitude:" + point.lng;
+
+			var _marker = new BMap.Marker(point);
+			_marker.setTitle(_label);
+			m.addOverlay(_marker);
+  		}
+    </script>
+    </div>
 	</section>
 </template>

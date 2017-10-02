@@ -25,7 +25,17 @@ window.displayRoomExt=function(ext,showTitle)
   {
   	if(isTitle)
   	{
-  		localStorage.setItem('room-ext',JSON.stringify(rooms));
+  		try
+  		{
+  			localStorage.setItem('room-ext',JSON.stringify(rooms));
+  		}catch(oException){
+			if(oException.name == 'QuotaExceededError'){
+				console.log('超出本地存储限额！');
+				//如果历史信息不重要了，可清空后再设置
+				//localStorage.removeItem('room-ext');
+				//localStorage.setItem(key,value);
+			}
+		}
   	}
   	else
   	{
@@ -44,7 +54,17 @@ window.displayRoomExt=function(ext,showTitle)
   				}
   			}
   			newRoom.push(rooms[0]);
-  			localStorage.setItem('room-ext',JSON.stringify(newRoom));
+  			try
+  			{
+  				localStorage.setItem('room-ext',JSON.stringify(newRoom));
+  			}catch(oException){
+				if(oException.name == 'QuotaExceededError'){
+					console.log('超出本地存储限额！');
+					//如果历史信息不重要了，可清空后再设置
+					//localStorage.removeItem('room-ext');
+					//localStorage.setItem(key,value);
+				}
+			}
   		}
   	}
   }
@@ -2660,12 +2680,12 @@ window.displayRoomExt=function(ext,showTitle)
   			length = time/1000/3600/24;
   			if(trs && trs.length>0)
   			{
-  				msg +='"}}]';
-  				sendMessage(rid,msg);
-  				first = new Date(dateformat($($(trs[0]).children('td')[1]).text()));
-  				end = new Date(dateformat($($(trs[trs.length-1]).children('td')[1]).text()));
+  				first = new Date(dateformat($($($(trs[0]).children('td')[1]).find('span').get(0)).text()));
+  				end = new Date(dateformat($($($(trs[trs.length-1]).children('td')[1]).find('span').get(0)).text()));
   				if(confirm('确定要修改日期？'))
   				{
+  					msg +='"}}]';
+  					sendMessage(rid,msg);
   					var daysOrigin = {};
   					var r = findRoomByRid(rid);
   					if(r && r.ext && r.ext.days)
@@ -2940,6 +2960,9 @@ window.displayRoomExt=function(ext,showTitle)
   					$(tr).after(s_html);
   				}
   				$(tr).after(tr_html);
+  				end = endDate;
+				setTimeout(function(){$(t).val(end.getFullYear()+'-'+ (end.getMonth()+1 < 10 ? '0'+(end.getMonth()+1) : end.getMonth()+1)+'-'+(end.getDate() < 10 ? '0'+end.getDate() : end.getDate()))},100);
+
   			}
   			//console.log(msg)
   			//console.log(JSON.parse(msg.replace(':=','')));
@@ -3752,6 +3775,8 @@ window.displayRoomExt=function(ext,showTitle)
     setTimeout(function() {
       var doc = document.getElementById(id);
       $(doc).remove();
+      if(timeOutShow) clearTimeout(timeOutShow),timeOutShow = null;
+      $(".mouse_show_div").remove();
     }, 500);
   }
   window.closeRoomExt = close;
@@ -3771,6 +3796,7 @@ window.displayRoomExt=function(ext,showTitle)
   input.setAttribute("class", "treeclose");
   input.value = "X";
   input.setAttribute("onclick","window.closeRoomExt();");
+  $(input).css({"line-height":"0px","top":"7px","right":"18px","height":"25px","width":"20px"});
   for(var index in ext)
   {
   	$("#start-date"+(ext[index]._id)).datepicker();
@@ -3810,7 +3836,7 @@ window.displayRoomExt=function(ext,showTitle)
   });
   $(".jingdian_div").on('click',function(e){
   	e.preventDefault();
-  	if(!td_switch) 
+  	if(!td_switch)
   	{
   		td_switch = true;
   		$("td.jingdian_td").css('width','auto');
@@ -3818,7 +3844,7 @@ window.displayRoomExt=function(ext,showTitle)
   		$(".complex-bottom .th-inner").css('top',31);
   		setTimeout(function(){$(".complex-top .th-inner").css('top',0),$(".complex-bottom .th-inner").css('top',30);},200);
   	}
-  	else 
+  	else
   	{
   		td_switch = false;
   		$("td.jingdian_td").css('width','70px');
@@ -4520,4 +4546,499 @@ window.displayRoomExt=function(ext,showTitle)
   		}
   	}
   });
+}
+window.displayStudyTrip=function(trips,showMulti)
+{
+ var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+ var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+ var span_color = null;
+ var show_multi = showMulti;
+ var _trips = trips;
+ var _paths= (trips.length==1&&!showMulti) ? trips[0].ext.studytrip ? trips[0].ext.studytrip.path ? trips[0].ext.studytrip.path : [] : [] : [];
+ var _markers=[];
+ var _polyline=null;
+ var map = null;
+ var _name = "南宁";
+ var _zoom = 13;
+ var _maps = [];
+ var own = Session.get('roomOwn');
+ var finish_li = null;
+ var _polylineOptions = {
+		enableClicking: true,
+		fillColor: "",
+		fillOpacity: 0,
+		strokeColor: "#FF0000",
+		strokeOpacity: 0.7,
+		strokeWeight: 1
+	};
+ //console.log(trips);
+ function savePath(t)
+ {
+ 	//console.log(_paths);
+ 	//console.log(JSON.stringify(_paths));
+ 	var value = JSON.stringify(_paths);
+ 	msg = ':=[{"$set": {"ext.studytrip.path":'+value+'}}]'
+ 	sendMessage(_trips[0]._id,msg);
+ }
+ window.savePath = savePath;
+ function sendMessage(rid,msg)
+ {
+  	msgObject = { _id: Random.id(), rid: rid, msg: msg}
+  	//console.log(msgObject);
+  	Meteor.call('sendMessage',msgObject,function(error,result){
+  		//console.log('sendMessage');
+  		//console.log(error);
+  		//console.log(result);
+  		if(!error)
+  		{
+  			msg = result.msg.replace(':=','');
+  			jsonMsg = JSON.parse(msg);
+  			if(jsonMsg && jsonMsg instanceof Array && jsonMsg.length>0)
+  			{
+  				//console.log(jsonMsg);
+				json = jsonMsg[0];
+				//console.log(json);
+				for(var kset in json)
+				{
+					data = json[kset];
+					for(var kdata in data)
+					{
+						//var keys = kdata.split('.');
+						if(kdata.indexOf('status')>0)
+						{
+							var value = data[kdata];
+							var uid = $(finish_li).parent().attr('class');
+							if(value instanceof Object)
+							{
+								if(value[uid])
+								{
+									var prev_span = $(finish_li).prev().text();
+									var li_html='<span style="width:255px;float:left;display:block;height:20px;">'+prev_span+'</span><span style="margin-left:38px;">✅</span><button style="margin-left: 30px;cursor:pointer;" onclick="window.cancelTask(this)">撤销</button>';
+									$(finish_li).parent().html(li_html);
+									_trips[0].ext.studytrip['status'] = value;
+								}
+							}
+							else
+							{
+								if(kdata.indexOf(uid)>0)
+								{
+									var prev_span = $(finish_li).prev().text();
+									if(value.length==0) prev_span = $(finish_li).prev().prev().text();
+									var li_html='<span style="width:255px;float:left;display:block;height:20px;">'+prev_span+'</span>';
+									if(value.length>0) li_html+='<span style="margin-left:38px;">✅</span><button style="margin-left: 30px;cursor:pointer;" onclick="window.cancelTask(this)">撤销</button>';
+									else li_html+='<button style="margin-left:20px;cursor:pointer;" onclick="window.finishTask(this)">完成</button>'
+									$(finish_li).parent().html(li_html);
+									_trips[0].ext.studytrip.status[uid] = value;
+								}
+							}
+						}
+						else if(kdata.indexOf('score')>0)
+						{
+							_trips[0].ext.studytrip['score'] = data[kdata];
+						}
+						else if(kdata.indexOf('path')>0)
+						{
+							_trips[0].ext.studytrip['path'] = data[kdata];
+						}
+						else if(kdata.indexOf('studytrip')>0)
+						{
+							_trips[0].ext['studytrip'] = data[kdata];
+						}
+					}
+				}
+				console.log(_trips[0]);
+  			}
+  		}
+  	});
+ }
+ function getUserInfo()
+ {
+ 	Meteor.call('findUserData',_trips[0].usernames,function(error,result){
+		var li_html ='';
+		var accomplished = _trips[0].ext.studytrip ? _trips[0].ext.studytrip.status ? _trips[0].ext.studytrip.status : {} : {};
+		if(!error)
+		{
+			//console.log(result)
+			for(var idx in result)
+			{
+				li_html+='<li id="'+result[idx]._id+'" class="'+result[idx].username+'" style="margin-left:6px;margin-top:6px;"><span style="width:255px;float:left;display:block;height:20px;">'+(result[idx].name ? result[idx].name : result[idx].username )+'</span>';
+				if(accomplished[result[idx].username])
+				{
+					li_html+='<span style="margin-left:38px;">✅</span><button style="margin-left: 30px;cursor:pointer;" onclick="window.cancelTask(this)">撤销</button>';
+				}
+				else
+				{
+					li_html+='<button style="margin-left:20px;cursor:pointer;" onclick="window.finishTask(this)">完成</button>';
+				}
+				li_html+='</li>'
+			}
+			$(".study-user_ul").html(li_html);
+		}
+	});
+ }
+ function inputChange(t,rid)
+ {
+  	//console.log(t)
+  	var value = $(t).val();
+  	if(value && value.length>0)
+  	{
+  		msg = ':=[{"$set": {"ext.studytrip.'+$(t).attr("class")+'":"'+value+'"}}]';
+  		sendMessage(rid,msg);
+  	}
+ }
+ window.inputChange = inputChange;
+ function getJsonLength(jsonData)
+ {
+ 	var _length=0;
+    for(var ever in jsonData) {
+        _length++;
+    }
+    return _length;
+ }
+ function cancelTask(t)
+ {
+ 	var uid = $(t).parent().attr('class');//id
+ 	msg = ':=[{"$set": {"ext.studytrip.status';
+ 	if(!_trips[0].ext.studytrip.status)
+ 	{
+ 		msg +='":{"'+uid+'":""}}}]';
+ 	}
+ 	else
+ 	{
+ 		msg +='.'+uid+'":""}}]';
+ 	}
+ 	finish_li = t;
+  	sendMessage(_trips[0]._id,msg);
+ }
+ window.cancelTask = cancelTask;
+ function finishTask(t)
+ {
+ 	var uid = $(t).parent().attr('class');//id
+ 	msg = ':=[{"$set": {"ext.studytrip.status';
+ 	if(!_trips[0].ext.studytrip.status)
+ 	{
+ 		msg +='":{"'+uid+'":"accomplished"}}}]';
+ 	}
+ 	else
+ 	{
+ 		msg +='.'+uid+'":"accomplished"}}]';
+ 	}
+ 	finish_li = t;
+  	sendMessage(_trips[0]._id,msg);
+ }
+ window.finishTask = finishTask;
+ var html = '<div class="content"><div class="extcontent" style="margin-top:10px;">';
+ 	if(showMulti)
+ 	{
+ 		for(var idx in trips)
+ 		{
+ 			if(!trips[idx].ext.studytrip) continue;
+ 			var score = trips[idx].ext.studytrip.score ? parseInt(trips[idx].ext.studytrip.score) : 0 ;
+ 			var total = 0;
+ 			var users = trips[idx].usernames;
+ 			var finish = trips[idx].ext.studytrip.status;
+ 			if(finish)
+ 			{
+ 				for(var u in users)
+ 				{
+ 					if(finish[users[u]] && finish[users[u]] == 'accomplished')
+ 					{
+ 						total+=score;
+ 					}
+ 				}
+ 			}
+ 			html+='<div style="background-color:white;min-height:50px;max-height:180px;">旅学线路：'+trips[idx].name;
+			html+='<div><span>总积分：'+total+'</span></div>';
+			html+='</div>';
+			var bid = 'baidumap'+trips[idx]._id;
+			html+='<div id="'+bid+'" style="width:100%;height:280px;"><div style="text-align:center;"><span>正在加载地图数据…………</span></div></div>';
+			_maps.push({'bid':bid,'path':trips[idx].ext.studytrip.path});
+ 		}
+ 	}
+ 	else
+ 	{
+		var info = trips[0].ext.studytrip;
+		if(!trips[0].ext.studytrip)
+		{
+			info = {};
+			if(trips[0]._id&&own)
+			{
+				sendMessage(trips[0]._id,':=[{"$set": {"ext.studytrip":{}}}]');
+			}
+		}
+		if(own) html+='<div style="min-height:100px;max-height:215px;">';
+		html+='<div style="';
+		if(own) html +='float:left;width:'+((width-120)/2)+'px;';
+		html+='background-color:white;min-height:50px;max-height:215px;">旅学线路：'+trips[0].name;
+		if(own) html +='<button style="margin-top:3px;margin-left:20px;cursor:pointer;" onclick="window.savePath(this)">保存</button>';
+		html+='<div><span>积分：';
+		if(own) html+='<input  id="'+trips[0]._id+'" style="'+((width-120)/2)+'px;border:0px;height:25px;" value="'+(info.score ? info.score : "")+'" class="score" onchange="window.inputChange(this,\''+trips[0]._id+'\')" />';
+		else html +=''+ (info.score?info.score:"") +'';
+		html+='</span></div>';
+		html+='<div style="min-height:20px;max-height:150px;overflow:auto;"><ul class="study-path_ul">';
+  		html+='</ul></div>';
+		html+='</div>';
+		if(own)
+		{
+			html+='<div style="float:left;width:'+((width-120)/2)+'px;background-color:white;min-height:50px;max-height:215px;margin-left:20px;">成员列表：';
+			html+='<div style="min-height:20px;max-height:150px;overflow:auto;"><ul class="study-user_ul">';
+			html+='<div>加载用户数据…………</div>'
+  			html+='</ul></div>';
+			html+='</div>';
+		}
+		if(own) html+='</div>';
+		html+='<div id="baidumap" style="width:100%;height:'+(height-108)+'px;"><div style="text-align:center;"><span>正在加载地图数据…………</span></div></div>';
+	}
+    html+="</div></div>";
+	var id = (new Date()).getTime();
+
+  function close() {
+    $("body").unbind('click');
+
+    setTimeout(function() {
+      var doc = document.getElementById(id);
+      $(doc).remove();
+    }, 500);
+  }
+  window.closeRoomExt = close;
+
+  var div = document.createElement("div");
+  div.setAttribute("id",id);
+  div.setAttribute("width",width);
+  div.setAttribute("height",height);
+  div.setAttribute("class","treecontainer");
+  $(div).append(html);
+  $("body").append(div);
+
+  var input = document.createElement("input");
+  document.getElementById(id).appendChild(input);
+  input.setAttribute("id", "exit" + id);
+  input.setAttribute("type", "button");
+  input.setAttribute("class", "treeclose");
+  input.value = "X";
+  input.setAttribute("onclick","window.closeRoomExt();");
+  $(input).css({"line-height":"0px","top":"7px","right":"18px","height":"25px","width":"20px"});
+  function map_load() {
+	var load = document.createElement("script");
+	load.src = "http://api.map.baidu.com/api?v=1.2&callback=window.startMap";
+	document.body.appendChild(load);
+  }
+  map_load();
+  if(own) getUserInfo();
+
+  function startMap() {
+  	if(show_multi)
+  	{
+  		for(var idx in _maps)
+  		{
+  			var m = new BMap.Map(_maps[idx].bid);
+  			var tpath =  _maps[idx].path
+  			if(tpath.length>0)
+ 			{
+ 				var cn = parseInt(tpath.length/2);
+ 				m.centerAndZoom(new BMap.Point(tpath[cn].lng,tpath[cn].lat),12);
+ 				for(var idx in tpath)
+				{
+					addMarker(m,tpath[idx],false);
+				}
+
+				var tpolyline = new BMap.Polyline(tpath,_polylineOptions);
+				m.addOverlay(tpolyline);
+
+ 			}
+ 			else
+ 			{
+ 				m.centerAndZoom(_name,12);
+ 			}
+
+  		}
+  		console.log(_maps);
+  		return;
+  	}
+  	map = new BMap.Map('baidumap');
+  	if(_paths.length>0)
+ 	{
+ 		var cn = parseInt(_paths.length/2);
+ 		_name = new BMap.Point(_paths[cn].lng, _paths[cn].lat);
+ 		map.centerAndZoom(_name,_zoom);
+ 		console.log(_name);
+ 	}
+  	else
+  	{
+		if (navigator.geolocation)
+		{
+			navigator.geolocation.getCurrentPosition(
+				function(position) {
+					map.centerAndZoom(position.coords,_zoom);
+					console.log(position);
+				},
+
+				function(error) {
+					switch(error.code) {
+					case error.PERMISSION_DENIED:
+						console.log('Location permission denied.');
+						map.centerAndZoom(_name,_zoom);
+						break;
+					case error.TIMEOUT:
+						console.log('Location lookup timeout.');
+						map.centerAndZoom(_name,_zoom);
+						break;
+					}
+				},
+
+				{
+					timeout: 10000
+				}
+			);
+		}
+		else
+		{
+			map.centerAndZoom(_name,_zoom);
+			console.log(_name);
+		}
+	}
+	if(own)
+	{
+		map.addEventListener("click", reportPosition);
+		map.enableScrollWheelZoom();
+		map.addControl(new BMap.NavigationControl());
+	}
+	if(_paths.length>0)
+	{
+		for(var idx in _paths)
+		{
+			addMarker(map,_paths[idx],false);
+		}
+		if(!_polyline)
+		{
+			_polyline = new BMap.Polyline(_paths,_polylineOptions);
+			map.addOverlay(_polyline);
+		}
+	}
+  }
+  window.startMap = startMap;
+  function searchPosition(city) {
+	_name = $(city).val();
+	console.log(_name);
+	map.centerAndZoom(_name,_zoom);
+  }
+  window.searchPosition = searchPosition;
+  function removeLi(t)
+  {
+  	var li = $(t).parent().attr('id').split('-');
+  	//console.log(ll);
+  	for(var idx in _paths)
+  	{
+  		var point = _paths[idx];
+  		if(point.lng == li[1] && point.lat == li[0])
+  		{
+        	for (var i = 0; i < _markers.length; i++)
+        	{
+            	if(_markers[i].point.lng == point.lng && _markers[i].point.lat == point.lat)
+            	{
+                	map.removeOverlay(_markers[i]);
+                	_paths.splice(idx,1);
+                	_markers.splice(i,1);
+                	_polyline.setPath(_paths);
+                	$(t).parent().remove();
+
+                	break;
+                }
+        	}
+        	break;
+  			console.log('find');
+  		}
+  	}
+  }
+  window.removeLi = removeLi;
+  function formatNumber(num,n)
+  {
+  	if(num.toString().indexOf('.') < 0) num+='.';
+  	if(num.toString().length >= n) return num;
+  	while(num.toString().length<n)
+  	{
+  		num += '0';
+  	}
+  	return num;
+  }
+  function changeBackgroundColor(li)
+  {
+  	for(var idx in li)
+  	{
+  		var span = $(li[idx]).find('span').get(0);
+  		if(span)
+  		{
+  			$(span).css('background-color','white');
+  		}
+  	}
+  }
+  function clickMarker(point)
+  {
+  	var li_id = point.lat+'-'+point.lng;
+	var li = $(".study-path_ul").find("li");
+	if(li&&li.length>0)
+	{
+		for(var idx in li)
+		{
+			if($(li[idx]).attr('id') == li_id)
+			{
+				top = $(li[idx]).position().top;
+				var span = $(li[idx]).find('span').get(0);
+  				if(span)
+  				{
+  					if(span_color) $(span_color).css('background-color','white');
+  					$(span).css('background-color','yellow');
+  					span_color = span;
+  				}
+				$(".study-path_ul").parent().scrollTop(top-50);
+				break;
+			}
+		}
+	}
+  }
+  function addMarker(m,point,add)
+  {
+  	var point = new BMap.Point(point.lng, point.lat);
+	if(add) _paths.push(point);
+	var _label = _name + "  latitude:" + point.lat + "  longitude:" + point.lng;
+
+	var _marker = new BMap.Marker(point);
+	_marker.setTitle(_label);
+	if(own&&!show_multi)
+	{
+		_marker.addEventListener("click", function(m){
+			var m_point = m.target.point;
+			clickMarker(m_point);
+		});
+	}
+	m.addOverlay(_marker);
+	if(!show_multi)
+	{
+		if(own)
+		{
+			var li_html = '<li id="'+point.lat+'-'+point.lng+'" style="margin-left:6px;margin-top:6px;"><span style="width:255px;">latitude:' + formatNumber(point.lat,9) + '  longitude:' + formatNumber(point.lng,10)+'</span>';
+			_markers.push(_marker);
+			li_html += '<button style="margin-left:20px;cursor:pointer;" onclick="window.removeLi(this)">删除</button>';
+			li_html += '</li>';
+			$(".study-path_ul").append(li_html);
+		}
+	}
+	if(add && _paths.length>1)
+	{
+		if(!_polyline)
+		{
+			_polyline = new BMap.Polyline(_paths,_polylineOptions);
+			m.addOverlay(_polyline);
+		}
+		else
+		{
+			_polyline.setPath(_paths);
+		}
+	}
+  }
+  function reportPosition(_e) {
+	if(_e.overlay) return;
+	//console.log(_e);
+	addMarker(map,_e.point,true);
+  }
 }

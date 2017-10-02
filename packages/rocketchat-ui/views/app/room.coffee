@@ -70,6 +70,8 @@ Template.room.helpers
 	# 	}
 
 	roomName: ->
+		roomOwn = !! RoomModeratorsAndOwners.findOne({ rid: Session.get('openedRoom'), "u._id":Meteor.userId(), roles: 'owner' })
+		Session.set('roomOwn',roomOwn)
 		roomData = Session.get('roomData' + this._id)
 		return '' unless roomData
 
@@ -329,6 +331,68 @@ Template.room.events
 				prevTable = 0
 				tableWidth = []
 		return false
+
+	"click blockquote .work-message-radio": (e) ->
+		e.preventDefault()
+		toastr.info t('Quoted_message_is_a_snapshot')
+		return false
+
+	"click :not(blockquote) > .message > .body .work-message-radio": (e) ->
+		#e.preventDefault()
+		#toastr.error t('Right_click_to_copy_the_link_for_opening_this_specified_message')
+		checked = $(e.target).attr('checked')
+		if checked and checked.length > 0
+			return false
+		swal {
+			title: t('Are_you_sure')
+			text: t('Change_radio_status')
+			type: 'warning'
+			showCancelButton: true
+			confirmButtonColor: '#DD6B55'
+			confirmButtonText: t('Yes')
+			cancelButtonText: t('Cancel')
+			closeOnConfirm: true
+			closeOnCancel: true
+		}, (isConfirm) ->
+      console.log(isConfirm)
+      if isConfirm is true
+        ids=e.target.id.split('-')
+        msgid=ids[0]
+        idx=parseInt(ids[1])
+        console.log(msgid+"#"+idx+e.target.checked) if window.rocketDebug
+        message = ChatMessage.findOne { _id: msgid }
+        if message?
+          stringArray = message.msg.split('\\n')
+          lastIndex=0
+          msg=""
+          length=stringArray.length-1
+          for str,i in stringArray
+          	if i==0
+          		tmp=str
+          		tmp+='\\n'
+          		msg += tmp
+          	else
+          		if i == idx
+          			tmp = str
+          			if(str.indexOf('?:')<0)
+          				tmp='?:'+str
+          			msg += tmp
+          		else
+          			tmp=str.replace('?:','')
+          			msg += tmp
+          		if i < length
+          			msg +='\\n'
+          console.log msg if window.rocketDebug
+          #Run to allow local encryption
+          #Meteor.call 'onClientBeforeSendMessage', {}
+          Meteor.call 'updateMessage', { _id: msgid, msg: msg, rid: message.rid }
+      else
+        e.target.checked = !e.target.checked
+        inputs = $(e.target).parent().find('input[checked=checked]')
+        if inputs and inputs.length > 0
+        	inputs[0].checked = true
+        else
+        	return false
 
 	"click blockquote .message-checkbox": (e) ->
 		e.preventDefault()

@@ -47,6 +47,7 @@ Template.flexTabBar.events
 		e.preventDefault()
 		#'[{"$set": {"ext":{}}}]'
 		rid = Session.get('openedRoom')
+		own = Session.get('roomOwn')
 		room_ext = []
 		cursor = ExtInRooms.find {}, { sort: { ts: -1 } }
 		cursor.forEach (sub) ->

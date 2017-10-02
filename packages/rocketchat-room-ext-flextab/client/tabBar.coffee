@@ -9,10 +9,13 @@ Meteor.startup ->
 			template: null,
 			order: 101})
 	if (RocketChat.settings.get('ROOM_Ext_Function'))?.length>0
+		icon = 'icon-list-alt'
+		if (RocketChat.settings.get('ROOM_Ext_Function')).indexOf('StudyTrip')>0
+			icon = 'icon-globe'
 		RocketChat.TabBar.addButton({
 			groups: ['channel', 'privategroup'],
 			id: 'room-ext',
 			i18nTitle: 'room-ext',
-			icon: 'icon-list-alt',
+			icon: icon,
 			template: null,
 			order: 102})
