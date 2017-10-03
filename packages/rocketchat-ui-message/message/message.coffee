@@ -135,7 +135,7 @@ Template.message.onCreated ->
 				@isOpen = true
 	@room_owner_id = '0'
 	room = ChatRoom.findOne({"_id":msg.rid})
-	if room?
+	if room? and room.u?
 		@room_owner_id = room.u._id
 	@wasEdited = msg.editedAt? and not RocketChat.MessageTypes.isSystemMessage(msg)
 
