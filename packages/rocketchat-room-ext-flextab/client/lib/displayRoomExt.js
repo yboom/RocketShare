@@ -4820,7 +4820,7 @@ window.displayStudyTrip=function(trips,showMulti)
   $(input).css({"line-height":"0px","top":"7px","right":"18px","height":"25px","width":"20px"});
   function map_load() {
 	var load = document.createElement("script");
-	load.src = "http://api.map.baidu.com/api?v=1.2&callback=window.startMap";
+	load.src = "https://api.map.baidu.com/api?v=2.0&ak=gQkntbZZTYL1hS8DYP4b3P7em0Y0Wx9n&s=1&callback=window.startMap";
 	document.body.appendChild(load);
   }
   map_load();
