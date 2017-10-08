@@ -30,11 +30,12 @@ Meteor.publish 'extInRooms', (limit = 50,date) ->
 		fields:
 			_id: 1
 			name: 1
+			topic: 1
 			t: 1
 			usernames: 1
 			ts: 1
 			ext: 1
-	
+
 	cursorFileListHandle = RocketChat.models.Rooms.find(roomQuery, roomOptions).observeChanges
 		added: (_id, record) ->
 			#console.log record

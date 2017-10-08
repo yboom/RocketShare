@@ -45,7 +45,7 @@ Template.home.helpers
 			data = JSON.stringify(paths)
 			data = data.replace(/"/g,'&quot;')
 			Session.set("data",paths)
-			s_html+='<div style="background-color:white;min-height:50px;max-height:180px;margin-bottom:15px;">已完成线路'
+			s_html+='<div style="background-color:white;min-height:50px;max-height:180px;margin-bottom:15px;">已完成线路'+paths.length+'条'
 			s_html+='<div><span>总积分：'+total+'</span></div>'
 			s_html+='</div>'
 			s_html+='<div class="baidumap" id="homebaidumap" data="'+data+'" style="width:100%;height:100%;"><div style="text-align:center;"><span>正在加载地图数据…………</span></div></div>'
