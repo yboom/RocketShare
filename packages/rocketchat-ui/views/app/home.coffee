@@ -39,7 +39,7 @@ Template.home.helpers
 					#data = JSON.stringify(e_idx.ext.studytrip.path)
 					#data = data.replace(/"/g,'&quot;')
 					title = e_idx.name
-					if e_idx?.topic.length>0
+					if e_idx.topic?.length>0
 						title = e_idx.topic
 					paths.push({'title':title, 'data':e_idx.ext.studytrip.path})
 			data = JSON.stringify(paths)
