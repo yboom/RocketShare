@@ -4766,7 +4766,7 @@ window.displayStudyTrip=function(trips,showMulti)
 				sendMessage(trips[0]._id,':=[{"$set": {"ext.studytrip":{}}}]');
 			}
 		}
-		if(own) html+='<div style="min-height:100px;max-height:215px;">';
+		if(own) html+='<div style="min-height:71px;max-height:215px;">';
 		html+='<div style="';
 		if(own) html +='float:left;width:'+((width-120)/2)+'px;';
 		html+='background-color:white;min-height:50px;max-height:215px;">旅学线路：'+trips[0].name;
@@ -4837,12 +4837,13 @@ window.displayStudyTrip=function(trips,showMulti)
  			{
  				var cn = parseInt(tpath.length/2);
  				m.centerAndZoom(new BMap.Point(tpath[cn].lng,tpath[cn].lat),12);
- 				for(var idx in tpath)
+ 				p_point = [];
+ 				for(var idx_p in tpath)
 				{
-					addMarker(m,tpath[idx],false);
+					addMarker(m,tpath[idx_p],false);
+					p_point.push(new BMap.Point(tpath[idx_p].lng,tpath[idx_p].lat));
 				}
-
-				var tpolyline = new BMap.Polyline(tpath,_polylineOptions);
+				var tpolyline = new BMap.Polyline(p_point,_polylineOptions);
 				m.addOverlay(tpolyline);
 
  			}
@@ -4852,7 +4853,7 @@ window.displayStudyTrip=function(trips,showMulti)
  			}
 
   		}
-  		console.log(_maps);
+  		//console.log(_maps);
   		return;
   	}
   	map = new BMap.Map('baidumap');
@@ -4905,13 +4906,15 @@ window.displayStudyTrip=function(trips,showMulti)
 	}
 	if(_paths.length>0)
 	{
-		for(var idx in _paths)
+		p_point = [];
+		for(var idx_p in _paths)
 		{
-			addMarker(map,_paths[idx],false);
+			addMarker(map,_paths[idx_p],false);
+			p_point.push(new BMap.Point(_paths[idx_p].lng,_paths[idx_p].lat));
 		}
 		if(!_polyline)
 		{
-			_polyline = new BMap.Polyline(_paths,_polylineOptions);
+			_polyline = new BMap.Polyline(p_point,_polylineOptions);
 			map.addOverlay(_polyline);
 		}
 	}

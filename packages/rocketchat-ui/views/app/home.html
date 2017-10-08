@@ -14,48 +14,94 @@
     <script src="https://api.map.baidu.com/api?v=2.0&ak=gQkntbZZTYL1hS8DYP4b3P7em0Y0Wx9n&s=1&callback=startBaiduMap" charset="utf-8"></script>
     <script>
     	var _name = "南宁";
+    	//var paths = Session.get('data');
+    	//console.log(paths);
     	var _polylineOptions = {
 			enableClicking: true,
 			fillColor: "",
 			fillOpacity: 0,
-			strokeColor: "#FF0000",
-			strokeOpacity: 0.7,
-			strokeWeight: 1
+			strokeOpacity: 1.0,
+			strokeWeight: 2
 		};
+		function SquareOverlay(center, length, color,text){
+ 			this._center = center;
+ 			this._length = length;
+ 			this._color = color;
+ 			this._text = text;
+		}
+
+
+		function getColor()
+		{
+        	var colorValue="0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f";
+            var colorArray = colorValue.split(",");
+            var color="#";//定义一个存放十六进制颜色值的字符串变量，先将#存放进去
+            for(var i=0;i<6;i++)
+            {
+               color+=colorArray[Math.floor(Math.random()*16)];
+            }
+            return color;
+        }
     	function startBaiduMap()
     	{
+			SquareOverlay.prototype = new BMap.Overlay();
+			SquareOverlay.prototype.initialize = function(map){
+  				this._map = map;
+  				var div = document.createElement("div");
+  				div.style.position = "absolute";
+  				div.style.width = "auto";// this._length + "px";
+  				div.style.height = this._length + "px";
+  				div.style.backgroundColor = "rgba(255,255,255,0)";//this._color;//
+  				div.style.whiteSpace = "nowrap";
+
+  				var node=document.createTextNode(this._text);
+  				div.appendChild(node);
+  				map.getPanes().markerPane.appendChild(div);
+  				this._div = div;
+ 				return div;
+			}
+			SquareOverlay.prototype.draw = function(){
+				var position = this._map.pointToOverlayPixel(this._center);
+ 				this._div.style.left = position.x - this._length / 2 + "px";
+ 				this._div.style.top = position.y - this._length-17 + "px";
+			}
     		var _maps = [];
     		var baidumap = $(".studytripcontent").find(".baidumap");
     		for(var i=0;i<baidumap.length;i++)
     		{
     			var map_html = baidumap[i];
-    			_maps.push({'bid':$(map_html).attr('id'),'path':JSON.parse($(map_html).attr('data'))});
+    			//_maps.push({'bid':$(map_html).attr('id'),'path':JSON.parse($(map_html).attr('data'))});
+    			_maps = JSON.parse($(map_html).attr('data'));
     		}
+    		//console.log(_maps);
+    		var m = new BMap.Map("homebaidumap");
   			for(var idx in _maps)
   			{
-  				var m = new BMap.Map(_maps[idx].bid);
-  				var tpath =  _maps[idx].path
+  				var tpath =  _maps[idx].data;
   				if(tpath.length>0)
  				{
  					var cn = parseInt(tpath.length/2);
- 					m.centerAndZoom(new BMap.Point(tpath[cn].lng,tpath[cn].lat),12);
- 					for(var idx in tpath)
+ 					m.centerAndZoom(new BMap.Point(tpath[cn].lng,tpath[cn].lat),13);
+ 					p_point = [];
+ 					for(var idx_p in tpath)
 					{
-						addMarker(m,tpath[idx],false);
+						var t= idx_p==0 ? _maps[idx].title : null;
+						addMarker(m,tpath[idx_p],t);
+						p_point.push(new BMap.Point(tpath[idx_p].lng,tpath[idx_p].lat));
 					}
-
-					var tpolyline = new BMap.Polyline(tpath,_polylineOptions);
+					_polylineOptions.strokeColor = getColor();
+					var tpolyline = new BMap.Polyline(p_point,_polylineOptions);
 					m.addOverlay(tpolyline);
 
  				}
  				else
  				{
- 					m.centerAndZoom(_name,12);
+ 					m.centerAndZoom(_name,13);
  				}
 
   			}
 	  	}
-	  	function addMarker(m,point)
+	  	function addMarker(m,point,title)
   		{
   			var point = new BMap.Point(point.lng, point.lat);
 			var _label = "  latitude:" + point.lat + "  longitude:" + point.lng;
@@ -63,6 +109,12 @@
 			var _marker = new BMap.Marker(point);
 			_marker.setTitle(_label);
 			m.addOverlay(_marker);
+			if(title)
+			{
+				console.log(title);
+				var mySquare = new SquareOverlay(point, 20, "white",title);
+				m.addOverlay(mySquare);
+			}
   		}
     </script>
     </div>

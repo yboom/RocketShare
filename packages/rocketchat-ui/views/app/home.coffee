@@ -21,25 +21,31 @@ Template.home.helpers
 							room_study.push sub
 		#console.log room_study
 		if room_study.length>0
+			total = 0
+			paths = []
+			u = Meteor.user().username
 			for e_idx, i in room_study
 				score = 0
 				if e_idx.ext.studytrip.score?
 					score = parseInt(e_idx.ext.studytrip.score)
- 				total = 0
- 				users = e_idx.usernames
+ 				#users = e_idx.usernames
  				finish = e_idx.ext.studytrip.status
- 				for u in users
- 					if finish[u]? and finish[u] == 'accomplished'
- 						total+=score
- 				s_html+='<div style="background-color:white;min-height:50px;max-height:180px;margin-bottom:15px;">旅学线路：'+e_idx.name
-				s_html+='<div><span>总积分：'+total+'</span></div>'
-				s_html+='</div>'
-				bid = 'homebaidumap'+e_idx._id+(i+1)
-				data = ''
+ 				#for u in users
+ 				if finish[u]? and finish[u] == 'accomplished'
+ 					total+=score
+				#bid = 'homebaidumap'+e_idx._id+(i+1)
+				#data = ''
 				if e_idx.ext.studytrip.path?
-					data = JSON.stringify(e_idx.ext.studytrip.path)
-					data = data.replace(/"/g,'&quot;')
-				s_html+='<div class="baidumap" id="'+bid+'" data="'+data+'" style="width:100%;height:280px;"><div style="text-align:center;"><span>正在加载地图数据…………</span></div></div>'
+					#data = JSON.stringify(e_idx.ext.studytrip.path)
+					#data = data.replace(/"/g,'&quot;')
+					paths.push({'title':'团的名称：'+e_idx.name,'data':e_idx.ext.studytrip.path})
+			data = JSON.stringify(paths)
+			data = data.replace(/"/g,'&quot;')
+			Session.set("data",paths)
+			s_html+='<div style="background-color:white;min-height:50px;max-height:180px;margin-bottom:15px;">旅学线路图'
+			s_html+='<div><span>总积分：'+total+'</span></div>'
+			s_html+='</div>'
+			s_html+='<div class="baidumap" id="homebaidumap" data="'+data+'" style="width:100%;height:100%;"><div style="text-align:center;"><span>正在加载地图数据…………</span></div></div>'
 		return s_html
 
 Template.home.onCreated ->
