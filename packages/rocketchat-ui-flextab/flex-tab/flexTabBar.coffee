@@ -41,12 +41,17 @@ Template.flexTabBar.events
 					$(msg).addClass('hideextmessage')
 			else
 				$(msg).removeClass('hideextmessage')
+				if $(msg).hasClass('hidemessage')
+					roomOwn = !! RoomModeratorsAndOwners.findOne({ rid: Session.get('openedRoom'), "u._id":Meteor.userId(), roles: 'owner' })
+					if roomOwn
+						$(msg).removeClass('hidemessage')
 		RocketChat.TabBar.closeFlex()
 		$('.flex-tab').css('max-width', '')
 	'click .room-ext':(e) ->
 		e.preventDefault()
 		#'[{"$set": {"ext":{}}}]'
 		rid = Session.get('openedRoom')
+		own = Session.get('roomOwn')
 		room_ext = []
 		cursor = ExtInRooms.find {}, { sort: { ts: -1 } }
 		cursor.forEach (sub) ->
