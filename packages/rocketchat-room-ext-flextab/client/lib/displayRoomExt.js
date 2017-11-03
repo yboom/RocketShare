@@ -110,7 +110,7 @@ window.displayRoomExt=function(ext,showTitle)
   	{
   		//value = value.replace('{"','');
   		//value = value.replace('"}','');
-  		msg = '';
+  		var msg = '';
   		if(!r.ext.days || !r.ext.days[day])
   		{
   			var tr = $(show).parent().parent();
@@ -2331,8 +2331,8 @@ window.displayRoomExt=function(ext,showTitle)
   	for(var i=begin;i<=length;i++)
 	{
 		tr_html+='<tr  id="'+rid+'" class="day" data-days="'+(i+1)+'">';
-		w = startDate.getDay();
-		month = startDate.getMonth()+1;
+		var w = startDate.getDay();
+		var month = startDate.getMonth()+1;
 		if(month>12) month = 1;
 		if(w == 0 || w==5 || w==6)
 		{
@@ -2342,7 +2342,7 @@ window.displayRoomExt=function(ext,showTitle)
 		{
 			tr_html +='<td><span>';
 		}
-		day = startDate.getDate();
+		var day = startDate.getDate();
 		if(day<10) day = '0'+day;
 		tr_html +=weekDays[w]+'</span></td><td><span style="display:none;">'+month+'/'+day+'/'+startDate.getFullYear()+'</span><span>'+month+'/'+day+'</span></td>'
 		for(var j=0;j<14;j++)
@@ -2365,7 +2365,7 @@ window.displayRoomExt=function(ext,showTitle)
 				tr_html+='<input class="'+dayClassName[j]+'" onclick="window.showTextAreaDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			}
 			else if(j==8)
-				tr_html+='<td style="min-width:20px;max-width:120px;"><input class="'+dayClassName[j]+'" onclick="window.showBusDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
+				tr_html+='<td style="min-width:20px;max-width:130px;width:150px;"><input class="'+dayClassName[j]+'" onclick="window.showBusDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			else if(j==6)
 			{
 				tr_html+='<td';
@@ -2406,43 +2406,43 @@ window.displayRoomExt=function(ext,showTitle)
   function dateformat(date_string)
   {
   	if(!date_string) return null;
-  	date = date_string.split('/');
-  	month = date[0];
+  	var date = date_string.split('/');
+  	var month = date[0];
   	if(parseInt(month)<10) month = '0'+month;
   	return date[2]+'-'+month+'-'+date[1];
   }
   function sendHotelMessage(rid,msg)
   {
-  	msgObject = { _id: Random.id(), rid: rid, msg: msg}
+  	var msgObject = { _id: Random.id(), rid: rid, msg: msg}
   	Meteor.call('sendMessage',msgObject,function(error,result){
   		if(!error)
   		{
-  			msg = result.msg.replace(':=','');
-  			jsonMsg = JSON.parse(msg);
+  			var msg = result.msg.replace(':=','');
+  			var jsonMsg = JSON.parse(msg);
   			if(jsonMsg && jsonMsg instanceof Array && jsonMsg.length>0)
   			{
   				//console.log(jsonMsg);
-				json = jsonMsg[0];
+				var json = jsonMsg[0];
 				for(var kpush in json)
 				{
 					if(kpush.indexOf('$push') == 0)
 					{
-					data = json[kpush];
-					for(var kdata in data)
-					{
-						var value = data[kdata];
-						//console.log(value);
-						var r = findRoomByRid(rid);
-						if(r && r.ext)
+						var data = json[kpush];
+						for(var kdata in data)
 						{
-							var hotels = r.ext.hotels;
-							//console.log(hotels);
-							if(!hotels) hotels = [];
-							hotels.push(value);
-							r.ext.hotels = hotels;
-							//console.log(r.ext.hotels);
+							var value = data[kdata];
+							//console.log(value);
+							var r = findRoomByRid(rid);
+							if(r && r.ext)
+							{
+								var hotels = r.ext.hotels;
+								//console.log(hotels);
+								if(!hotels) hotels = [];
+								hotels.push(value);
+								r.ext.hotels = hotels;
+								//console.log(r.ext.hotels);
+							}
 						}
-					}
 					}
 				}
 			}
@@ -2451,7 +2451,7 @@ window.displayRoomExt=function(ext,showTitle)
   }
   function sendMessage(rid,msg)
   {
-  	msgObject = { _id: Random.id(), rid: rid, msg: msg}
+  	var msgObject = { _id: Random.id(), rid: rid, msg: msg}
   	//console.log(msgObject);
   	Meteor.call('sendMessage',msgObject,function(error,result){
   		//console.log('sendMessage');
@@ -2459,15 +2459,15 @@ window.displayRoomExt=function(ext,showTitle)
   		//console.log(result);
   		if(!error)
   		{
-  			msg = result.msg.replace(':=','');
-  			jsonMsg = JSON.parse(msg);
+  			var msg = result.msg.replace(':=','');
+  			var jsonMsg = JSON.parse(msg);
   			if(jsonMsg && jsonMsg instanceof Array && jsonMsg.length>0)
   			{
   				//console.log(jsonMsg);
-				json = jsonMsg[0];
+				var json = jsonMsg[0];
 				for(var kset in json)
 				{
-					data = json[kset];
+					var data = json[kset];
 					for(var kdata in data)
 					{
 						//var keys = kdata.split('.');
@@ -2668,13 +2668,13 @@ window.displayRoomExt=function(ext,showTitle)
   	var value = $(t).val();
   	if(value && value.length>0)
   	{
-  		msg = ':=[{"$set": {"ext.'+$(t).attr("class")+'":"'+value+'"}}]';
+  		var msg = ':=[{"$set": {"ext.'+$(t).attr("class")+'":"'+value+'"}}]';
   		show = t;
   		sendMessage(rid,msg);
   		if($(t).attr("class") == "line_total_price" || $(t).attr("class") == "add_price")
   		{
-  			var fee = 0;
-  			var price = 0;
+  			var fee = '';
+  			var price = '';
   			if($(t).attr("class") == "add_price")
   			{
   				fee = $(t).val();
@@ -2687,7 +2687,7 @@ window.displayRoomExt=function(ext,showTitle)
   			}
   			var tr = $(t).parent().parent().parent();
   			var trs = $(tr).nextAll("tr#"+rid);
-  			if(trs.length == 0) return;
+  			if(trs.length == 0 || price.length==0) return;
   			total_tr = $(trs[trs.length-1]).next().next();
   			var span = $($(total_tr).find(".summary_total").get(0)).text();
   			if(span)
@@ -2696,7 +2696,14 @@ window.displayRoomExt=function(ext,showTitle)
   				var profit = $(total_tr).next().find(".summary_profit").get(0);
   				if(profit)
   				{
-  					$(profit).text(price+'-'+fee+'-'+total_num+'='+eval(price+'-'+fee+'-'+total_num));
+  					if(fee.length>0)
+  					{
+  						$(profit).text(price+'-'+fee+'-'+total_num+'='+eval(price+'-'+fee+'-'+total_num));
+  					}
+  					else
+  					{
+  						$(profit).text(price+'-'+total_num+'='+eval(price+'-'+total_num));
+  					}
   				}
   			}
   		}
@@ -2707,7 +2714,7 @@ window.displayRoomExt=function(ext,showTitle)
   {
   	for(var index in rooms)
   	{
-  		r = rooms[index];
+  		var r = rooms[index];
   		if(r._id == rid)
   		{
   			return r;
@@ -2777,10 +2784,10 @@ window.displayRoomExt=function(ext,showTitle)
   					{
   						if(i<trs.length)
   						{
-  							td = $(trs[i]).children('td');
-  							td_week = '';
-  							w = startDate.getDay();
-							month = startDate.getMonth()+1;
+  							var td = $(trs[i]).children('td');
+  							var td_week = '';
+  							var w = startDate.getDay();
+							var month = startDate.getMonth()+1;
 							if(w == 0 || w==5 || w==6)
 							{
 								td_week +='<span style="color:red;">';
@@ -2792,9 +2799,9 @@ window.displayRoomExt=function(ext,showTitle)
 							td_week +=weekDays[w]+'</span>';
 							$(td[0]).html(td_week);
 
-							day = startDate.getDate();
+							var day = startDate.getDate();
 							if(day<10) day = '0'+day;
-							dateString = month+'/'+day+'/'+startDate.getFullYear();
+							var dateString = month+'/'+day+'/'+startDate.getFullYear();
 							$(td[1]).html('<span style="display:none;">'+dateString+'</span><span>'+month+'/'+day+'</span>');
 							var day_info = daysOrigin[i+1];
 							var is_send = true;
@@ -3042,8 +3049,7 @@ window.displayRoomExt=function(ext,showTitle)
   				}
   				$(tr).after(tr_html);
   				var end = endDate;
-				setTimeout(function(){$(t).val(end.getFullYear()+'-'+ (end.getMonth()+1 < 10 ? '0'+(end.getMonth()+1) : end.getMonth()+1)+'-'+(end.getDate() < 10 ? '0'+end.getDate() : end.getDate()))},100);
-
+				setTimeout(function(){$(t).val(end.getFullYear()+'-'+ (end.getMonth()+1 < 10 ? '0'+(end.getMonth()+1) : end.getMonth()+1)+'-'+(end.getDate() < 10 ? '0'+end.getDate() : end.getDate()))},800);
   			}
   			//console.log(msg)
   			//console.log(JSON.parse(msg.replace(':=','')));
@@ -3081,7 +3087,7 @@ window.displayRoomExt=function(ext,showTitle)
   	var r = findRoomByRid(rid);
   	if(value && value.length>0)
   	{
-  		msg = '';
+  		var msg = '';
   		if(!r.ext.days || !r.ext.days[day])
   		{
   			var tr = $(t).parent().parent();
@@ -3105,24 +3111,24 @@ window.displayRoomExt=function(ext,showTitle)
 
   function trHTMLByJSON(json,rid,key)
   {
-  	tr_html = '';
-  	i = key - 1;
+  	var tr_html = '';
+  	var i = key - 1;
   	var startDate = new Date(dateformat(json.date));
   	tr_html+='<tr  id="'+rid+'" class="day" data-days="'+(i+1)+'">';
-		w = startDate.getDay();
-		if(w == 0 || w==5 || w==6)
-		{
-			tr_html +='<td><span style="color:red;">';
-		}
-		else
-		{
-			tr_html +='<td><span>';
-		}
-		day = startDate.getDate();
-		if(day<10) day = '0'+day;
-		tr_html += (json.week ? json.week : weekDays[w])+'</span></td><td><span style="display:none;">'+json.date+'</span><span>'+(startDate.getMonth()+1)+'/'+day+'</span></td>'
-		for(var j=0;j<14;j++)
-		{
+	var w = startDate.getDay();
+	if(w == 0 || w==5 || w==6)
+	{
+		tr_html +='<td><span style="color:red;">';
+	}
+	else
+	{
+		tr_html +='<td><span>';
+	}
+	var day = startDate.getDate();
+	if(day<10) day = '0'+day;
+	tr_html += (json.week ? json.week : weekDays[w])+'</span></td><td><span style="display:none;">'+json.date+'</span><span>'+(startDate.getMonth()+1)+'/'+day+'</span></td>'
+	for(var j=0;j<14;j++)
+	{
 			var value = "";
 			if(j==0)
 			{
@@ -3233,7 +3239,7 @@ window.displayRoomExt=function(ext,showTitle)
 						value = json[dayClassName[j]].simple_base;
 				}
 				if(value.length>0) value = value.replace(/"/g,'&quot;');
-				tr_html+='<td style="max-width:120px;"><input class="'+dayClassName[j]+'" onclick="window.showBusDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)"  value="'+value+'" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
+				tr_html+='<td style="min-width:20px;max-width:130px;width:150px;"><input class="'+dayClassName[j]+'" onclick="window.showBusDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)"  value="'+value+'" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			}
 			else if(j==6)
 			{
@@ -3387,7 +3393,7 @@ window.displayRoomExt=function(ext,showTitle)
 				tr_html+='<input class="'+dayClassName[j]+'" onclick="window.daysInputClick(this)" value="'+(json[dayClassName[j]] ? json[dayClassName[j]].replace(/"/g,'&quot;') : "")+'" onchange="window.daysInputChange(this)" style="width:100%;border:0px;height:25px;" id="'+rid+'" data-day="'+(i+1)+'" /></td>';
 			}
 		}
-		tr_html += '</tr>';
+	tr_html += '</tr>';
 	return tr_html;
   }
   function summaryData(r,s_key)
@@ -3663,7 +3669,7 @@ window.displayRoomExt=function(ext,showTitle)
         	{
         		if(single.t == "d")
         		{
-        			usn = single.usernames;
+        			var usn = single.usernames;
         			mc = usn[0] +"<->"+ usn[1];
         		}
         	}
@@ -3691,7 +3697,7 @@ window.displayRoomExt=function(ext,showTitle)
         		var qstartdate = new Date(info.startdate);
   				var qenddate = new Date(info.enddate);
   				var time = qenddate.getTime() - qstartdate.getTime();
-  				length = time/1000/3600/24;
+  				var length = time/1000/3600/24;
   				var firstDate = new Date(info.startdate);
         		//if(days['1'])
         		{
@@ -3785,7 +3791,7 @@ window.displayRoomExt=function(ext,showTitle)
   }
   function changeTabPage(t,index)
   {
-  	hotelAlert = {};
+  	var hotelAlert = {};
   	var className = $(t).attr("class");
   	if(className=="on") return;
   	var div = $(t).parent();
@@ -3798,7 +3804,7 @@ window.displayRoomExt=function(ext,showTitle)
   	else return;
 
   	var html = '';
-  	room = [];
+  	var room = [];
   	if(index==0)
   	{
   		html = tbodyHTML(rooms);

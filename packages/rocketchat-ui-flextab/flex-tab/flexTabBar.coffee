@@ -38,7 +38,11 @@ Template.flexTabBar.events
 		for msg in messages
 			if hide
 				if(!$(msg).hasClass('hideextmessage')&&!$(msg).hasClass('hidemessage'))
-					$(msg).addClass('hideextmessage')
+					data_name = $(msg).attr('data-username')
+					if data_name != Meteor.user().username
+						$(msg).addClass('hidemessage')
+					else
+						$(msg).addClass('hideextmessage')
 			else
 				$(msg).removeClass('hideextmessage')
 				if $(msg).hasClass('hidemessage')

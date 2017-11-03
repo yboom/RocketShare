@@ -9,6 +9,8 @@ Template.message.helpers
 	isShow: ->
 		Own = this.u?._id is Meteor.userId()
 		r_own = Template.instance().room_owner_id is Meteor.userId()
+		if not r_own
+			r_own = Session.get('roomOwn')
 		if Template.instance().isExtMsg and not Template.instance().isOpen
 			#console.log Own
 			#console.log r_own
