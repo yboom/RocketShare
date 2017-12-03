@@ -229,6 +229,7 @@ window.displayRoomExt=function(ext,showTitle)
 		expression = expression.replace(/－/gm,'-');
 		expression = expression.replace(/＊/gm,'*');
 		expression = expression.replace(/／/gm,'/');
+		expression = expression.replace(/\(\)/gm,'0');
   	}
   	if(expression.lastIndexOf(' ')>0) expression = expression.substring(expression.lastIndexOf(' '));
   	return expression;
@@ -3588,7 +3589,7 @@ window.displayRoomExt=function(ext,showTitle)
   function summaryDataHtml(data)
   {
   	var s_html = '';
-  	s_html +='<tr><td colspan="2" style="text-align:center;"><span id="'+data._id+'" style="cursor:pointer;" onclick="window.updateSummaryData(this)">计费</span></td>';
+  	s_html +='<tr><td colspan="2" style="text-align:center;padding:5px 0 5px 0;"><span id="'+data._id+'" style="cursor:pointer;" onclick="window.updateSummaryData(this)">计费</span></td>';
   	s_html +='<td colspan="2">';
   	var th_r = summaryData(data,'tuanhao');
   	//if(th_r>0)
@@ -3634,11 +3635,11 @@ window.displayRoomExt=function(ext,showTitle)
   	}
   	s_html +='</td>';
     s_html +='</tr>';
-    s_html +='<tr><td colspan="2" style="text-align:center;"><span>总计</span></td>';
+    s_html +='<tr><td colspan="2" style="text-align:center;padding:5px 0 5px 0;"><span>总计</span></td>';
     s_html +='<td colspan="13">';
     s_html +='<span class="summary_total">'+th_r+'+'+hotel_t+'+'+bus_r+'+'+dinner_r+'+'+jingdian_r+'+'+airport_r+'='+(th_r+hotel_t+bus_r+dinner_r+jingdian_r+airport_r)+'</span>';
   	s_html +='</td></tr>';
-  	s_html +='<tr><td colspan="2" style="text-align:center;"><span>利润</span></td>';
+  	s_html +='<tr><td colspan="2" style="text-align:center;padding:5px 0 5px 0;"><span>利润</span></td>';
     s_html +='<td colspan="13">';
     s_html +='<span class="summary_profit">';
     if(data.ext.line_total_price)
