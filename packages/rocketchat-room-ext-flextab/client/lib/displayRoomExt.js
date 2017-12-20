@@ -326,10 +326,12 @@ window.displayRoomExt=function(ext,showTitle)
   	if(timeOutShow) clearTimeout(timeOutShow),timeOutShow = null;
   	var rid = $(e).attr("id");
   	var day = $(e).attr("data-day");
+  	if(!day) day = '100000';
   	var className = $(e).attr("class");
   	//var value = $(e).val();
   	var r = findRoomByRid(rid);
   	var json = {};
+  	if(!r || !r.ext) return;
   	if(r && r.ext && r.ext.days && r.ext.days[day] && r.ext.days[day][className])
   	{
   		json = r.ext.days[day][className];
@@ -355,6 +357,10 @@ window.displayRoomExt=function(ext,showTitle)
   			json.bus_driver = r.ext.days[day]['driver'].simple_base;
   		}
   	}
+  	else if(className.indexOf('line_')==0&&!json[className])
+  	{
+  		json[className] = r.ext[className]
+  	}
   	//console.log(json);
   	var s=false;
   	var first = '';
@@ -377,7 +383,6 @@ window.displayRoomExt=function(ext,showTitle)
   	if(left + w > width) left = left - w;
   	else if(left + w > cw) left = left - w;
   	if(left < 0) left = 0;
-
   	{
   		div = document.createElement("div");
   		div.setAttribute("class","mouse_show_div");
@@ -723,6 +728,16 @@ window.displayRoomExt=function(ext,showTitle)
 
   			info_html += '</div></div>';
 		}
+		else if(first.indexOf('line_')==0)
+		{
+			var name = '费用包含';
+  			var name_info = '费用包含';
+  			if(className == "line_fee_nin") name = "费用不包含",name_info = name;
+  			else if(className == "line_note") name = "注意事项",name_info = name;
+  			else if(className == "line_fjxy") name = "附加协议",name_info = name;
+			info_html += '<div style="margin-left:6px;margin-top:2px;"><div><span><span class="class_name">'+name+'：</span>'+(json[className] ? json[className] : "")+'</span></div>';
+  			info_html += '</div>';
+		}
 		if(info_html.length>0)
 		{
   			$(div).append(info_html);
@@ -753,6 +768,7 @@ window.displayRoomExt=function(ext,showTitle)
   	$(".tableTextAreaDiv").hide();
   	$(".tablebus").hide();
   	$(".tablehotelother").hide();
+  	$(".lineTextAreaDiv").hide();
   	var rid = $(e).attr("id");
   	var day = $(e).attr("data-day");
   	var className = $(e).attr("class");
@@ -1124,6 +1140,7 @@ window.displayRoomExt=function(ext,showTitle)
   	$(".tableTextAreaDiv").hide();
   	$(".tablebus").hide();
   	$(".tablehotelother").hide();
+  	$(".lineTextAreaDiv").hide();
   	var rid = $(e).attr("id");
   	var day = $(e).attr("data-day");
   	var className = $(e).attr("class");
@@ -1182,7 +1199,7 @@ window.displayRoomExt=function(ext,showTitle)
   	  					}
   	  				}
   	  			}
-  	  			else 
+  	  			else
   	  			{
   	  				$("."+key).val('');
   	  			}
@@ -1301,6 +1318,7 @@ window.displayRoomExt=function(ext,showTitle)
   	$(".tableTextAreaDiv").hide();
   	$(".tablebus").hide();
   	$(".tablehotel").hide();
+  	$(".lineTextAreaDiv").hide();
   	var rid = $(e).attr("id");
   	var day = $(e).attr("data-day");
   	var className = $(e).attr("class");
@@ -1443,6 +1461,7 @@ window.displayRoomExt=function(ext,showTitle)
   	$(".tabledinner").hide();
   	$(".tablebus").hide();
   	$(".tablehotelother").hide();
+  	$(".lineTextAreaDiv").hide();
   	var rid = $(e).attr("id");
   	var day = $(e).attr("data-day");
   	var className = $(e).attr("class");
@@ -1533,6 +1552,7 @@ window.displayRoomExt=function(ext,showTitle)
   	$(".tableTextAreaDiv").hide();
   	$(".tablebus").hide();
   	$(".tablehotelother").hide();
+  	$(".lineTextAreaDiv").hide();
   	var rid = $(e).attr("id");
   	var day = $(e).attr("data-day");
   	var className = $(e).attr("class");
@@ -1637,6 +1657,7 @@ window.displayRoomExt=function(ext,showTitle)
   	$(".tableTextAreaDiv").hide();
   	$(".tablesimple").hide();
   	$(".tablehotelother").hide();
+  	$(".lineTextAreaDiv").hide();
   	var rid = $(e).attr("id");
   	var day = $(e).attr("data-day");
   	var className = $(e).attr("class");
@@ -1776,6 +1797,7 @@ window.displayRoomExt=function(ext,showTitle)
   	$(".tableTextAreaDiv").hide();
   	$(".tablebus").hide();
   	$(".tablehotelother").hide();
+  	$(".lineTextAreaDiv").hide();
   	var rid = $(e).attr("id");
   	var day = $(e).attr("data-day");
   	var className = $(e).attr("class");
@@ -1948,6 +1970,7 @@ window.displayRoomExt=function(ext,showTitle)
   	$(".tableTextAreaDiv").hide();
   	$(".tablebus").hide();
   	$(".tablehotelother").hide();
+  	$(".lineTextAreaDiv").hide();
   	var rid = $(e).attr("id");
   	var day = $(e).attr("data-day");
   	var className = $(e).attr("class");
@@ -2114,6 +2137,7 @@ window.displayRoomExt=function(ext,showTitle)
   	$(".tableTextAreaDiv").hide();
   	$(".tablebus").hide();
   	$(".tablehotelother").hide();
+  	$(".lineTextAreaDiv").hide();
   	var rid = $(e).attr("id");
   	var day = $(e).attr("data-day");
   	var className = $(e).attr("class");
@@ -2303,6 +2327,106 @@ window.displayRoomExt=function(ext,showTitle)
   	currentShowDiv = div;
   }
   window.showAirPortDiv = showAirPortDiv;
+  function submitLineInfo(e)
+  {
+   	var div = $(e).parent().parent();
+  	var rid = $(div).attr("id");
+  	//var day = $(div).attr("data-day");
+  	//var inputs = $(div).find("input");
+  	var textareas = $(div).find("textarea").get(0);
+  	var className = $(show).attr("class");
+  	console.log($(textareas).val());
+  	console.log(JSON.stringify($(textareas).val()));
+  	var msg = ':=[{"$set": {"ext.'+className+'":'+JSON.stringify($(textareas).val())+'}}]';
+  	sendMessage(rid,msg);
+  }
+  window.submitLineInfo = submitLineInfo;
+  function showLineTextAreaDiv(e)//Line多行文本
+  {
+  	clickShow = true;
+  	if(timeOutShow) clearTimeout(timeOutShow),timeOutShow = null;
+  	if(show) $(show).css('background','white');
+  	$(".mouse_show_div").remove();
+  	$(".tablecontainer").hide();
+  	$(".tablehotel").hide();
+  	$(".tablesimple").hide();
+  	$(".tableairport").hide();
+  	$(".tablejingdian").hide();
+  	$(".tabledinner").hide();
+  	$(".tablebus").hide();
+  	$(".tablehotelother").hide();
+  	$(".tableTextAreaDiv").hide();
+  	var rid = $(e).attr("id");
+  	var className = $(e).attr("class");
+  	//var value = $(e).val();
+  	var r = findRoomByRid(rid);
+  	var json = {};
+  	if(r && r.ext)
+  	{
+  		json = r.ext;
+  	}
+  	var div = $(".lineTextAreaDiv");
+  	var name = '费用包含';
+  	var name_info = '费用包含';
+  	if(className == "line_fee_nin") name = "费用不包含",name_info = name;
+  	else if(className == "line_note") name = "注意事项",name_info = name;
+  	else if(className == "line_fjxy") name = "附加协议",name_info = name;
+
+  	var top = $(e).position().top+$(e).height()+23;
+  	if(isTitle && $('#'+id).scrollTop()>10) top = top + $('#'+id).scrollTop()/2-10;
+  	var left = $(e).position().left;
+  	var w = Math.max(324,width/5);
+  	var h = height/3+5;
+  	var cw = document.body.clientWidth || 0;
+  	if(left + w > width) left = left - w;
+  	else if(left + w > cw) left = left - w;
+  	if(left < 0) left = 0;
+  	if(top + h >height)
+  	{
+  		top = $(e).position().top - h+20;
+  		if(isTitle && $('#'+id).scrollTop()>10) top = top + $('#'+id).scrollTop()/2-10;
+  	}
+  	if(div && div.length>0)
+  	{
+  	  	$(div).css({'top':top+'px','left':left+'px'});
+  	  	$(div).attr("id",$(e).attr("id"));
+  	  	if(json[className]&&json[className].length>0)
+  	  	{
+  	  		$($(div).find(".textarea_base")[0]).val(json[className]);
+  	  	}
+  	  	else
+  	  	{
+  	  		$(div).find('input').each(function(){
+  	  			$(this).val('');
+  	  			$(this).attr('placeholder',name_info);
+  	  		});
+  	  		$(div).find('textarea').each(function(){
+  	  			$(this).val('');
+  	  			$(this).attr('placeholder',name_info);
+  	  		});
+  	  	}
+  	  	$($(div).find(".class_name")[0]).text(name+'：');
+  	  	$(div).show();
+  	}
+  	else
+  	{
+  		div = document.createElement("div");
+  		div.setAttribute("class","lineTextAreaDiv");
+  		$(div).attr("id",$(e).attr("id"));
+  		$(div).css({'position':'absolute','z-index': 199999,'display':'block','top':top+'px','left':left+'px',
+  					'background-color':'rgba(238, 238, 238, 0.8)','width':w,'height':h,'border':'1px solid rgba(163, 163, 163, 0.9)','-webkit-border-radius':'8px','border-radius':'8px'});
+  		var info_html = '<div style="margin-left:6px;margin-top:2px;"><div><span><span class="class_name">'+name+'：</span><textarea style="margin-left:10px;width:95%;height:'+((h-60)>150 ?(h-60):150)+'px;" placeholder="'+name_info+'" class="textarea_base">'+(json[className] ? json[className] : "")+'</textarea></span></div>';
+  		info_html += '</div>';
+  		info_html += '<div style="text-align: center;margin-top:10px;"><button class="btn_cancel" onclick="window.cancelDiv(this)">取消</button><button class="btn_submit" onclick="window.submitLineInfo(this)">提交</button></div>';
+  		$(div).append(info_html);
+  		$("body").append(div);
+  	}
+  	$($(div).find('.textarea_base')[0]).focus();
+  	$(e).css('background-color','yellow');
+  	show = e;
+  	currentShowDiv = div;
+  }
+  window.showLineTextAreaDiv = showLineTextAreaDiv;
   function mouseOverShow(e)
   {
   	if(clickShow) return;
@@ -2652,6 +2776,11 @@ window.displayRoomExt=function(ext,showTitle)
   										else
   										{
   											r.ext[className] = value;
+  											if(className.indexOf('line')==0&&className.indexOf('price')<0)
+  											{
+  												var v = value.length>30?value.substring(0,30):value;
+  												$(show).val(v);
+  											}
   										}
   									}
   								}
@@ -2667,7 +2796,7 @@ window.displayRoomExt=function(ext,showTitle)
   {
   	//console.log(t)rocketchat_room-ext-flextab.js:5388:13
   	var value = $(t).val();
-  	if(value && value.length>0)
+  	if((value && value.length>0)||(value!=undefined&&value.length==0&&($(t).attr("class")=="line_gys_price" || $(t).attr("class")=="line_traveler_price")))
   	{
   		var msg = ':=[{"$set": {"ext.'+$(t).attr("class")+'":"'+value+'"}}]';
   		show = t;
@@ -2707,6 +2836,54 @@ window.displayRoomExt=function(ext,showTitle)
   					}
   				}
   			}
+  		}
+  		else if($(t).attr("class") == "line_gys_price" || $(t).attr("class") == "line_traveler_price")
+  		{
+  			var fee = '';
+  			var price = '';
+  			if($(t).attr("class") == "line_traveler_price")
+  			{
+ 				fee = $(t).val();
+ 				price = $($(t).parent().prev().find(".line_gys_price").get(0)).val();
+  			}
+  			else
+  			{
+  				fee = $($(t).parent().next().find(".line_traveler_price").get(0)).val();
+  				price = $(t).val();
+  			}
+  			var tr = $(t).parent().parent().parent();
+  			var trs = $(tr).nextAll("tr#"+rid);
+  			if(trs.length == 0) return;
+  			total_tr = $(trs[trs.length-1]).next().next();
+  			var span = $($(total_tr).find(".summary_total").get(0)).text();
+  			if(span)
+  			{
+  				var total_num = span.substring(span.indexOf("=")+1);
+  				var profit = $(total_tr).next().find(".summary_profit").get(0);
+  				if(profit)
+  				{
+  					if(fee.length>0 || price.length>0)
+  					{
+  						if(!fee) fee = 0;
+  						if(!price) price = 0;
+  						$(profit).text(fee+'-'+price+'='+eval(fee+'-'+price));
+  					}
+  					else
+  					{
+  						fee = $($(t).parent().parent().parent().prev().find(".add_price").get(0)).val();
+  						price = $($(t).parent().parent().parent().prev().find(".line_total_price").get(0)).val();
+  						if(price.length==0) return;
+  						if(fee.length>0)
+  						{
+  							$(profit).text(price+'-'+fee+'-'+total_num+'='+eval(price+'-'+fee+'-'+total_num));
+  						}
+  						else
+  						{
+  							$(profit).text(price+'-'+total_num+'='+eval(price+'-'+total_num));
+  						}
+  					}
+  				}
+	  		}
   		}
   	}
   }
@@ -2828,6 +3005,7 @@ window.displayRoomExt=function(ext,showTitle)
   					}
   					if(length >= trs.length)
   					{
+
   						var tr_html = trHtml(startDate,trs.length,length,rid);
   						$(trs[trs.length-1]).after(tr_html);
   					}
@@ -3074,6 +3252,7 @@ window.displayRoomExt=function(ext,showTitle)
   	$(".tablebus").hide();
   	$(".tablehotelother").hide();
   	$('.hotelsearch').remove();
+  	$(".lineTextAreaDiv").hide();
   	show = null;
   	currentShowDiv = null;
   }
@@ -3422,27 +3601,27 @@ window.displayRoomExt=function(ext,showTitle)
   			}
   			else if(s_key == 'bus_company')
   			{
-  				if(s_key_data.bus_price) 
+  				if(s_key_data.bus_price)
   				{
   					var expression = getExpression(s_key_data.bus_price);
   					r = eval(expression);
   					if(isNaN(r))
   					{
   						r = 0;
-  					} 
+  					}
   					s_result = eval(s_result+'+'+r);
   				}
   			}
   			else if(s_key == 'dinner')
   			{
-  				if(s_key_data.lunch_price) 
+  				if(s_key_data.lunch_price)
   				{
   					var expression = getExpression(s_key_data.lunch_price);
   					r = eval(expression);
   					if(isNaN(r))
   					{
   						r = 0;
-  					} 
+  					}
   					s_result = eval(s_result+'+'+r);
   				}
   				if(s_key_data.dinner_price)
@@ -3452,7 +3631,7 @@ window.displayRoomExt=function(ext,showTitle)
   					if(isNaN(r))
   					{
   						r = 0;
-  					} 
+  					}
   					s_result = eval(s_result+'+'+r);
   				}
   			}
@@ -3642,7 +3821,15 @@ window.displayRoomExt=function(ext,showTitle)
   	s_html +='<tr><td colspan="2" style="text-align:center;padding:5px 0 5px 0;"><span>利润</span></td>';
     s_html +='<td colspan="13">';
     s_html +='<span class="summary_profit">';
-    if(data.ext.line_total_price)
+    if(data.ext.line_gys_price || data.ext.line_traveler_price)
+    {
+    	var t_price = data.ext.line_traveler_price?data.ext.line_traveler_price:0;
+    	var exp = t_price + '-';
+    	exp +=data.ext.line_gys_price?data.ext.line_gys_price:0;
+    	var r_total = eval(exp);
+    	s_html +=''+exp+'='+r_total;
+    }
+    else if(data.ext.line_total_price)
     {
     	var exp = data.ext.line_total_price + '-';
     	if(data.ext.add_price)
@@ -3683,7 +3870,7 @@ window.displayRoomExt=function(ext,showTitle)
         	tbody_html +='<td style="border-bottom: 1px dashed #ddd;" colspan="15"><span>项目名称：<input id="'+single._id+'" style="width:340px;border:0px;height:25px;" class="name" placeholder="项目名称" onclick="window.daysInputClick(this)" value="'+(info.name ? info.name : "")+'" onchange="window.inputChange(this,\''+single._id+'\')" /></span>';
         	tbody_html +='<span>组团单位：<input id="'+single._id+'" style="width:300px;border:0px;height:25px;" class="ztdanwei" placeholder="组团单位" onclick="window.daysInputClick(this)" value="'+(info.ztdanwei ? info.ztdanwei : "")+'"  onchange="window.inputChange(this,\''+single._id+'\')" /></span>';
         	tbody_html +='<span>团号：<input id="'+single._id+'" style="width:200px;border:0px;height:25px;" class="zttuanhao" placeholder="团号" onclick="window.daysInputClick(this)" value="'+(info.zttuanhao ? info.zttuanhao : "")+'"  onchange="window.inputChange(this,\''+single._id+'\')" /></span></td></tr>';
-        	tbody_html +='<tr><td colspan="15"><span>大人人数：<input id="'+single._id+'" style="width:50px;border:0px;height:25px;" value="'+(info.adult_number ? info.adult_number : "")+'" class="adult_number" onclick="window.daysInputClick(this)" onchange="window.inputChange(this,\''+single._id+'\')" /></span>';
+        	tbody_html +='<tr><td style="border-bottom: 1px dashed #ddd;" colspan="15"><span>大人人数：<input id="'+single._id+'" style="width:50px;border:0px;height:25px;" value="'+(info.adult_number ? info.adult_number : "")+'" class="adult_number" onclick="window.daysInputClick(this)" onchange="window.inputChange(this,\''+single._id+'\')" /></span>';
         	tbody_html +='<span>儿童人数：<input id="'+single._id+'" style="width:50px;border:0px;height:25px;" value="'+(info.children_number ? info.children_number : "")+'" class="children_number"  onclick="window.daysInputClick(this)" onchange="window.inputChange(this,\''+single._id+'\')" /></span>';
         	tbody_html +='<span>人员组成：<input id="'+single._id+'" style="width:272px;border:0px;height:25px;" value="'+(info.personnel_number ? info.personnel_number : "")+'" class="personnel_number"  onclick="window.daysInputClick(this)" onchange="window.inputChange(this,\''+single._id+'\')" /></span>';
         	tbody_html +='<span>开始日期：<input id="start-date'+single._id+'" style="width:100px;border:0px;height:25px;" value="'+(info.startdate ? info.startdate : "")+'" class="startdate" onclick="window.daysInputClick(this)" /></span>';
@@ -3691,6 +3878,12 @@ window.displayRoomExt=function(ext,showTitle)
         	tbody_html +='<span>报价：<input id="'+single._id+'" style="width:100px;border:0px;height:25px;" value="'+(info.line_total_price ? info.line_total_price : "")+'" class="line_total_price"  onclick="window.daysInputClick(this)" onchange="window.inputChange(this,\''+single._id+'\')" /></span>';
         	tbody_html +='<span>附加费用：<input id="'+single._id+'" style="width:100px;border:0px;height:25px;" value="'+(info.add_price ? info.add_price : "")+'" class="add_price"  onclick="window.daysInputClick(this)" onchange="window.inputChange(this,\''+single._id+'\')" /></span>';
         	tbody_html +='</td></tr>';
+        	tbody_html +='<tr><td colspan="15"><span>供应商报价：<input id="'+single._id+'" style="width:100px;border:0px;height:25px;" value="'+(info.line_gys_price ? info.line_gys_price : "")+'" class="line_gys_price"  onclick="window.daysInputClick(this)" onchange="window.inputChange(this,\''+single._id+'\')" /></span>';
+        	tbody_html +='<span>收客价：<input id="'+single._id+'" style="width:100px;border:0px;height:25px;" value="'+(info.line_traveler_price ? info.line_traveler_price : "")+'" class="line_traveler_price"  onclick="window.daysInputClick(this)" onchange="window.inputChange(this,\''+single._id+'\')" /></span>';
+			tbody_html +='<span>费用包含：<input id="'+single._id+'" style="width:200px;border:0px;height:25px;" value="'+(info.line_fee_in ? info.line_fee_in.substring(0,30) : "")+'" class="line_fee_in"  onclick="window.showLineTextAreaDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)" /></span>';
+			tbody_html +='<span>费用不含：<input id="'+single._id+'" style="width:200px;border:0px;height:25px;" value="'+(info.line_fee_nin ? info.line_fee_nin.substring(0,30) : "")+'" class="line_fee_nin"  onclick="window.showLineTextAreaDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)" /></span>';
+			tbody_html +='<span>注意事项：<input id="'+single._id+'" style="width:200px;border:0px;height:25px;" value="'+(info.line_note ? info.line_note.substring(0,30) : "")+'" class="line_note"  onclick="window.showLineTextAreaDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)" /></span>';
+			tbody_html +='<span>附加协议：<input id="'+single._id+'" style="width:200px;border:0px;height:25px;" value="'+(info.line_fjxy ? info.line_fjxy.substring(0,30) : "")+'" class="line_fjxy"  onclick="window.showLineTextAreaDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)" /></span>';
 
         	if(info.days)
         	{

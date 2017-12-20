@@ -10,7 +10,7 @@ RocketChat.callbacks.add('afterSaveMessage', function(message, room) {
 			//console.log(msg);
 			//console.log(room);
 			msg = msg.replace(':=','');
-			msg = msg.replace(/：/gm,':');
+			/*msg = msg.replace(/：/gm,':');
 			msg = msg.replace(/＝/gm,'=');
 			msg = msg.replace(/\［/gm,'[');
 			msg = msg.replace(/\］/gm,']');
@@ -19,7 +19,7 @@ RocketChat.callbacks.add('afterSaveMessage', function(message, room) {
 			msg = msg.replace(/“/gm,'"');
 			msg = msg.replace(/”/gm,'"');
 			msg = msg.replace(/‘/gm,'"');
-			msg = msg.replace(/’/gm,'"');
+			msg = msg.replace(/’/gm,'"');//*/
 			//msg = msg.replace(/'/gm,'"');
 			json = JSON.parse(msg);
 			if(json && json instanceof Array)
@@ -34,10 +34,10 @@ RocketChat.callbacks.add('afterSaveMessage', function(message, room) {
       					{
       						if(key.indexOf('$') == 0)
       						{
-
+      							
       							rm = RocketChat.models.Rooms.updateRoomExtById({_id:message.rid},condition);
-      							console.log('update');
-      							console.log(rm);
+      							//console.log('update');
+      							//console.log(rm);
       							index = index+1;
       						}
       						else
@@ -47,8 +47,6 @@ RocketChat.callbacks.add('afterSaveMessage', function(message, room) {
       								update = json[index+1];
       								condition._id = message.rid;
       								rm = RocketChat.models.Rooms.updateRoomExtById(condition,update);
-	      							console.log('update');
-    	  							console.log(rm);
       								index = index+2;
       							}
       						}
@@ -62,7 +60,7 @@ RocketChat.callbacks.add('afterSaveMessage', function(message, room) {
 	if (message.editedAt) {
 		//updateRoomExt(message,room);
 		return message;
-	}
+	}	
 	updateRoomExt(message,room);
 	return message;
 
