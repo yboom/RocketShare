@@ -259,6 +259,14 @@ window.displayRoomExt=function(ext,showTitle)
   				}
   			}
   		}
+  		else
+  		{
+  			var span = $(t).parent().next();
+  			if(span&&span.length>0)
+  			{
+  				$(span).text('=');
+  			}
+  		}
   		var div = $(t).parent().parent().parent();
   		var className = $(t).attr("class");
   		if(className.indexOf('th_')==0)
@@ -336,6 +344,7 @@ window.displayRoomExt=function(ext,showTitle)
   	{
   		json = r.ext.days[day][className];
   	}
+  	console.log(json);//luwei
   	if(!json.simple_base && className == "xingcheng")
   	{
   		//console.log('xc');
@@ -463,12 +472,13 @@ window.displayRoomExt=function(ext,showTitle)
   			info_html += '<div><span>地址：'+(json.hotel_address ? json.hotel_address : "")+'</span></div>';
   			info_html += '<div><span>电话：'+(json.hotel_phone ? json.hotel_phone : "")+'</span></div>';
   			info_html += '<div><span>电邮：'+(json.hotel_email ? json.hotel_email : "")+'</span></div>';
-  			info_html += '<div><span>单间价：'+(json.hotel_single_price ? json.hotel_single_price : "")+'</span></div>';
   			info_html += '<div><span>双间价：'+(json.hotel_double_price ? json.hotel_double_price : "")+'</span></div>';
+  			info_html += '<div><span>单间价：'+(json.hotel_single_price ? json.hotel_single_price : "")+'</span></div>';
   			var p_result = 0;
   			if(json.hotel_small_price && json.hotel_small_price != "0")
   			{
   				info_html += '<div><span>小计：'+(json.hotel_small_price ? json.hotel_small_price : "")+'</span></div>';
+  				p_result = json.hotel_small_price;
   			}
   			else
   			{
@@ -476,7 +486,7 @@ window.displayRoomExt=function(ext,showTitle)
   				var s_num = r.ext.days[day].hotel_single ? r.ext.days[day].hotel_single : 0;
   				var d_price = json.hotel_double_price ? json.hotel_double_price : 0;
   				var s_price = json.hotel_single_price ? json.hotel_single_price : 0;
-  				p_result = eval(d_num*d_price+s_num*s_price);
+  				p_result = eval(d_num+'*'+d_price+'+'+s_num+'*'+s_price);
   				info_html += '<div><span>小计：'+(p_result)+'</span></div>';
   			}
   			info_html += '<div><span>其他报价：'+(json.hotel_baojie ? json.hotel_baojie : "")+'</span>';
@@ -489,6 +499,10 @@ window.displayRoomExt=function(ext,showTitle)
   				{
   					r = '';
   				}
+  				else
+  				{
+  					p_result = eval(p_result + r);
+  				}
   			}
   			if(r) info_html += '<span style="width:15%">='+r+'</span>';
   			info_html += '</div>';
@@ -499,16 +513,16 @@ window.displayRoomExt=function(ext,showTitle)
   				info_html += ''+(json['hotel_cancelzc'+i+'_bfb'] ? json['hotel_cancelzc'+i+'_bfb'] : "")+'％，说明：';
   				info_html += ''+(json['hotel_cancelzc'+i+'_info'] ? json['hotel_cancelzc'+i+'_info'] : "")+'</span></div>';
   			}
-  			info_html += '</div></div>';info_html += '<div><span>合计：'
-  			if(json.hotel_total_price)
+  			info_html += '</div></div>';
+  			//if(json.hotel_total_price)
   			{
-  				+(json.hotel_total_price ? json.hotel_total_price : "")+'</span></div>';
+  				//info_html += '<div><span>合计：'+(json.hotel_total_price ? json.hotel_total_price : "")+'</span></div>';
   			}
-  			else
+  			//else
   			{
-  				if(isNaN(r)) r = 0;
+  				//if(isNaN(r)) r = 0;
   				if(isNaN(p_result)) p_result = 0;
-  				p_result = p_result+r;
+  				//p_result = p_result+r;
   				info_html += '<div><span>合计：'+p_result+'</span></div>';
   			}
   			info_html += '</div>';
@@ -1147,11 +1161,11 @@ window.displayRoomExt=function(ext,showTitle)
   	//var value = $(e).val();
   	var r = findRoomByRid(rid);
   	var json = {};
-  	//console.log(r);
   	if(r && r.ext && r.ext.days && r.ext.days[day] && r.ext.days[day][className])
   	{
   		json = r.ext.days[day][className];
   	}
+  	console.log(json)//luwei
   	var div = $(".tablehotel");
   	var top = $(e).position().top+$(e).height()+23;
   	if(isTitle && $('#'+id).scrollTop()>10) top = top + $('#'+id).scrollTop()/2-10;
@@ -1184,6 +1198,7 @@ window.displayRoomExt=function(ext,showTitle)
   	  		if(!json.hotel_double_price) json.hotel_double_price = '';
   	  		if(!json.hotel_small_price) json.hotel_small_price = '';
   	  		if(!json.hotel_total_price) json.hotel_total_price = '';
+  	  		var t_price = '';
   	  		for(var key in json)
   	  		{
   	  			if(json[key].length>0)
@@ -1196,6 +1211,12 @@ window.displayRoomExt=function(ext,showTitle)
   	  					if(input)
   	  					{
   	  						computeHotelPrice($(input));
+  	  						var hsp = $(div).find("."+key).get(0);
+  	  						if(hsp)
+  	  						{
+  	  							if(t_price.length>0) t_price = t_price+'+'+ ($(hsp).val()?$(hsp).val():'0');
+  	  							else t_price = $(hsp).val()?$(hsp).val():'0';
+  	  						}
   	  					}
   	  				}
   	  			}
@@ -1209,7 +1230,19 @@ window.displayRoomExt=function(ext,showTitle)
   	  				if(input)
   	  				{
   	  					computeResult($(input));
+  	  					var span_text = $(input).parent().next().text().replace('=','');
+  	  					if(t_price.length>0) t_price = t_price+'+'+(span_text?span_text:'0');
+  	  					else t_price = span_text?span_text:'0';
   	  				}
+  	  			}
+  	  		}
+  	  		if(t_price.length>0)
+  	  		{
+  	  			var r = eval(t_price);
+  	  			if(!isNaN(r))
+  	  			{
+  	  				var input = $(div).find(".hotel_total_price").get(0);
+  	  				if(input) $(input).val(r);
   	  			}
   	  		}
   	  	}
@@ -1246,25 +1279,30 @@ window.displayRoomExt=function(ext,showTitle)
   		info_html += '<div><span>地址：<input style="width:96.5%;" placeholder="地址" class="hotel_address" value="'+(json.hotel_address ? json.hotel_address.replace(/"/g,'&quot;') : "")+'" /></span></div>';
   		info_html += '<div><span>电话：<input style="width:96.5%;" placeholder="电话" class="hotel_phone" value="'+(json.hotel_phone ? json.hotel_phone.replace(/"/g,'&quot;') : "")+'" /></span></div>';
   		info_html += '<div><span>电邮：<input style="width:96.5%;" placeholder="电邮" class="hotel_email" value="'+(json.hotel_email ? json.hotel_email.replace(/"/g,'&quot;') : "")+'" /></span></div>';
-  		info_html += '<div><span>单间价：<input style="width:90px;" placeholder="单间价" onblur="window.computeHotelPrice(this)" class="hotel_single_price" value="'+(json.hotel_single_price ? json.hotel_single_price.replace(/"/g,'&quot;') : "")+'" /></span>';
-  		info_html += '<span style="margin-left:5px;">双间价：<input style="width:90px;" placeholder="双间价" onblur="window.computeHotelPrice(this)" class="hotel_double_price" value="'+(json.hotel_double_price ? json.hotel_double_price.replace(/"/g,'&quot;') : "")+'" /></span></div>';
+  		info_html += '<div><span>双间价：<input style="width:90px;" placeholder="双间价" onblur="window.computeHotelPrice(this)" class="hotel_double_price" value="'+(json.hotel_double_price ? json.hotel_double_price.replace(/"/g,'&quot;') : "")+'" /></span>';
+  		info_html += '<span style="margin-left:5px;">单间价：<input style="width:90px;" placeholder="单间价" onblur="window.computeHotelPrice(this)" class="hotel_single_price" value="'+(json.hotel_single_price ? json.hotel_single_price.replace(/"/g,'&quot;') : "")+'" /></span></div>';
+  		var t_result = 0;
   		if(json.hotel_small_price && json.hotel_small_price != "0")
   		{
   			info_html += '<div><span>小计：<input style="width:75%;" readonly="readonly" class="hotel_small_price" value="'+(json.hotel_small_price ? json.hotel_small_price : "")+'" /></span></div>';
+  			t_result = json.hotel_small_price;
   		}
   		else
   		{
   			var p_result = 0;
-  			var d_price = json.hotel_double_price ? json.hotel_double_price : 0;
-  			var s_price = json.hotel_single_price ? json.hotel_single_price : 0;
-  			if(d_price >0 || s_price > 0)
+  			var d_price = json.hotel_double_price ? json.hotel_double_price : '';
+  			var s_price = json.hotel_single_price ? json.hotel_single_price : '';
+  			if(d_price.length >0 || s_price.length > 0)
   			{
+  				if(s_price.length==0) s_price = 0;
+  				if(d_price.length==0) d_price = 0;
   				var d_num = r.ext.days[day].hotel_double ? r.ext.days[day].hotel_double : 0;
   				var s_num = r.ext.days[day].hotel_single ? r.ext.days[day].hotel_single : 0;
-  				p_result = eval(d_num*d_price+s_num*s_price);
+  				p_result = eval(d_num+'*'+d_price+'+'+s_num+'*'+s_price);
   				if(isNaN(p_result)) p_result='';
   			}
   			else p_result='';
+  			t_result = p_result?p_result:0;
   			info_html += '<div><span>小计：<input style="width:75%;" readonly="readonly" class="hotel_small_price" value="'+p_result+'" /></span></div>';
   		}
   		//info_html += '<div><span>报价：<textarea style="margin-left:10px;width:95%;height:120px;" placeholder="报价信息" class="hotel_baojie">'+(json.hotel_baojie ? json.hotel_baojie : "")+'</textarea></span></div>';
@@ -1278,6 +1316,11 @@ window.displayRoomExt=function(ext,showTitle)
   			{
   				r = '';
   			}
+  			else
+  			{
+  				t_result = eval(t_result+'+'+r);
+  				if(isNaN(t_result)) t_result='';
+  			}
   		}
   		info_html += '<span style="width:15%">='+r+'</span></div>';
   		info_html += '<div>取消政策：';
@@ -1287,8 +1330,8 @@ window.displayRoomExt=function(ext,showTitle)
   			info_html += '<input style="width:30px;" placeholder="数字" class="hotel_cancelzc'+i+'_bfb" value="'+(json['hotel_cancelzc'+i+'_bfb'] ? json['hotel_cancelzc'+i+'_bfb'] : "")+'" />％，说明：';
   			info_html += '<input style="width:90px;" placeholder="说明" class="hotel_cancelzc'+i+'_info" value="'+(json['hotel_cancelzc'+i+'_info'] ? json['hotel_cancelzc'+i+'_info'].replace(/"/g,'&quot;') : "")+'" /></span></div>';
   		}
-  		info_html += '</div>';
-  		info_html += '<div><span>合计：<input style="width:75%;" readonly="readonly" class="hotel_total_price" value="'+(json.hotel_total_price ? json.hotel_total_price : "")+'" /></span></div>';
+  		info_html += '</div>';//json.hotel_total_price ? json.hotel_total_price : ""
+  		info_html += '<div><span>合计：<input style="width:75%;" readonly="readonly" class="hotel_total_price" value="'+(t_result)+'" /></span></div>';
 
   		info_html += '</div>';
 
@@ -3593,7 +3636,20 @@ window.displayRoomExt=function(ext,showTitle)
   			}
   			else if(s_key == 'hotel_name')
   			{
-  				if(s_key_data.hotel_total_price) s_result = eval(s_result+'+'+s_key_data.hotel_total_price);
+  				//if(s_key_data.hotel_total_price) s_result = eval(s_result+'+'+s_key_data.hotel_total_price);
+  				var d_num = s_day.hotel_double?s_day.hotel_double:0;
+  				var s_num = s_day.hotel_single?s_day.hotel_single:0;
+  				var d_price = s_key_data.hotel_double_price?s_key_data.hotel_double_price:0;
+  				var s_price = s_key_data.hotel_single_price?s_key_data.hotel_single_price:0;
+  				var t_price = eval(d_num+'*'+d_price+'+'+s_num+'*'+s_price);
+  				if(isNaN(t_price)) t_price = 0;
+  				var expression = getExpression(s_key_data.hotel_baojie);
+  				var r = eval(expression);
+  				if(!isNaN(r))
+  				{
+  					t_price = eval(r+'+'+ t_price);
+  				}
+  				s_result = eval(s_result+'+'+t_price);
   			}
   			else if(s_key == 'hotel_sidao')
   			{
@@ -3755,7 +3811,9 @@ window.displayRoomExt=function(ext,showTitle)
   				if(span_profit)
   				{
   					var profit_text = $(span_profit).text();
-  					var profit_text_prev = profit_text.substring(0,profit_text.lastIndexOf('-'));
+  					var profit_text_prev = profit_text.substring(0,profit_text.indexOf('-'));
+  					//console.log(profit_text_prev);
+  					if(!profit_text_prev) profit_text_prev = '0';
   					var cb_result = th_r+hotel_t+bus_r+dinner_r+jingdian_r+airport_r;
   					var p_result = eval(profit_text_prev+'-'+cb_result);
   					$(span_profit).text(profit_text_prev+'-'+cb_result+'='+p_result);
@@ -4106,6 +4164,7 @@ window.displayRoomExt=function(ext,showTitle)
   	$(".mouse_show_div").remove();
   	$(".tablebus").remove();
   	$(".tablehotelother").remove();
+  	$(".lineTextAreaDiv").remove();
   	saveLocalStorage();
   	if(timeOutShow) clearTimeout(timeOutShow),timeOutShow = null;
     setTimeout(function() {
