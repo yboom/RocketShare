@@ -344,7 +344,6 @@ window.displayRoomExt=function(ext,showTitle)
   	{
   		json = r.ext.days[day][className];
   	}
-  	console.log(json);//luwei
   	if(!json.simple_base && className == "xingcheng")
   	{
   		//console.log('xc');
@@ -475,12 +474,12 @@ window.displayRoomExt=function(ext,showTitle)
   			info_html += '<div><span>双间价：'+(json.hotel_double_price ? json.hotel_double_price : "")+'</span></div>';
   			info_html += '<div><span>单间价：'+(json.hotel_single_price ? json.hotel_single_price : "")+'</span></div>';
   			var p_result = 0;
-  			if(json.hotel_small_price && json.hotel_small_price != "0")
+  			/*if(json.hotel_small_price && json.hotel_small_price != "0")
   			{
   				info_html += '<div><span>小计：'+(json.hotel_small_price ? json.hotel_small_price : "")+'</span></div>';
   				p_result = json.hotel_small_price;
   			}
-  			else
+  			else//*/
   			{
   				var d_num = r.ext.days[day].hotel_double ? r.ext.days[day].hotel_double : 0;
   				var s_num = r.ext.days[day].hotel_single ? r.ext.days[day].hotel_single : 0;
@@ -1161,11 +1160,11 @@ window.displayRoomExt=function(ext,showTitle)
   	//var value = $(e).val();
   	var r = findRoomByRid(rid);
   	var json = {};
+  	//console.log(r);
   	if(r && r.ext && r.ext.days && r.ext.days[day] && r.ext.days[day][className])
   	{
   		json = r.ext.days[day][className];
   	}
-  	console.log(json)//luwei
   	var div = $(".tablehotel");
   	var top = $(e).position().top+$(e).height()+23;
   	if(isTitle && $('#'+id).scrollTop()>10) top = top + $('#'+id).scrollTop()/2-10;
@@ -1220,7 +1219,7 @@ window.displayRoomExt=function(ext,showTitle)
   	  					}
   	  				}
   	  			}
-  	  			else
+  	  			else 
   	  			{
   	  				$("."+key).val('');
   	  			}
@@ -1282,12 +1281,12 @@ window.displayRoomExt=function(ext,showTitle)
   		info_html += '<div><span>双间价：<input style="width:90px;" placeholder="双间价" onblur="window.computeHotelPrice(this)" class="hotel_double_price" value="'+(json.hotel_double_price ? json.hotel_double_price.replace(/"/g,'&quot;') : "")+'" /></span>';
   		info_html += '<span style="margin-left:5px;">单间价：<input style="width:90px;" placeholder="单间价" onblur="window.computeHotelPrice(this)" class="hotel_single_price" value="'+(json.hotel_single_price ? json.hotel_single_price.replace(/"/g,'&quot;') : "")+'" /></span></div>';
   		var t_result = 0;
-  		if(json.hotel_small_price && json.hotel_small_price != "0")
+  		/*if(json.hotel_small_price && json.hotel_small_price != "0")
   		{
   			info_html += '<div><span>小计：<input style="width:75%;" readonly="readonly" class="hotel_small_price" value="'+(json.hotel_small_price ? json.hotel_small_price : "")+'" /></span></div>';
   			t_result = json.hotel_small_price;
   		}
-  		else
+  		else//*/
   		{
   			var p_result = 0;
   			var d_price = json.hotel_double_price ? json.hotel_double_price : '';
@@ -3048,7 +3047,7 @@ window.displayRoomExt=function(ext,showTitle)
   					}
   					if(length >= trs.length)
   					{
-
+  						
   						var tr_html = trHtml(startDate,trs.length,length,rid);
   						$(trs[trs.length-1]).after(tr_html);
   					}
@@ -3657,27 +3656,27 @@ window.displayRoomExt=function(ext,showTitle)
   			}
   			else if(s_key == 'bus_company')
   			{
-  				if(s_key_data.bus_price)
+  				if(s_key_data.bus_price) 
   				{
   					var expression = getExpression(s_key_data.bus_price);
   					r = eval(expression);
   					if(isNaN(r))
   					{
   						r = 0;
-  					}
+  					} 
   					s_result = eval(s_result+'+'+r);
   				}
   			}
   			else if(s_key == 'dinner')
   			{
-  				if(s_key_data.lunch_price)
+  				if(s_key_data.lunch_price) 
   				{
   					var expression = getExpression(s_key_data.lunch_price);
   					r = eval(expression);
   					if(isNaN(r))
   					{
   						r = 0;
-  					}
+  					} 
   					s_result = eval(s_result+'+'+r);
   				}
   				if(s_key_data.dinner_price)
@@ -3687,7 +3686,7 @@ window.displayRoomExt=function(ext,showTitle)
   					if(isNaN(r))
   					{
   						r = 0;
-  					}
+  					} 
   					s_result = eval(s_result+'+'+r);
   				}
   			}
