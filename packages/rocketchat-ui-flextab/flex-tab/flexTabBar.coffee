@@ -38,8 +38,8 @@ Template.flexTabBar.events
 		for msg in messages
 			if hide
 				if(!$(msg).hasClass('hideextmessage')&&!$(msg).hasClass('hidemessage'))
-					data_name = $(msg).attr('data-username')
-					if data_name != Meteor.user().username
+					data_name = $(msg).attr('data-uid')
+					if data_name != Meteor.userId()
 						$(msg).addClass('hidemessage')
 					else
 						$(msg).addClass('hideextmessage')
@@ -118,9 +118,10 @@ Template.flexTabBar.onCreated ->
 	# close flex if the visible group changed and the opened template is not in the new visible group
 	@hasMore = new ReactiveVar true
 	@limit = new ReactiveVar 500
-	date = new Date()
+	#date = new Date()
+	rid = Session.get('openedRoom')
 	@autorun =>
-		sub = @subscribe 'extInRooms', @limit.get(),date.getFullYear()+'-01-01'
+		sub = @subscribe 'extInRooms', @limit.get(),false,rid
 		#console.log sub
 		if sub.ready()
 			#console.log ExtInRooms.find().count()

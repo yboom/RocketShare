@@ -34,7 +34,8 @@ Template.accountBox.onCreated ->
 	@limit = new ReactiveVar 500
 	date = new Date()
 	@autorun =>
-		sub = @subscribe 'extInRooms', @limit.get(),date.getFullYear()+'-01-01'
+		year = date.getFullYear()-1
+		sub = @subscribe 'extInRooms', @limit.get(),year+'-01-01',''
 		#console.log sub
 		if sub.ready()
 			#console.log ExtInRooms.find().count()

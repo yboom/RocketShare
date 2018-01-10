@@ -1,4 +1,4 @@
-Meteor.publish 'extInRooms', (limit = 50,date) ->
+Meteor.publish 'extInRooms', (limit = 50,date,rid) ->
 	unless this.userId
 		return this.ready()
 	#'ext.startdate':{$gte:'2017-08-15'}}
@@ -11,25 +11,46 @@ Meteor.publish 'extInRooms', (limit = 50,date) ->
 		return this.ready()
 	roomQuery =
 		usernames: user.username
+		t:
+			$ne:'d'
 		ext:
 			$exists:true
-		$or:[{'ext.startdate':
-				$gte:date}
-			,
-			{'ext.enddate':
-				$gte:date}
-			,
-			{'ext.startdate':
-				$exists:false}]
 		_hidden:
 			$ne: true
-
+	if rid
+		roomQuery =
+			usernames: user.username
+			_id:rid
+			t:
+				$ne:'d'
+			ext:
+				$exists:true
+			_hidden:
+				$ne: true
+	if date
+		roomQuery =
+			usernames: user.username
+			t:
+				$ne:'d'
+			ext:
+				$exists:true
+			$or:[{'ext.startdate':
+					$gte:date}
+				,
+				{'ext.enddate':
+					$gte:date}
+				,
+				{'ext.startdate':
+					$exists:false}]
+			_hidden:
+				$ne: true
 	roomOptions =
 		sort:
 			ts: 1
 		fields:
 			_id: 1
 			name: 1
+			topic: 1
 			t: 1
 			usernames: 1
 			ts: 1

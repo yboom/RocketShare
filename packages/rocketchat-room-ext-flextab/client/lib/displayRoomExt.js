@@ -367,7 +367,14 @@ window.displayRoomExt=function(ext,showTitle)
   	}
   	else if(className.indexOf('line_')==0&&!json[className])
   	{
-  		json[className] = r.ext[className]
+  		if(className.indexOf('line_gys')==0)
+  		{
+  			json = r.ext[className];
+  		}
+  		else
+  		{
+  			json[className] = r.ext[className];
+  		}
   	}
   	//console.log(json);
   	var s=false;
@@ -751,6 +758,15 @@ window.displayRoomExt=function(ext,showTitle)
 			info_html += '<div style="margin-left:6px;margin-top:2px;"><div><span><span class="class_name">'+name+'：</span>'+(json[className] ? json[className] : "")+'</span></div>';
   			info_html += '</div>';
 		}
+		else if(first.indexOf('gys_')==0)
+		{
+			info_html += '<div style="margin-left:6px;margin-top:2px;">';
+			info_html += '<div><span>供应商名称：'+(json.gys_name ? json.gys_name : "")+'</span></div>';
+			info_html += '<div><span>地接社名称：'+(json.gys_dj ? json.gys_dj : "")+'</span></div>';
+			info_html += '<div><span>负责人：'+(json.gys_fuzeren ? json.gys_fuzeren : "")+'</span></div>';
+			info_html += '<div><span>联系电话：'+(json.gys_phone ? json.gys_phone : "")+'</span></div>';
+  			info_html += '</div>';
+		}
 		if(info_html.length>0)
 		{
   			$(div).append(info_html);
@@ -782,6 +798,7 @@ window.displayRoomExt=function(ext,showTitle)
   	$(".tablebus").hide();
   	$(".tablehotelother").hide();
   	$(".lineTextAreaDiv").hide();
+  	$(".lineGYSDiv").hide();
   	var rid = $(e).attr("id");
   	var day = $(e).attr("data-day");
   	var className = $(e).attr("class");
@@ -1154,6 +1171,7 @@ window.displayRoomExt=function(ext,showTitle)
   	$(".tablebus").hide();
   	$(".tablehotelother").hide();
   	$(".lineTextAreaDiv").hide();
+  	$(".lineGYSDiv").hide();
   	var rid = $(e).attr("id");
   	var day = $(e).attr("data-day");
   	var className = $(e).attr("class");
@@ -1219,7 +1237,7 @@ window.displayRoomExt=function(ext,showTitle)
   	  					}
   	  				}
   	  			}
-  	  			else 
+  	  			else
   	  			{
   	  				$("."+key).val('');
   	  			}
@@ -1361,6 +1379,7 @@ window.displayRoomExt=function(ext,showTitle)
   	$(".tablebus").hide();
   	$(".tablehotel").hide();
   	$(".lineTextAreaDiv").hide();
+  	$(".lineGYSDiv").hide();
   	var rid = $(e).attr("id");
   	var day = $(e).attr("data-day");
   	var className = $(e).attr("class");
@@ -1504,6 +1523,7 @@ window.displayRoomExt=function(ext,showTitle)
   	$(".tablebus").hide();
   	$(".tablehotelother").hide();
   	$(".lineTextAreaDiv").hide();
+  	$(".lineGYSDiv").hide();
   	var rid = $(e).attr("id");
   	var day = $(e).attr("data-day");
   	var className = $(e).attr("class");
@@ -1595,6 +1615,7 @@ window.displayRoomExt=function(ext,showTitle)
   	$(".tablebus").hide();
   	$(".tablehotelother").hide();
   	$(".lineTextAreaDiv").hide();
+  	$(".lineGYSDiv").hide();
   	var rid = $(e).attr("id");
   	var day = $(e).attr("data-day");
   	var className = $(e).attr("class");
@@ -1700,6 +1721,7 @@ window.displayRoomExt=function(ext,showTitle)
   	$(".tablesimple").hide();
   	$(".tablehotelother").hide();
   	$(".lineTextAreaDiv").hide();
+  	$(".lineGYSDiv").hide();
   	var rid = $(e).attr("id");
   	var day = $(e).attr("data-day");
   	var className = $(e).attr("class");
@@ -1840,6 +1862,7 @@ window.displayRoomExt=function(ext,showTitle)
   	$(".tablebus").hide();
   	$(".tablehotelother").hide();
   	$(".lineTextAreaDiv").hide();
+  	$(".lineGYSDiv").hide();
   	var rid = $(e).attr("id");
   	var day = $(e).attr("data-day");
   	var className = $(e).attr("class");
@@ -2013,6 +2036,7 @@ window.displayRoomExt=function(ext,showTitle)
   	$(".tablebus").hide();
   	$(".tablehotelother").hide();
   	$(".lineTextAreaDiv").hide();
+  	$(".lineGYSDiv").hide();
   	var rid = $(e).attr("id");
   	var day = $(e).attr("data-day");
   	var className = $(e).attr("class");
@@ -2180,6 +2204,7 @@ window.displayRoomExt=function(ext,showTitle)
   	$(".tablebus").hide();
   	$(".tablehotelother").hide();
   	$(".lineTextAreaDiv").hide();
+  	$(".lineGYSDiv").hide();
   	var rid = $(e).attr("id");
   	var day = $(e).attr("data-day");
   	var className = $(e).attr("class");
@@ -2265,16 +2290,16 @@ window.displayRoomExt=function(ext,showTitle)
   		$(div).css({'position':'absolute','z-index': 199999,'display':'block','top':top+'px','left':left+'px','overflow-y':'auto',
   					'background-color':'rgba(238, 238, 238, 0.8)','width':w,'height':h,'border':'1px solid rgba(163, 163, 163, 0.9)','-webkit-border-radius':'8px','border-radius':'8px'});
   		var info_html = '<div class="hb_fixed" style="background-color:rgba(238, 238, 238, 0.8);width:'+(w-18)+'px;position:fixed;z-index:3;margin-bottom:5px;line-height:19px;"><div style="font-size:15px;line-height:normal;font-weight:bold;margin-top:5px;"><button disabled="disabled" class="hb_btn_arrive" onclick="window.showArrive(this)" style="margin-left:8px;cursor:pointer;">抵达</button><button class="hb_btn_leave" onclick="window.showLeave(this)" style="margin-left:30px;cursor:pointer;">离开</button></div>';
-  		info_html += '<label style="margin-left:10px;font-size:18px;" class="hb_arrive_div">抵达航班信息</label><label style="margin-left:10px;font-size:18px;display:none;" class="hb_leave_div">离开航班信息</label></div>';
+  		info_html += '<label style="margin-left:10px;font-size:18px;" class="hb_arrive_div">抵达航班(车次)信息</label><label style="margin-left:10px;font-size:18px;display:none;" class="hb_leave_div">离开航班(车次)信息</label></div>';
   		info_html += '<div class="showdiv_fixed" style=" text-align:center;position: fixed;height:25px;background-color: rgba(238, 238, 238, 0.9);width: '+(w-10)+'px;z-index:5;margin-top: '+(h-26)+'px;"><button class="btn_cancel" onclick="window.cancelDiv(this)">取消</button><button class="btn_submit" onclick="window.submitDayInfo(this)">提交</button></div>';
   		info_html += '<div style="margin-left:10px;margin-top:56px;" class="hb_arrive_div"><div style="margin-left:6px;">';
   		for(var i=1;i<=5;i++)
   		{
-  			info_html += '<div>'+i+'、航班号：<input style="margin-left:10px;width:95%;height:30px;" placeholder="抵达航班号" class="hb_arrive'+i+'_base_hbh" value="'+(json['hb_arrive'+i+'_base_hbh'] ? json['hb_arrive'+i+'_base_hbh'].replace(/"/g,'&quot;') : "")+'" /></div>';
+  			info_html += '<div>'+i+'、航班(车次)号：<input style="margin-left:10px;width:95%;height:30px;" placeholder="抵达航班(车次)号" class="hb_arrive'+i+'_base_hbh" value="'+(json['hb_arrive'+i+'_base_hbh'] ? json['hb_arrive'+i+'_base_hbh'].replace(/"/g,'&quot;') : "")+'" /></div>';
   			info_html += '<div>日期：<input style="margin-left:10px;width:95%;height:30px;" placeholder="日期" class="hb_arrive'+i+'_base_date" value="'+(json['hb_arrive'+i+'_base_date'] ? json['hb_arrive'+i+'_base_date'] : "")+'" /></div>';
-  			info_html += '<div>两端机场代码缩写：<input style="margin-left:10px;width:95%;height:30px;" placeholder="两端机场代码缩写" class="hb_arrive'+i+'_base_code" value="'+(json['hb_arrive'+i+'_base_code'] ? json['hb_arrive'+i+'_base_code'] : "")+'" /></div>';
-  			info_html += '<div>起飞时间：<input style="margin-left:10px;width:95%;height:30px;" placeholder="起飞时间" class="hb_arrive'+i+'_base_qfsj" value="'+(json['hb_arrive'+i+'_base_qfsj'] ? json['hb_arrive'+i+'_base_qfsj'] : "")+'" /></div>';
-  			info_html += '<div>抵达时间：<input style="margin-left:10px;width:95%;height:30px;" placeholder="抵达时间" class="hb_arrive'+i+'_base_ddsj" value="'+(json['hb_arrive'+i+'_base_ddsj'] ? json['hb_arrive'+i+'_base_ddsj'] : "")+'" /></div>';
+  			info_html += '<div>两端机场(车站)代码缩写：<input style="margin-left:10px;width:95%;height:30px;" placeholder="两端机场(车站)代码缩写" class="hb_arrive'+i+'_base_code" value="'+(json['hb_arrive'+i+'_base_code'] ? json['hb_arrive'+i+'_base_code'] : "")+'" /></div>';
+  			info_html += '<div>起飞(开车)时间：<input style="margin-left:10px;width:95%;height:30px;" placeholder="起飞(开车)时间" class="hb_arrive'+i+'_base_qfsj" value="'+(json['hb_arrive'+i+'_base_qfsj'] ? json['hb_arrive'+i+'_base_qfsj'] : "")+'" /></div>';
+  			info_html += '<div>抵达(到站)时间：<input style="margin-left:10px;width:95%;height:30px;" placeholder="抵达(到站)时间" class="hb_arrive'+i+'_base_ddsj" value="'+(json['hb_arrive'+i+'_base_ddsj'] ? json['hb_arrive'+i+'_base_ddsj'] : "")+'" /></div>';
   			info_html += '<div>价格：<input style="margin-left:2px;width:68%;height:30px;" placeholder="价格" onblur="window.computeJingDianAndAirPortResult(this)" class="hb_arrive'+i+'_info_price" value="'+(json['hb_arrive'+i+'_info_price'] ? json['hb_arrive'+i+'_info_price'].replace(/"/g,'&quot;') : "")+'" />';
   			var r = '';
   			if(json['hb_arrive'+i+'_info_price'])
@@ -2296,11 +2321,11 @@ window.displayRoomExt=function(ext,showTitle)
   		info_html += '<div style="margin-left:10px;display:none;margin-top:56px;" class="hb_leave_div"><div style="margin-left:6px;">';
   		for(var i=1;i<=5;i++)
   		{
-  			info_html += '<div>'+i+'、航班号：<input style="margin-left:10px;width:95%;height:30px;" placeholder="离开航班号" class="hb_leave'+i+'_base_hbh" value="'+(json['hb_leave'+i+'_base_hbh'] ? json['hb_leave'+i+'_base_hbh'].replace(/"/g,'&quot;') : "")+'" /></div>';
+  			info_html += '<div>'+i+'、航班(车次)号：<input style="margin-left:10px;width:95%;height:30px;" placeholder="离开航班(车次)号" class="hb_leave'+i+'_base_hbh" value="'+(json['hb_leave'+i+'_base_hbh'] ? json['hb_leave'+i+'_base_hbh'].replace(/"/g,'&quot;') : "")+'" /></div>';
   			info_html += '<div>日期：<input style="margin-left:10px;width:95%;height:30px;" placeholder="日期" class="hb_leave'+i+'_base_date" value="'+(json['hb_leave'+i+'_base_date'] ? json['hb_leave'+i+'_base_date'] : "")+'" /></div>';
-  			info_html += '<div>两端机场代码缩写：<input style="margin-left:10px;width:95%;height:30px;" placeholder="两端机场代码缩写" class="hb_leave'+i+'_base_code" value="'+(json['hb_leave'+i+'_base_code'] ? json['hb_leave'+i+'_base_code'] : "")+'" /></div>';
-  			info_html += '<div>起飞时间：<input style="margin-left:10px;width:95%;height:30px;" placeholder="起飞时间" class="hb_leave'+i+'_base_qfsj" value="'+(json['hb_leave'+i+'_base_qfsj'] ? json['hb_leave'+i+'_base_qfsj'] : "")+'" /></div>';
-  			info_html += '<div>抵达时间：<input style="margin-left:10px;width:95%;height:30px;" placeholder="抵达时间" class="hb_leave'+i+'_base_ddsj" value="'+(json['hb_leave'+i+'_base_ddsj'] ? json['hb_leave'+i+'_base_ddsj'] : "")+'" /></div>';
+  			info_html += '<div>两端机场(车站)代码缩写：<input style="margin-left:10px;width:95%;height:30px;" placeholder="两端机场(车站)代码缩写" class="hb_leave'+i+'_base_code" value="'+(json['hb_leave'+i+'_base_code'] ? json['hb_leave'+i+'_base_code'] : "")+'" /></div>';
+  			info_html += '<div>起飞(开车)时间：<input style="margin-left:10px;width:95%;height:30px;" placeholder="起飞(开车)时间" class="hb_leave'+i+'_base_qfsj" value="'+(json['hb_leave'+i+'_base_qfsj'] ? json['hb_leave'+i+'_base_qfsj'] : "")+'" /></div>';
+  			info_html += '<div>抵达(到站)时间：<input style="margin-left:10px;width:95%;height:30px;" placeholder="抵达(到站)时间" class="hb_leave'+i+'_base_ddsj" value="'+(json['hb_leave'+i+'_base_ddsj'] ? json['hb_leave'+i+'_base_ddsj'] : "")+'" /></div>';
 	  		info_html += '<div>价格：<input style="margin-left:2px;width:68%;height:30px;" placeholder="价格" onblur="window.computeJingDianAndAirPortResult(this)" class="hb_leave'+i+'_info_price" value="'+(json['hb_leave'+i+'_info_price'] ? json['hb_leave'+i+'_info_price'].replace(/"/g,'&quot;') : "")+'" />';
   			r = '';
   			if(json['hb_leave'+i+'_info_price'])
@@ -2377,8 +2402,8 @@ window.displayRoomExt=function(ext,showTitle)
   	//var inputs = $(div).find("input");
   	var textareas = $(div).find("textarea").get(0);
   	var className = $(show).attr("class");
-  	console.log($(textareas).val());
-  	console.log(JSON.stringify($(textareas).val()));
+  	//console.log($(textareas).val());
+  	//console.log(JSON.stringify($(textareas).val()));
   	var msg = ':=[{"$set": {"ext.'+className+'":'+JSON.stringify($(textareas).val())+'}}]';
   	sendMessage(rid,msg);
   }
@@ -2398,6 +2423,7 @@ window.displayRoomExt=function(ext,showTitle)
   	$(".tablebus").hide();
   	$(".tablehotelother").hide();
   	$(".tableTextAreaDiv").hide();
+  	$(".lineGYSDiv").hide();
   	var rid = $(e).attr("id");
   	var className = $(e).attr("class");
   	//var value = $(e).val();
@@ -2410,9 +2436,9 @@ window.displayRoomExt=function(ext,showTitle)
   	var div = $(".lineTextAreaDiv");
   	var name = '费用包含';
   	var name_info = '费用包含';
-  	if(className == "line_fee_nin") name = "费用不包含",name_info = name;
-  	else if(className == "line_note") name = "注意事项",name_info = name;
-  	else if(className == "line_fjxy") name = "附加协议",name_info = name;
+  	if(className == "line_fee_nin") name = "费用不包含",name_info = "费用不包含";
+  	else if(className == "line_note") name = "注意事项",name_info = "注意事项";
+  	else if(className == "line_fjxy") name = "附加协议",name_info = "附加协议";
 
   	var top = $(e).position().top+$(e).height()+23;
   	if(isTitle && $('#'+id).scrollTop()>10) top = top + $('#'+id).scrollTop()/2-10;
@@ -2469,6 +2495,116 @@ window.displayRoomExt=function(ext,showTitle)
   	currentShowDiv = div;
   }
   window.showLineTextAreaDiv = showLineTextAreaDiv;
+  function submitLineGYSInfo(e)
+  {
+   	var div = $(e).parent().parent();
+  	var rid = $(div).attr("id");
+  	//var day = $(div).attr("data-day");
+  	//var inputs = $(div).find("input");
+  	var inputs = $(div).find("input");
+  	var json = {};
+  	for(var i=0;i<inputs.length;i++)
+  	{
+  		json[$(inputs[i]).attr('class')] = $(inputs[i]).val();
+  	}
+  	var className = $(show).attr("class");
+  	//console.log($(textareas).val());
+  	//console.log(JSON.stringify($(textareas).val()));
+  	var msg = ':=[{"$set": {"ext.'+className+'":'+JSON.stringify(json)+'}}]';
+  	sendMessage(rid,msg);
+  }
+  window.submitLineGYSInfo = submitLineGYSInfo;
+  function showLineGYSDiv(e)//LineGYSDiv
+  {
+  	clickShow = true;
+  	if(timeOutShow) clearTimeout(timeOutShow),timeOutShow = null;
+  	if(show) $(show).css('background','white');
+  	$(".mouse_show_div").remove();
+  	$(".tablecontainer").hide();
+  	$(".tablehotel").hide();
+  	$(".tablesimple").hide();
+  	$(".tableairport").hide();
+  	$(".tablejingdian").hide();
+  	$(".tabledinner").hide();
+  	$(".tablebus").hide();
+  	$(".tablehotelother").hide();
+  	$(".tableTextAreaDiv").hide();
+  	$(".lineTextAreaDiv").hide();
+  	var rid = $(e).attr("id");
+  	var className = $(e).attr("class");
+  	//var value = $(e).val();
+  	var r = findRoomByRid(rid);
+  	var json = {};
+  	if(r && r.ext && r.ext[className])
+  	{
+  		json = r.ext[className];
+  	}
+  	var div = $(".lineGYSDiv");
+  	var name = '供应商信息';
+  	var name_info = '费用包含';
+  	//if(className == "line_fee_nin") name = "费用不包含",name_info = name;
+  	//else if(className == "line_note") name = "注意事项",name_info = name;
+  	//else if(className == "line_fjxy") name = "附加协议",name_info = name;
+
+  	var top = $(e).position().top+$(e).height()+23;
+  	if(isTitle && $('#'+id).scrollTop()>10) top = top + $('#'+id).scrollTop()/2-10;
+  	var left = $(e).position().left;
+  	var w = Math.max(324,width/5);
+  	var h = height/4;
+  	var cw = document.body.clientWidth || 0;
+  	if(left + w > width) left = left - w;
+  	else if(left + w > cw) left = left - w;
+  	if(left < 0) left = 0;
+  	if(top + h >height)
+  	{
+  		top = $(e).position().top - h+20;
+  		if(isTitle && $('#'+id).scrollTop()>10) top = top + $('#'+id).scrollTop()/2-10;
+  	}
+  	if(div && div.length>0)
+  	{
+  	  	$(div).css({'top':top+'px','left':left+'px'});
+  	  	$(div).attr("id",$(e).attr("id"));
+  	  	if(json.gys_name || json.gys_dj)
+  	  	{
+  	  		for(var key in json)
+  	  		{
+  	  			$($(div).find('.'+key).get(0)).val(json[key]);
+  	  		}
+  	  	}
+  	  	else
+  	  	{
+  	  		$(div).find('input').each(function(){
+  	  			$(this).val('');
+  	  		});
+  	  		$(div).find('textarea').each(function(){
+  	  			$(this).val('');
+  	  		});
+  	  	}
+  	  	$(div).show();
+  	}
+  	else
+  	{
+  		div = document.createElement("div");
+  		div.setAttribute("class","lineGYSDiv");
+  		$(div).attr("id",$(e).attr("id"));
+  		$(div).css({'position':'absolute','z-index': 199999,'display':'block','top':top+'px','left':left+'px','overflow-y':'auto',
+  					'background-color':'rgba(238, 238, 238, 0.8)','width':w,'height':h,'border':'1px solid rgba(163, 163, 163, 0.9)','-webkit-border-radius':'8px','border-radius':'8px'});
+  		var info_html = '<div style="margin-left:6px;margin-top:2px;">';
+  		info_html += '<div><span>供应商名称：<input style="margin-left:10px;width:95%;" placeholder="供应商名称" class="gys_name" value="'+(json.gys_name ? json.gys_name.replace(/"/g,'&quot;') : "")+'" /></span></div>';
+  		info_html += '<div><span>地接社名称：<input style="margin-left:10px;width:95%;" placeholder="地接社名称" class="gys_dj" value="'+(json.gys_dj ? json.gys_dj.replace(/"/g,'&quot;') : "")+'" /></span></div>';
+  		info_html += '<div><span>负责人：<input style="margin-left:10px;width:95%;" placeholder="负责人" class="gys_fuzeren" value="'+(json.gys_fuzeren ? json.gys_fuzeren.replace(/"/g,'&quot;') : "")+'" /></span></div>';
+  		info_html += '<div><span>联系电话：<input style="margin-left:10px;width:95%;" placeholder="联系电话" class="gys_phone" value="'+(json.gys_phone ? json.gys_phone.replace(/"/g,'&quot;') : "")+'" /></span></div>';
+  		info_html += '</div>';
+  		info_html += '<div style="text-align: center;margin-top:10px;"><button class="btn_cancel" onclick="window.cancelDiv(this)">取消</button><button class="btn_submit" onclick="window.submitLineGYSInfo(this)">提交</button></div>';
+  		$(div).append(info_html);
+  		$("body").append(div);
+  	}
+  	$($(div).find('.name')[0]).focus();
+  	$(e).css('background-color','yellow');
+  	show = e;
+  	currentShowDiv = div;
+  }
+  window.showLineGYSDiv = showLineGYSDiv;
   function mouseOverShow(e)
   {
   	if(clickShow) return;
@@ -2762,6 +2898,39 @@ window.displayRoomExt=function(ext,showTitle)
   									}
   								}
 							}
+							else
+							{
+								if(show)
+								{
+									var rid = $(show).attr("id").replace('end-date','');
+  									var day = $(show).attr("data-day");
+  									var className = kdata.split('.').pop();//$(show).attr("class");
+  									var r = findRoomByRid(rid);
+  									if(r && r.ext)
+  									{
+  										jsValue = {};
+  										if(day)
+  										{
+  											if(r.ext.days[day])
+  												jsValue = r.ext.days[day];
+  											jsValue[className] = value;
+  											r.ext.days[day] = jsValue;
+  											//r.ext.days[day][className] = value;
+  										}
+  										else
+  										{
+  											r.ext[className] = value;
+  											if(className.indexOf('line')==0&&className.indexOf('price')<0)
+  											{
+  												if(className.indexOf('line_gys')==0)
+  												{
+  													$(show).val(value.gys_name?value.gys_name:'');
+  												}
+  											}
+  										}
+  									}
+  								}
+							}
 						}
 						else
 						{
@@ -2868,8 +3037,10 @@ window.displayRoomExt=function(ext,showTitle)
   				var profit = $(total_tr).next().find(".summary_profit").get(0);
   				if(profit)
   				{
+  					price = getNumber(price);
   					if(fee.length>0)
   					{
+  						fee = getNumber(fee);
   						$(profit).text(price+'-'+fee+'-'+total_num+'='+eval(price+'-'+fee+'-'+total_num));
   					}
   					else
@@ -2908,6 +3079,10 @@ window.displayRoomExt=function(ext,showTitle)
   					{
   						if(!fee) fee = 0;
   						if(!price) price = 0;
+  						fee = getNumber(fee);
+  						price = getNumber(price);
+  						console.log(fee);
+  						console.log(price);
   						$(profit).text(fee+'-'+price+'='+eval(fee+'-'+price));
   					}
   					else
@@ -2915,8 +3090,10 @@ window.displayRoomExt=function(ext,showTitle)
   						fee = $($(t).parent().parent().parent().prev().find(".add_price").get(0)).val();
   						price = $($(t).parent().parent().parent().prev().find(".line_total_price").get(0)).val();
   						if(price.length==0) return;
+  						price = getNumber(price);
   						if(fee.length>0)
   						{
+  							fee = getNumber(fee);
   							$(profit).text(price+'-'+fee+'-'+total_num+'='+eval(price+'-'+fee+'-'+total_num));
   						}
   						else
@@ -3047,7 +3224,7 @@ window.displayRoomExt=function(ext,showTitle)
   					}
   					if(length >= trs.length)
   					{
-  						
+
   						var tr_html = trHtml(startDate,trs.length,length,rid);
   						$(trs[trs.length-1]).after(tr_html);
   					}
@@ -3295,6 +3472,7 @@ window.displayRoomExt=function(ext,showTitle)
   	$(".tablehotelother").hide();
   	$('.hotelsearch').remove();
   	$(".lineTextAreaDiv").hide();
+  	$(".lineGYSDiv").hide();
   	show = null;
   	currentShowDiv = null;
   }
@@ -3656,27 +3834,27 @@ window.displayRoomExt=function(ext,showTitle)
   			}
   			else if(s_key == 'bus_company')
   			{
-  				if(s_key_data.bus_price) 
+  				if(s_key_data.bus_price)
   				{
   					var expression = getExpression(s_key_data.bus_price);
   					r = eval(expression);
   					if(isNaN(r))
   					{
   						r = 0;
-  					} 
+  					}
   					s_result = eval(s_result+'+'+r);
   				}
   			}
   			else if(s_key == 'dinner')
   			{
-  				if(s_key_data.lunch_price) 
+  				if(s_key_data.lunch_price)
   				{
   					var expression = getExpression(s_key_data.lunch_price);
   					r = eval(expression);
   					if(isNaN(r))
   					{
   						r = 0;
-  					} 
+  					}
   					s_result = eval(s_result+'+'+r);
   				}
   				if(s_key_data.dinner_price)
@@ -3686,7 +3864,7 @@ window.displayRoomExt=function(ext,showTitle)
   					if(isNaN(r))
   					{
   						r = 0;
-  					} 
+  					}
   					s_result = eval(s_result+'+'+r);
   				}
   			}
@@ -3822,6 +4000,20 @@ window.displayRoomExt=function(ext,showTitle)
   	}
   }
   window.updateSummaryData = updateSummaryData;
+  function getNumber(string)
+  {
+  	if(!isNaN(string)) return string;
+  	var expression = '';
+  	for(var i=0;i<string.length;i++)
+  	{
+  		chart = string.charAt(i);
+  		if(!isNaN(chart) || chart=='.' || chart=='。')
+  		{
+  			expression += chart;
+  		}
+  	}
+  	return expression?expression:0;
+  }
   function summaryDataHtml(data)
   {
   	var s_html = '';
@@ -3880,18 +4072,18 @@ window.displayRoomExt=function(ext,showTitle)
     s_html +='<span class="summary_profit">';
     if(data.ext.line_gys_price || data.ext.line_traveler_price)
     {
-    	var t_price = data.ext.line_traveler_price?data.ext.line_traveler_price:0;
+    	var t_price = data.ext.line_traveler_price?getNumber(data.ext.line_traveler_price):0;
     	var exp = t_price + '-';
-    	exp +=data.ext.line_gys_price?data.ext.line_gys_price:0;
+    	exp +=data.ext.line_gys_price?getNumber(data.ext.line_gys_price):0;
     	var r_total = eval(exp);
     	s_html +=''+exp+'='+r_total;
     }
     else if(data.ext.line_total_price)
     {
-    	var exp = data.ext.line_total_price + '-';
+    	var exp = getNumber(data.ext.line_total_price) + '-';
     	if(data.ext.add_price)
     	{
-    		exp +=data.ext.add_price+'-';
+    		exp +=getNumber(data.ext.add_price)+'-';
     	}
     	exp +=''+(th_r+hotel_t+bus_r+dinner_r+jingdian_r+airport_r)
     	var r_total = eval(exp);
@@ -3935,12 +4127,13 @@ window.displayRoomExt=function(ext,showTitle)
         	tbody_html +='<span>报价：<input id="'+single._id+'" style="width:100px;border:0px;height:25px;" value="'+(info.line_total_price ? info.line_total_price : "")+'" class="line_total_price"  onclick="window.daysInputClick(this)" onchange="window.inputChange(this,\''+single._id+'\')" /></span>';
         	tbody_html +='<span>附加费用：<input id="'+single._id+'" style="width:100px;border:0px;height:25px;" value="'+(info.add_price ? info.add_price : "")+'" class="add_price"  onclick="window.daysInputClick(this)" onchange="window.inputChange(this,\''+single._id+'\')" /></span>';
         	tbody_html +='</td></tr>';
-        	tbody_html +='<tr><td colspan="15"><span>供应商报价：<input id="'+single._id+'" style="width:100px;border:0px;height:25px;" value="'+(info.line_gys_price ? info.line_gys_price : "")+'" class="line_gys_price"  onclick="window.daysInputClick(this)" onchange="window.inputChange(this,\''+single._id+'\')" /></span>';
+        	tbody_html +='<tr><td colspan="15"><span>供应商信息：<input id="'+single._id+'" style="width:200px;border:0px;height:25px;" value="'+(info.line_gys_info ? info.line_gys_info.gys_name?info.line_gys_info.gys_name:"" : "")+'" class="line_gys_info"  onclick="window.showLineGYSDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)" /></span><span>供应商报价：<input id="'+single._id+'" style="width:100px;border:0px;height:25px;" value="'+(info.line_gys_price ? info.line_gys_price : "")+'" class="line_gys_price"  onclick="window.daysInputClick(this)" onchange="window.inputChange(this,\''+single._id+'\')" /></span>';
         	tbody_html +='<span>收客价：<input id="'+single._id+'" style="width:100px;border:0px;height:25px;" value="'+(info.line_traveler_price ? info.line_traveler_price : "")+'" class="line_traveler_price"  onclick="window.daysInputClick(this)" onchange="window.inputChange(this,\''+single._id+'\')" /></span>';
 			tbody_html +='<span>费用包含：<input id="'+single._id+'" style="width:200px;border:0px;height:25px;" value="'+(info.line_fee_in ? info.line_fee_in.substring(0,30) : "")+'" class="line_fee_in"  onclick="window.showLineTextAreaDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)" /></span>';
 			tbody_html +='<span>费用不含：<input id="'+single._id+'" style="width:200px;border:0px;height:25px;" value="'+(info.line_fee_nin ? info.line_fee_nin.substring(0,30) : "")+'" class="line_fee_nin"  onclick="window.showLineTextAreaDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)" /></span>';
 			tbody_html +='<span>注意事项：<input id="'+single._id+'" style="width:200px;border:0px;height:25px;" value="'+(info.line_note ? info.line_note.substring(0,30) : "")+'" class="line_note"  onclick="window.showLineTextAreaDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)" /></span>';
 			tbody_html +='<span>附加协议：<input id="'+single._id+'" style="width:200px;border:0px;height:25px;" value="'+(info.line_fjxy ? info.line_fjxy.substring(0,30) : "")+'" class="line_fjxy"  onclick="window.showLineTextAreaDiv(this)" onmouseover="window.mouseOverShow(this)" onmouseout="window.mouseOutHide(this)" /></span>';
+			tbody_html +='</td></tr>';
 
         	if(info.days)
         	{
@@ -4164,6 +4357,7 @@ window.displayRoomExt=function(ext,showTitle)
   	$(".tablebus").remove();
   	$(".tablehotelother").remove();
   	$(".lineTextAreaDiv").remove();
+  	$(".lineGYSDiv").remove();
   	saveLocalStorage();
   	if(timeOutShow) clearTimeout(timeOutShow),timeOutShow = null;
     setTimeout(function() {
